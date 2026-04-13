@@ -38,8 +38,8 @@ These are patterns from a live setup that are genuinely worth replicating. Each 
 ## The "Two OS" Architecture
 
 I run two separate repos, each with their own `CLAUDE.md`:
-- **WorkOS** — work skills (meeting prep, memos, RFDs, PM methodology, voice ghostwriting, ICP evaluation, rhetorical analysis)
-- **PersonalOS** — personal skills and compute (health data, iMessage relationship analysis, MCP servers)
+- **WorkOS** — work skills shared across the team (meeting workflows, document generation, CRM analytics, content review)
+- **PersonalOS** — personal skills and custom MCP servers (health tracking, productivity tools, private data analysis)
 
 **Why it matters:** Clean separation of concerns. Work context never bleeds into personal tools and vice versa. Each CLAUDE.md stays focused and under the ~300-line sweet spot.
 
@@ -51,11 +51,11 @@ Instead of slash commands or memorizing syntax, I use natural language triggers:
 
 | I say... | Claude loads... |
 |----------|----------------|
-| "prep [name]" | meeting-prep skill → full meeting pre-brief |
-| "draft a post" | ghostwriter skill → ghostwritten content |
-| "PM a [concept]" | product-mgmt skill → 9-step Working Backwards process |
-| "grade this" | content-review skill → rhetorical analysis |
-| "health sleep" | health-tracker skill → sleep analysis |
+| "prep [name]" | meeting-prep skill → pre-brief with calendar, email, and web research |
+| "draft a post" | content skill → drafted output in my voice and format |
+| "PM a [concept]" | product skill → structured artifact (brief, PRD, or spec) |
+| "scan email" | email skill → inbox triage with batch actions |
+| "health sleep" | health skill → biometric analysis from wearable data |
 
 **Why it matters:** Zero friction. I don't think about *tools* — I think about *outcomes*. Claude matches my intent to the right skill using LLM reasoning, not regex.
 
@@ -129,10 +129,9 @@ My `settings.local.json` pre-approves dozens of commands:
 
 ## Structured Output to Defined Locations
 
-- Analyses → `analyses/<firstname-lastname>.md`
-- PM packages → `products/`
-- RFDs → Notion database
-- Meeting debriefs → Slack (after confirmation)
+- Analyses → `analyses/<name>.md`
+- Documents → `docs/` or a Notion database
+- Meeting outputs → team channels (after confirmation)
 
 **Why it matters:** I always know where to find things. No ad hoc files scattered everywhere.
 
@@ -153,8 +152,8 @@ Claude AI: Google Calendar (built-in), Email (built-in), Web search...
 ## User Identity System
 
 WorkOS detects who's using it (via `git config user.name`) and adapts:
-- If the owner → use the ghostwriter voice for memos and posts
-- If a team member → use professional prose, but can still invoke the ghostwriter to write *for* the owner
+- If the owner → apply personal voice and default preferences
+- If a team member → use standard professional tone, with option to invoke the owner's voice for content written on their behalf
 
 **Why it matters:** One skill set serves the entire team. No per-user configuration needed.
 

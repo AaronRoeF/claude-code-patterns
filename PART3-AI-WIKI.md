@@ -451,30 +451,30 @@ If you build a system useful enough for yourself, colleagues will want it. The d
 personal-system/                 ← Your private repo (never shared)
 ├── CLAUDE.md                    ← Personal routing, identity, preferences
 ├── skills/
-│   ├── health-tracker.md        ← Biometric analysis (personal)
-│   ├── message-analysis.md      ← Relationship analytics (personal)
-│   └── psychoanalysis.md        ← Deep profiling (personal)
+│   ├── health.md                ← Wearable data analysis (personal)
+│   ├── productivity.md          ← Personal workflow tools (personal)
+│   └── research.md              ← Private data analysis (personal)
 ├── mcp/
 │   ├── health-api/              ← Wearable data server (personal)
-│   └── messaging/               ← Message history server (personal)
+│   └── custom-server/           ← Custom data source (personal)
 └── knowledge-base/              ← Personal vault (never shared)
 
 work-system/                     ← Distributable repo (shared with team)
 ├── CLAUDE.md                    ← Work triggers, team skills, shared context
 ├── skills/
-│   ├── meeting-prep.md          ← Meeting pre-briefs (distributable)
-│   ├── memo-writer.md           ← Structured memos (distributable)
-│   ├── pm-methodology.md        ← Product management (distributable)
-│   └── decision-records.md      ← RFDs/ADRs (distributable)
+│   ├── meeting-prep.md          ← Meeting workflows (distributable)
+│   ├── doc-generator.md         ← Structured documents (distributable)
+│   ├── project-mgmt.md          ← Project planning (distributable)
+│   └── decision-records.md      ← Decision documentation (distributable)
 ├── installer.md                 ← Setup instructions for new users
 └── refs/                        ← Shared reference material
 ```
 
-The critical rule: **the distributable layer has zero imports, file references, symlinks, or `../` paths pointing to the personal layer.** If a colleague clones the work system and it fails because it cannot find `../personal-system/health-tracker.md`, the isolation is broken.
+The critical rule: **the distributable layer has zero imports, file references, symlinks, or `../` paths pointing to the personal layer.** If a colleague clones the work system and it fails because it cannot find `../personal-system/health.md`, the isolation is broken.
 
 Test the isolation: clone the work system into an empty directory and run every skill. If anything fails with a file-not-found error, you have a dependency leak.
 
-The work layer isn't theoretical. I package it independently and distribute it to every member of my team. They clone the repo, run the installer, and get the full skill set — meeting prep, memos, PM methodology, CRM analytics, decision records — configured for their own identity. When they say "prep [name]" it uses their calendar, their email, their CRM access. Same skills, different data. The personal layer stays on my machine. The work layer runs across the entire company.
+The work layer isn't theoretical. I package it independently and distribute it to every member of my team. They clone the repo, run the installer, and get the full skill set configured for their own identity. When they say "prep [name]" it uses their calendar, their email, their CRM access. Same skills, different data. The personal layer stays on my machine. The work layer runs across the entire company.
 
 Identity detection makes the shared system adaptive. Add a user identity check at the top of CLAUDE.md: "Check `git config user.name` to determine who is using this. Adapt voice, defaults, and author fields accordingly." The system owner gets their personal voice applied; everyone else gets clean professional prose.
 
