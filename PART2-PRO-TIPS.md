@@ -826,6 +826,21 @@ Create a single `~/.claude/skill-gotchas.md` aggregating gotchas from all skills
 
 **Level:** Intermediate
 
+### Cross-Linked Navigation Harness for Multi-File Docs
+
+When splitting a document across multiple files (a pattern library, a spec set, a knowledge base), add a consistent navigation bar at the top and bottom of every file. Each bar links to all siblings, the parent, and the index. The current file is bold (not a link); every other file is clickable. No dead-ends — the reader can always jump forward, backward, or up to the table of contents.
+
+```
+← [Back to README](README.md) | [Part 2](PART2.md) | **Part 3** | [Part 4](PART4.md)
+```
+
+For automated enforcement: add a pre-publish check that verifies every file in a document set has header and footer nav bars. A vault lint skill can detect orphaned docs missing nav harnesses.
+
+**Why it matters:** Multi-file repos on GitHub have no built-in table of contents or sidebar navigation, so without explicit nav bars readers hit dead-ends and leave.
+
+**Level:** Beginner
+**Pattern to copy:** For any repo with 3+ related markdown files, add a one-line nav bar (pipe-separated links) to the first and last lines of every file. Bold the current file. Link everything else. Add a structure check to your CI or pre-publish script.
+
 ---
 
 ## Prompt Engineering
