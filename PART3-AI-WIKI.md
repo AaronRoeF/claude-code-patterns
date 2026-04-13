@@ -16,24 +16,24 @@ What follows is the production implementation: skills, MCP servers, hook scripts
 
 | Step | What to Build | Read Tip | Why First |
 |------|--------------|----------|-----------|
-| 1 | Three-layer directory structure | #125 | Foundation — everything else builds on this |
-| 2 | Obsidian vault + MCP server | #126 | Your wiki layer needs to exist before you can write to it |
-| 3 | YAML frontmatter conventions | #128 | Metadata contract must be set before creating files |
-| 4 | INDEX.md + LOG.md | #130, #131 | Navigation infrastructure — saves tokens from day one |
-| 5 | Source provenance tracking | #132 | Add `origin:` field convention before files accumulate |
-| 6 | First skill (meeting prep with auto-enrichment) | #136 | Highest-ROI skill — proves the system compounds |
-| 7 | Learning loop (capture → review → graduate) | #129 | The pattern that makes the system self-improving |
-| 8 | Hooks (post-compact reload, then others) | #133 | Behavioral enforcement — instructions suggest, hooks enforce |
-| 9 | Vault lint | #137 | Health checks keep the wiki honest as it grows |
-| 10 | Dual identity (optional) | #134 | Only if you plan to distribute skills to a team |
-| 11 | Parallel publishing to Notion (optional) | #127 | Only if your team uses Notion |
-| 12 | Context hygiene rules | #135 | Add to CLAUDE.md after you've used the system for a week |
+| 1 | Three-layer directory structure | The Three-Layer Architecture | Foundation — everything else builds on this |
+| 2 | Obsidian vault + MCP server | Obsidian as the Wiki Layer | Your wiki layer needs to exist before you can write to it |
+| 3 | YAML frontmatter conventions | YAML Frontmatter as the Metadata Contract | Metadata contract must be set before creating files |
+| 4 | INDEX.md + LOG.md | The Index File, The Activity Log | Navigation infrastructure — saves tokens from day one |
+| 5 | Source provenance tracking | Source Provenance Tracking | Add `origin:` field convention before files accumulate |
+| 6 | First skill (meeting prep with auto-enrichment) | Auto-Enrichment | Highest-ROI skill — proves the system compounds |
+| 7 | Learning loop (capture → review → graduate) | Learning Loops | The pattern that makes the system self-improving |
+| 8 | Hooks (post-compact reload, then others) | Hooks as Behavioral Enforcement | Behavioral enforcement — instructions suggest, hooks enforce |
+| 9 | Vault lint | Vault Lint | Health checks keep the wiki honest as it grows |
+| 10 | Dual identity (optional) | Dual Identity | Only if you plan to distribute skills to a team |
+| 11 | Parallel publishing to Notion (optional) | Parallel Publishing | Only if your team uses Notion |
+| 12 | Context hygiene rules | Context Hygiene as Infrastructure | Add to CLAUDE.md after you've used the system for a week |
 
 **Minimum viable system:** Steps 1-6 give you a working knowledge base with one skill. Steps 7-8 make it self-improving. Steps 9-12 are refinements you add as the system grows.
 
 ---
 
-### 125. The Three-Layer Architecture (Sources → Wiki → Schema)
+### The Three-Layer Architecture (Sources → Wiki → Schema)
 
 The core architecture has three layers, each with a distinct role:
 
@@ -74,7 +74,7 @@ Why live MCP feeds beat static file drops: a person file written six months ago 
 
 ---
 
-### 126. Obsidian as the Wiki Layer
+### Obsidian as the Wiki Layer
 
 Obsidian is not just a markdown editor — it's the ideal wiki layer because of four features that directly serve LLM workflows:
 
@@ -110,7 +110,7 @@ This gives Claude tools like `obsidian_search`, `obsidian_read`, `obsidian_creat
 
 ---
 
-### 127. Parallel Publishing: Obsidian + Notion
+### Parallel Publishing: Obsidian + Notion
 
 Your personal knowledge graph lives in Obsidian. Your team reads Notion. The parallel publishing pattern keeps both in sync without manual duplication.
 
@@ -142,7 +142,7 @@ Add this CLAUDE.md rule: "When publishing to Notion, always update the local fil
 
 ---
 
-### 128. YAML Frontmatter as the Metadata Contract
+### YAML Frontmatter as the Metadata Contract
 
 Every wiki page gets structured YAML frontmatter. This is not decoration — it is the API contract between Claude, Obsidian, and any downstream tools. Without it, Claude must read entire files to understand what they are. With it, Claude can route, filter, and update files by metadata alone.
 
@@ -218,7 +218,7 @@ This query shows contacts you have not met with in 30+ days — no Claude involv
 
 ---
 
-### 129. Learning Loops: Capture → Review → Graduate
+### Learning Loops: Capture → Review → Graduate
 
 This is the pattern that turns a knowledge base into a flywheel. Without it, your wiki is a filing cabinet — useful but static. With it, the system gets smarter from your daily work.
 
@@ -280,7 +280,7 @@ knowledge-base/
 
 ---
 
-### 130. The Index File: Content Catalog the LLM Reads First
+### The Index File: Content Catalog the LLM Reads First
 
 At moderate scale (100-500 wiki pages), an LLM cannot efficiently search everything. Embedding-based RAG is one solution, but a simpler one works for most personal knowledge bases: a maintained INDEX.md that catalogs everything by type.
 
@@ -328,7 +328,7 @@ At this scale, INDEX.md eliminates the need for vector embeddings, semantic sear
 
 ---
 
-### 131. The Activity Log: Chronological Record of Knowledge Evolution
+### The Activity Log: Chronological Record of Knowledge Evolution
 
 INDEX.md tells Claude what exists. LOG.md tells Claude what happened, and when. It is an append-only chronological record of significant wiki operations.
 
@@ -366,7 +366,7 @@ Add this CLAUDE.md rule: "After any create, update, delete, graduate, or review 
 
 ---
 
-### 132. Source Provenance Tracking
+### Source Provenance Tracking
 
 When a knowledge base mixes human-written, LLM-generated, and MCP-ingested content, knowing the origin of each file becomes critical. The `origin` field in YAML frontmatter tracks this:
 
@@ -375,7 +375,7 @@ When a knowledge base mixes human-written, LLM-generated, and MCP-ingested conte
 - **`llm-synthesized`** — Claude assembled this from multiple sources (e.g., a meeting prep that combines calendar data, email threads, and person files). Derivative work. Quality depends on source quality.
 - **`mcp-ingested`** — Pulled directly from an MCP source (e.g., HubSpot deal data, calendar events). Machine-to-machine. Accurate at time of ingestion but may go stale.
 
-Why this matters: a vault lint (tip 137) can flag files where `origin: llm-generated` and `last_updated` is 90+ days old — likely stale creative output that should be reviewed or archived. It can also distinguish source material from derived content when checking for broken references.
+Why this matters: a vault lint (see Vault Lint below) can flag files where `origin: llm-generated` and `last_updated` is 90+ days old — likely stale creative output that should be reviewed or archived. It can also distinguish source material from derived content when checking for broken references.
 
 Provenance also affects how Claude should treat content. Add this CLAUDE.md rule: "When citing information from a wiki page, note its origin. Treat `human` and `mcp-ingested` as factual. Treat `llm-generated` and `llm-synthesized` as provisional — verify against live sources when accuracy matters."
 
@@ -384,7 +384,7 @@ Provenance also affects how Claude should treat content. Add this CLAUDE.md rule
 
 ---
 
-### 133. Hooks as Behavioral Enforcement
+### Hooks as Behavioral Enforcement
 
 CLAUDE.md instructions are probabilistic — Claude follows them most of the time, but can reason around them under pressure or in long contexts. Hooks are deterministic — they execute code on specific events, and exit code 2 blocks the action entirely.
 
@@ -443,7 +443,7 @@ The key insight: instructions in CLAUDE.md say "you should." Hooks say "you must
 
 ---
 
-### 134. Dual Identity: Personal vs. Distributable
+### Dual Identity: Personal vs. Distributable
 
 If you build a system useful enough for yourself, colleagues will want it. The dual identity pattern separates personal capabilities from distributable ones, so you can share the work layer without exposing the personal layer.
 
@@ -483,7 +483,7 @@ Identity detection makes the shared system adaptive. Add a user identity check a
 
 ---
 
-### 135. Context Hygiene as Infrastructure
+### Context Hygiene as Infrastructure
 
 Context management is not a technique you apply occasionally — it is infrastructure you build once and enforce always. Without it, long sessions degrade: Claude forgets earlier decisions, searches for things already discussed, mixes context between unrelated tasks, and hits auto-compaction at 95% where critical information gets compressed into noise.
 
@@ -506,7 +506,7 @@ Failure-mode anchors make these rules self-diagnosing. Append to each rule: `*Si
 
 ---
 
-### 136. Auto-Enrichment: Side-Effect Knowledge Accumulation
+### Auto-Enrichment: Side-Effect Knowledge Accumulation
 
 The most powerful knowledge bases are not maintained in dedicated sessions — they accumulate knowledge as a side effect of normal work. Every skill that reads from the wiki should also write back to it.
 
@@ -554,7 +554,7 @@ Over time, person files that started as a name and title accumulate meeting cont
 
 ---
 
-### 137. Vault Lint: Periodic Health Checks
+### Vault Lint: Periodic Health Checks
 
 A knowledge base without maintenance degrades. Files go stale, links break, metadata drifts, and orphan pages accumulate. A vault lint skill runs periodic health checks and produces a report card — but makes no changes without human approval.
 

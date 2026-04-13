@@ -10,11 +10,11 @@ By the community | April 2026 | 137 techniques
 
 ## How This Guide Is Organized
 
-| Part | What's Inside | Tips |
-|------|-------------|------|
-| **[Part 1: What I'm Already Doing Well](#part-1-what-im-already-doing-well)** | Patterns from a real setup worth sharing | 1-11 |
-| **[Part 2: Pro-Tips by Category](PART2-PRO-TIPS.md)** | 97 researched techniques in 15 categories, each rated Beginner / Intermediate / Advanced | 12-124 |
-| **[Part 3: The AI Wiki Pattern](PART3-AI-WIKI.md)** | Building a persistent, compounding knowledge base with Claude Code + Obsidian (Karpathy's LLM Wiki, production-grade) | 125-137 |
+| Part | What's Inside | Count |
+|------|-------------|-------|
+| **[Part 1: What I'm Already Doing Well](#part-1-what-im-already-doing-well)** | Patterns from a real setup worth sharing | 11 |
+| **[Part 2: Pro-Tips by Category](PART2-PRO-TIPS.md)** | 97 researched techniques in 15 categories, each rated Beginner / Intermediate / Advanced | 113 |
+| **[Part 3: The AI Wiki Pattern](PART3-AI-WIKI.md)** | Building a persistent, compounding knowledge base with Claude Code + Obsidian (Karpathy's LLM Wiki, production-grade) | 13 |
 | **[Part 4: Quick Reference](PART4-QUICK-REFERENCE.md)** | Cheat sheets, keyboard shortcuts, slash commands, MCP starter kit | — |
 | **[Part 5: Implemented Patterns](PART5-IMPLEMENTED-PATTERNS.md)** | Live examples: hooks, test suites, and scripts actually running in production | — |
 
@@ -193,7 +193,7 @@ This pattern library is a living document. If you've discovered a technique that
 
 1. **Fork this repo** and create a branch
 2. **Add your pattern** in the appropriate category, following the existing format:
-   - Title as `### N. Pattern Name`
+   - Title as `### Pattern Name`
    - 2-4 sentence explanation of what it does and why it matters
    - `**Level:**` rating (Beginner / Intermediate / Advanced)
    - `**Source:**` link if applicable
