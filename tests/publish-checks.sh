@@ -51,7 +51,7 @@ done < <(scan_grep -rn -E '(/Users/[a-zA-Z]|/home/[a-zA-Z]|~/Library/|iCloud~md~
 while IFS= read -r line; do
     security_details+=("$line")
     ((security_issues++))
-done < <(scan_grep -rn -E '(\.env\b|credentials\.json|\.pem\b|\.key\b)' --include='*.md' . 2>/dev/null | grep -v -E '(\.env file|\.env example|example\.env|\.env\.local)' || true)
+done < <(scan_grep -rn -E '(\.env\b|credentials\.json|\.pem\b|\.key\b)' --include='*.md' . 2>/dev/null | grep -v -E '(\.env file|\.env example|example\.env|\.env\.local|\.env`|\.env\b.*\.sh|naming-conventions\.env)' || true)
 
 # ═══════════════════════════════════════════
 # PRIVACY CHECKS
@@ -90,8 +90,16 @@ done < <(scan_grep -rn -E 'notion\.so/opaque-systems|[^/][0-9a-f]{32}[^/0-9a-f]'
 # QUALITY CHECKS
 # ═══════════════════════════════════════════
 
-# Count tips: ## N. or ### N. headings
-actual_count=$(grep -r -c -E '^##+ [0-9]+\.' --include='*.md' . 2>/dev/null | awk -F: '{s+=$NF}END{print s}')
+# Count tips by heading type (numberless format)
+# PART2 and PART3: ### headings are tips (exclude code blocks for PART3)
+part2_tips=$(grep -c '^### ' PART2-PRO-TIPS.md 2>/dev/null || echo 0)
+part3_tips=$(awk 'BEGIN{n=0;c=0} /^```/{c=!c;next} !c && /^### /{n++} END{print n}' PART3-AI-WIKI.md 2>/dev/null || echo 0)
+# README tips: ## headings that aren't section headers
+readme_section_re='^## (Key Sources|Contributing|How This Guide|Two Ways|Part 1)'
+readme_all=$(grep -c '^## ' README.md 2>/dev/null || echo 0)
+readme_sections=$(grep -cE "$readme_section_re" README.md 2>/dev/null || echo 0)
+readme_tips=$((readme_all - readme_sections))
+actual_count=$((readme_tips + part2_tips + part3_tips))
 
 # Get claimed count from README header
 claimed_count=$(grep -oE '[0-9]+ techniques' README.md 2>/dev/null | head -1 | grep -oE '[0-9]+' || echo "0")
@@ -101,36 +109,76 @@ if [[ "$actual_count" -ne "$claimed_count" ]]; then
     ((quality_issues++))
 fi
 
-# Check every tip has **Level:** (only in files that have tips)
-for file in README.md PART*.md; do
+# Verify no numbered headings remain (regression check)
+numbered=$( (grep -r -cE '^##+ [0-9]+\.' README.md PART2-PRO-TIPS.md PART3-AI-WIKI.md 2>/dev/null || true) | awk -F: '{s+=$NF}END{print s+0}')
+if [[ "$numbered" -gt 0 ]]; then
+    quality_details+=("Found $numbered numbered tip headings — should be title-only")
+    ((quality_issues++))
+fi
+
+# Verify every ### tip in PART2 has a "Why it matters" within the tip body
+for file in PART2-PRO-TIPS.md; do
     [[ -f "$file" ]] || continue
-    # Get all tip heading line numbers
     while IFS=: read -r lineno heading; do
-        tipnum=$(echo "$heading" | grep -oE '^##+ ([0-9]+)\.' | grep -oE '[0-9]+')
-        # Look for **Level:** within the next 30 lines
-        has_level=$(sed -n "$((lineno+1)),$((lineno+30))p" "$file" | grep -c '\*\*Level:\*\*' || true)
-        if [[ "$has_level" -eq 0 ]]; then
-            quality_details+=("Tip #$tipnum in $file missing \"Level\" line")
+        # Find next ### heading or EOF to bound the search
+        next_heading=$(awk "NR>$lineno && /^### /{print NR; exit}" "$file")
+        end_line=${next_heading:-$(wc -l < "$file")}
+        has_why=$(sed -n "$((lineno+1)),$((end_line))p" "$file" | grep -c '\*\*Why it matters' || true)
+        if [[ "$has_why" -eq 0 ]]; then
+            quality_details+=("Tip in $file:$lineno missing 'Why it matters' line: $heading")
             ((quality_issues++))
         fi
-    done < <(grep -n -E '^##+ [0-9]+\.' "$file" 2>/dev/null || true)
+    done < <(grep -n '^### ' "$file" 2>/dev/null || true)
 done
 
-# Check every tip has **Pattern to copy:**
-for file in README.md PART*.md; do
+# Check every PART2 tip has **Level:** (PART2 uses Level consistently)
+for file in PART2-PRO-TIPS.md; do
     [[ -f "$file" ]] || continue
     while IFS=: read -r lineno heading; do
-        tipnum=$(echo "$heading" | grep -oE '^##+ ([0-9]+)\.' | grep -oE '[0-9]+')
-        # Find next tip heading or EOF
-        next_heading=$(awk "NR>$lineno && /^##+ [0-9]+\./{print NR; exit}" "$file")
+        # Find next ### heading or EOF to bound the search
+        next_heading=$(awk "NR>$lineno && /^### /{print NR; exit}" "$file")
         end_line=${next_heading:-$(wc -l < "$file")}
-        has_pattern=$(sed -n "$((lineno+1)),$((end_line))p" "$file" | grep -c '\*\*Pattern to copy:\*\*' || true)
-        if [[ "$has_pattern" -eq 0 ]]; then
-            quality_details+=("Tip #$tipnum in $file missing \"Pattern to copy\" section")
+        has_level=$(sed -n "$((lineno+1)),$((end_line))p" "$file" | grep -c '\*\*Level:\*\*' || true)
+        if [[ "$has_level" -eq 0 ]]; then
+            quality_details+=("Tip in $file:$lineno missing \"Level\" line: $heading")
             ((quality_issues++))
         fi
-    done < <(grep -n -E '^##+ [0-9]+\.' "$file" 2>/dev/null || true)
+    done < <(grep -n '^### ' "$file" 2>/dev/null || true)
 done
+
+# Check every tip has **Pattern to copy:** (README and PART3 use this format)
+# PART3: use awk to find ### headings outside code blocks and their bounds
+for file in PART3-AI-WIKI.md; do
+    [[ -f "$file" ]] || continue
+    while IFS=: read -r lineno end_line heading; do
+        has_pattern=$(sed -n "$((lineno+1)),$((end_line))p" "$file" | grep -c '\*\*Pattern to copy:\*\*' || true)
+        if [[ "$has_pattern" -eq 0 ]]; then
+            quality_details+=("Tip in $file:$lineno missing \"Pattern to copy\" section: $heading")
+            ((quality_issues++))
+        fi
+    done < <(awk '
+        BEGIN { in_code=0; prev_line=0; prev_heading="" }
+        /^```/ { in_code=!in_code; next }
+        in_code { next }
+        /^### / {
+            if (prev_line > 0) print prev_line":"NR-1":"prev_heading
+            prev_line = NR; prev_heading = $0; next
+        }
+        END { if (prev_line > 0) print prev_line":"NR":"prev_heading }
+    ' "$file" 2>/dev/null || true)
+done
+# README tips use ## headings — check Pattern to copy for those
+readme_section_re='^## (Key Sources|Contributing|How This Guide|Two Ways|Part 1)'
+while IFS=: read -r lineno heading; do
+    echo "$heading" | grep -qE "$readme_section_re" && continue
+    next_heading=$(awk "NR>$lineno && /^## /{print NR; exit}" README.md)
+    end_line=${next_heading:-$(wc -l < README.md)}
+    has_pattern=$(sed -n "$((lineno+1)),$((end_line))p" README.md | grep -c '\*\*Pattern to copy:\*\*' || true)
+    if [[ "$has_pattern" -eq 0 ]]; then
+        quality_details+=("Tip in README.md:$lineno missing \"Pattern to copy\" section: $heading")
+        ((quality_issues++))
+    fi
+done < <(grep -n '^## ' README.md 2>/dev/null || true)
 
 # TODO/FIXME/TBD/[! markers
 while IFS= read -r line; do
@@ -138,7 +186,8 @@ while IFS= read -r line; do
     ((quality_issues++))
 done < <(scan_grep -rn -E '\b(TODO|FIXME|TBD)\b|\[!' --include='*.md' . 2>/dev/null || true)
 
-# Empty sections (heading immediately followed by another heading)
+# Empty sections (heading immediately followed by same-level or higher heading)
+# Exclude ## category headers followed by ### tips (normal in PART2/PART3)
 for file in README.md PART*.md; do
     [[ -f "$file" ]] || continue
     while IFS= read -r line; do
@@ -148,7 +197,14 @@ for file in README.md PART*.md; do
         /^```/ { in_code = !in_code; next }
         in_code { next }
         /^#/ {
-            if (prev ~ /^#/ && prev !~ /^## Category/) print NR-1": "prev
+            if (prev ~ /^#/) {
+                # Allow ## followed by ### (category header followed by first tip)
+                prev_level = length(gensub(/[^#].*/, "", "g", prev))
+                curr_level = length(gensub(/[^#].*/, "", "g", $0))
+                if (curr_level <= prev_level && prev !~ /^## Category/) {
+                    print NR-1": "prev
+                }
+            }
             prev = $0; next
         }
         /^[[:space:]]*$/ { next }
@@ -160,8 +216,8 @@ done
 # STRUCTURE CHECKS
 # ═══════════════════════════════════════════
 
-# Check inter-file links resolve
-for file in README.md PART*.md; do
+# Check inter-file links resolve (exclude links inside code blocks)
+for file in README.md PART*.md SOURCES.md CLAUDE.md; do
     [[ -f "$file" ]] || continue
     while IFS= read -r target; do
         # Strip anchor
@@ -171,7 +227,7 @@ for file in README.md PART*.md; do
             structure_details+=("Broken link in $file: $target_file not found")
             ((structure_issues++))
         fi
-    done < <(grep -oE '\]\([A-Z0-9a-z_-]+\.md[^)]*\)' "$file" 2>/dev/null | sed 's/\](//;s/)//' || true)
+    done < <(awk '/^```/{c=!c;next} !c{print}' "$file" 2>/dev/null | grep -oE '\]\([A-Z0-9a-z_-]+\.md[^)]*\)' | sed 's/\](//;s/)//' || true)
 done
 
 # Verify nav bars at top and bottom of PART*.md files

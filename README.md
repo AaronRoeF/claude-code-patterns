@@ -1,8 +1,8 @@
 # Claude Code Pattern Library
 
-**137 techniques for getting the most out of Claude Code + VS Code — for power users, business operators, and anyone who wants to 10x their productivity.**
+**153 techniques for getting the most out of Claude Code + VS Code — for power users, business operators, and anyone who wants to 10x their productivity.**
 
-By the community | April 2026 | 137 techniques
+By the community | April 2026 | 153 techniques
 
 > This is a community-maintained collection of real-world patterns, tips, and architectural decisions for Claude Code. Everything here has been tested in production setups. Contributions welcome — see the bottom of this file.
 
@@ -13,7 +13,7 @@ By the community | April 2026 | 137 techniques
 | Part | What's Inside | Count |
 |------|-------------|-------|
 | **[Part 1: What I'm Already Doing Well](#part-1-what-im-already-doing-well)** | Patterns from a real setup worth sharing | 11 |
-| **[Part 2: Pro-Tips by Category](PART2-PRO-TIPS.md)** | 97 researched techniques in 15 categories, each rated Beginner / Intermediate / Advanced | 113 |
+| **[Part 2: Pro-Tips by Category](PART2-PRO-TIPS.md)** | 129 researched techniques in 15 categories, each rated Beginner / Intermediate / Advanced | 129 |
 | **[Part 3: The AI Wiki Pattern](PART3-AI-WIKI.md)** | Building a persistent, compounding knowledge base with Claude Code + Obsidian (Karpathy's LLM Wiki, production-grade) | 13 |
 | **[Part 4: Quick Reference](PART4-QUICK-REFERENCE.md)** | Cheat sheets, keyboard shortcuts, slash commands, MCP starter kit | — |
 | **[Part 5: Implemented Patterns](PART5-IMPLEMENTED-PATTERNS.md)** | Live examples: hooks, test suites, and scripts actually running in production | — |

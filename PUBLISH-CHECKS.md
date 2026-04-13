@@ -22,13 +22,15 @@ bash tests/publish-checks.sh
 - **Allowlisted:** "opaque codes" (generic security term), fictional example names (Sarah Chen, James Park, Acme Corp)
 
 ### Quality
-- Tip count: verifies actual tip headings match the count claimed in README.md
-- Every tip has a `**Level:**` line
-- Every tip has a `**Pattern to copy:**` section
+- Tip count: verifies actual tip headings (### in PART2/PART3, ## in README excluding section headers) match the count claimed in README.md
+- No numbered headings remain (regression check — headings should be title-only)
+- Every tip has a `**Why it matters:**` line (PART2)
+- Every PART2 tip has a `**Level:**` line
+- Every README and PART3 tip has a `**Pattern to copy:**` section
 - No TODO, FIXME, TBD, or `[!` markers left in text
 - No empty sections (heading followed immediately by another heading)
 
 ### Structure
-- All inter-file markdown links resolve to existing files
+- All inter-file markdown links resolve to existing files (README, PART*, SOURCES, CLAUDE.md)
 - Every PART*.md has nav bars at top and bottom
 - README.md links to every PART*.md file that exists
