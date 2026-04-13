@@ -508,7 +508,7 @@ Failure-mode anchors make these rules self-diagnosing. Append to each rule: `*Si
 
 ### Auto-Enrichment: Side-Effect Knowledge Accumulation
 
-The most powerful knowledge bases are not maintained in dedicated sessions — they accumulate knowledge as a side effect of normal work. Every skill that reads from the wiki should also write back to it.
+The most effective knowledge bases are not maintained in dedicated sessions — they accumulate knowledge as a side effect of normal work. Every skill that reads from the wiki should also write back to it.
 
 The pattern:
 
