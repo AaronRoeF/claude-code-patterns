@@ -20,6 +20,17 @@ By the community | April 2026 | 137 techniques
 
 ---
 
+## Two Ways to Use This
+
+**Browse it.** Read on GitHub, scan categories, click through to what interests you.
+
+**Feed it to Claude.** Add this repo to your Claude Code context — Claude will reference these patterns when relevant. Point at specific parts for targeted guidance:
+- `PART2-PRO-TIPS.md` for the full technique catalog
+- `PART3-AI-WIKI.md` for building a persistent knowledge base
+- `PART4-QUICK-REFERENCE.md` for cheat sheets and shortcuts
+
+---
+
 # Part 1: What I'm Already Doing Well
 
 These are patterns from a live setup that are genuinely worth replicating. Each one represents real operational leverage.
