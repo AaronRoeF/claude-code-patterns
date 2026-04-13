@@ -24,7 +24,7 @@ By the community | April 2026 | 137 techniques
 
 These are patterns from a live setup that are genuinely worth replicating. Each one represents real operational leverage.
 
-## 1. The "Two OS" Architecture
+## The "Two OS" Architecture
 
 I run two separate repos, each with their own `CLAUDE.md`:
 - **WorkOS** — work skills (meeting prep, memos, RFDs, PM methodology, voice ghostwriting, ICP evaluation, rhetorical analysis)
@@ -34,7 +34,7 @@ I run two separate repos, each with their own `CLAUDE.md`:
 
 **Pattern to copy:** If you have distinct domains (work vs. personal, or multiple projects), give each its own repo with its own CLAUDE.md rather than cramming everything into one.
 
-## 2. Trigger-Phrase Architecture
+## Trigger-Phrase Architecture
 
 Instead of slash commands or memorizing syntax, I use natural language triggers:
 
@@ -50,7 +50,7 @@ Instead of slash commands or memorizing syntax, I use natural language triggers:
 
 **Pattern to copy:** Write your skill descriptions as natural phrases people would actually say. "Create a deployment plan for staging or production" beats "Deploy stuff."
 
-## 3. Skills as Markdown Files with Reference Data
+## Skills as Markdown Files with Reference Data
 
 Each skill is a directory:
 ```
@@ -63,7 +63,7 @@ skills/meeting-prep/
 
 **Pattern to copy:** Don't paste your entire API reference into CLAUDE.md. Put it in a ref file and tell Claude where to find it.
 
-## 4. MCP-First Data Gathering
+## MCP-First Data Gathering
 
 My skills are designed to pull live data from every available source *before* producing output. The meeting-prep skill, for example:
 - Pulls calendar events (Google Calendar MCP)
@@ -77,7 +77,7 @@ My skills are designed to pull live data from every available source *before* pr
 
 **Pattern to copy:** When building skills, list every data source Claude should pull from. Be explicit: "Search Gmail for threads with [attendee]. Search Notion for relevant docs. Web search [company] for recent news."
 
-## 5. Global MCP Configuration
+## Global MCP Configuration
 
 All 7+ MCP servers are configured globally in `~/.claude.json`, not per-project. They're available everywhere:
 
@@ -96,7 +96,7 @@ All 7+ MCP servers are configured globally in `~/.claude.json`, not per-project.
 
 **Pattern to copy:** Use `claude mcp add` to configure servers globally. Reserve per-project MCP for project-specific servers only.
 
-## 6. Confirmation Gates on Destructive Actions
+## Confirmation Gates on Destructive Actions
 
 My skills explicitly do NOT send emails, push Slack messages, or make calendar changes without confirmation. Claude drafts, I confirm.
 
@@ -104,7 +104,7 @@ My skills explicitly do NOT send emails, push Slack messages, or make calendar c
 
 **Pattern to copy:** In your skill files, add explicit rules like: "Draft the Slack message and present it for approval. Do NOT send until the user confirms."
 
-## 7. Pre-Approved Permissions for Speed
+## Pre-Approved Permissions for Speed
 
 My `settings.local.json` pre-approves dozens of commands:
 - Safe git operations (log, status, diff, push to specific repos)
@@ -116,7 +116,7 @@ My `settings.local.json` pre-approves dozens of commands:
 
 **Pattern to copy:** Start with a small allowlist and expand it over time. Pre-approve `git log`, `git status`, `git diff`, and your test runner first.
 
-## 8. Structured Output to Defined Locations
+## Structured Output to Defined Locations
 
 - Analyses → `analyses/<firstname-lastname>.md`
 - PM packages → `products/`
@@ -127,7 +127,7 @@ My `settings.local.json` pre-approves dozens of commands:
 
 **Pattern to copy:** Define output locations in your skill files. "Save the analysis to `analyses/<name>.md`" ensures consistency.
 
-## 9. Environment-Aware Skills
+## Environment-Aware Skills
 
 Every skill documents what's available in Claude Code vs. Claude AI:
 ```
@@ -139,7 +139,7 @@ Claude AI: Google Calendar (built-in), Email (built-in), Web search...
 
 **Pattern to copy:** If your skills need to work across environments, document what's available where and add fallback instructions.
 
-## 10. User Identity System
+## User Identity System
 
 WorkOS detects who's using it (via `git config user.name`) and adapts:
 - If the owner → use the ghostwriter voice for memos and posts
@@ -149,7 +149,7 @@ WorkOS detects who's using it (via `git config user.name`) and adapts:
 
 **Pattern to copy:** If multiple people share your CLAUDE.md, add identity detection. "Check `git config user.name` to determine the current user."
 
-## 11. Hook-Driven Self-Maintenance
+## Hook-Driven Self-Maintenance
 
 The most durable environments don't need manual upkeep — the hooks keep them in sync. Three hooks run silently on every file edit:
 
@@ -166,6 +166,8 @@ The result: add a new skill file → tests automatically cover it. Edit a hook �
 ---
 
 ## Key Sources
+
+For full attribution, see [SOURCES.md](SOURCES.md).
 
 - [Andrej Karpathy — LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — the pattern that inspired Part 3
 - [Adventures in Claude](https://adventuresinclaude.ai/) — 35 posts on Claude Code workflows, learning loops, security patterns, and workflow state machines
