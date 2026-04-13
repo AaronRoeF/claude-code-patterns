@@ -563,102 +563,165 @@ Replace verbose error messages in redirect URLs with opaque codes. `?error=Token
 
 ### Git Worktrees for Parallel Sessions
 Run multiple Claude sessions in parallel, each in its own git worktree with an isolated branch and filesystem. No branch-switching overhead.
+
+**Why it matters:** Running parallel Claude sessions on the same branch causes merge conflicts and file corruption when both sessions edit the same files.
+
 **Level:** Advanced
 
 ### Agent Teams (3-5 Teammates)
 Start with 3-5 teammates. Give each rich context about the project and their specific goal. Teammates can message each other (unlike subagents). Enable with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`.
+
+**Why it matters:** Subagents cannot communicate with each other, so tasks requiring coordination between agents (e.g., frontend + backend changes) fail without agent teams.
+
 **Level:** Advanced
 **Source:** [Addy Osmani](https://addyosmani.com/blog/claude-code-agent-teams/)
 
 ### Subagents for Quick, Focused Work
 Use subagents (not agent teams) for quick tasks that complete and report back. Simpler, faster, fewer tokens than full agent teams.
+
+**Why it matters:** Agent teams carry inter-agent messaging overhead that doubles token cost for tasks that only need a single worker reporting back.
+
 **Level:** Intermediate
 
 ### Background Agents (Ctrl+B)
 Move a running agent to the background and continue working. See status, token usage, and progress.
+
+**Why it matters:** Long-running tasks (test suites, large refactors) block your terminal until they finish, preventing any other work.
+
 **Level:** Intermediate
 
 ### Give Each Agent a Narrow Scope
 LLMs perform worse as context expands. Narrow scope + clean context = better reasoning, independent quality checks, and graceful degradation.
+
+**Why it matters:** Agents with broad scope accumulate irrelevant context that degrades reasoning quality and increases the chance of hallucinated changes.
+
 **Level:** Advanced
 
 ### Run Quality Gates Concurrently
 Type-checking, linting, and tests are independent — run them in parallel rather than sequentially. Saves 20-30 seconds per commit cycle. Use explicit `--concurrency` flags or separate Bash calls. Apply the same principle to review agents: spawn them in parallel, merge findings.
+
+**Why it matters:** Running type-checking, linting, and tests sequentially wastes 20-30 seconds per commit cycle on tasks with no dependencies between them.
+
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Optimizing /commit](https://adventuresinclaude.ai/posts/2026-03-15-optimizing-commit-for-one-million-tokens/)
 
 ### Three-Level Review Triage
 Classify commits by risk to avoid wasteful reviews: **NONE** (docs, tests, config changes), **LIGHT** (under 10 files), **FULL** (10+ files or sensitive paths like auth, middleware, migrations). Path-based overrides force full review for security-critical files regardless of file count. Implement as a pre-commit skill or hook.
+
+**Why it matters:** Running full review agents on documentation-only commits wastes tokens and time without catching any real issues.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude — Exploring /commit](https://adventuresinclaude.ai/posts/2026-03-11-exploring-commit-how-my-code-reviews-itself-before-i-push/)
 
 ### Simplify Before Review
 Run a "simplify pass" (extract utilities, remove redundancy, clean up imports) *before* launching review agents. Review agents then see cleaner code and their findings don't reference already-refactored patterns. Order matters: simplify → review → commit.
+
+**Why it matters:** Review agents that run before simplification produce findings about code patterns that are about to be refactored anyway.
+
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Exploring /commit](https://adventuresinclaude.ai/posts/2026-03-11-exploring-commit-how-my-code-reviews-itself-before-i-push/)
 
 ### Autonomous Ticket Chains
 For batch refactoring work, run chains of independent tickets where each promotes app-specific code to shared platform libraries. Auto-approve plans and auto-commit between tickets. Works best when tickets are truly independent and the pattern is mechanical (e.g., extracting duplicated utilities).
+
+**Why it matters:** Manually approving each step of a 40+ ticket mechanical refactoring turns a 2-hour batch job into a full-day supervised task.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude — Forty-Three Tickets and a Cancer App](https://adventuresinclaude.ai/posts/2026-02-17-dev-diary/)
 
 ### Team Registry for Multi-Repo Routing
 Create a YAML registry that maps ticket prefixes to repositories, enabling automatic project detection and directory switching. When tickets could route to multiple repos, implement an `ask_user` option that presents labeled choices rather than forcing a single default target.
+
+**Why it matters:** Without a registry, agents working across multiple repos guess the wrong target directory and apply changes to the wrong codebase.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude — Exploring /start](https://adventuresinclaude.ai/posts/2026-03-10-exploring-start-how-a-markdown-file-runs-my-development-workflow/)
 
 ### Post-Switch Pre-flight Checks
 After switching directories or projects, verify uncommitted changes exist, offer stashing, and confirm the repo is clean before proceeding. Prevents "committed to wrong branch" errors in multi-worktree setups.
+
+**Why it matters:** Skipping repo-state verification after a directory switch leads to commits landing on the wrong branch in multi-worktree setups.
+
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Exploring /start](https://adventuresinclaude.ai/posts/2026-03-10-exploring-start-how-a-markdown-file-runs-my-development-workflow/)
 
 ### Reopened Ticket Detection
 Scan ticket comments for feedback signals ("bug", "doesn't work", "regression") to automatically identify when previously-shipped work needs revision-focused planning rather than greenfield implementation.
+
+**Why it matters:** Treating a reopened ticket as greenfield causes Claude to rewrite working code instead of targeting the specific regression.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude — Exploring /start](https://adventuresinclaude.ai/posts/2026-03-10-exploring-start-how-a-markdown-file-runs-my-development-workflow/)
 
 ### Change Relevance Detection
 Compare staged changes against the ticket's stated purpose and flag unrelated files. Prevents mixed commits that pollute git history and make rollbacks dangerous.
+
+**Why it matters:** Mixed commits that bundle unrelated changes make targeted rollbacks impossible without reverting intended work.
+
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Exploring /commit](https://adventuresinclaude.ai/posts/2026-03-11-exploring-commit-how-my-code-reviews-itself-before-i-push/)
 
 ### Branch/Ticket Mismatch Safeguard
 Cross-check session file ticket ID against current branch name before committing. Catches worktree switching mistakes before commits go to wrong branches.
+
+**Why it matters:** In multi-worktree setups, committing to the wrong branch is a common mistake that requires force-push or cherry-pick to fix.
+
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Exploring /commit](https://adventuresinclaude.ai/posts/2026-03-11-exploring-commit-how-my-code-reviews-itself-before-i-push/)
 
 ### Review Overrides File
 Maintain a `.claude/review-overrides.json` to suppress known false positives from review agents without editing agent prompts. Reduces prompt bloat and review noise over time.
+
+**Why it matters:** Without a suppression list, the same false positives appear on every commit, training you to ignore all review findings.
+
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Exploring /commit](https://adventuresinclaude.ai/posts/2026-03-11-exploring-commit-how-my-code-reviews-itself-before-i-push/)
 
 ### Inline Plans for Narrow Scope, Subagent for Complexity
 For tickets scoping to 1-3 files with clear descriptions, generate plans directly in the main context rather than dispatching expensive subagents. Reserve subagent dispatch for ambiguous, multi-file, or reopened tickets. Saves 15-30 seconds and 10K+ tokens per simple ticket.
+
+**Why it matters:** Dispatching a subagent for a 3-line change in one file burns 10K+ tokens and 15-30 seconds of latency for no quality gain.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude — Optimizing /start](https://adventuresinclaude.ai/posts/2026-03-15-optimizing-start-the-fifteen-step-state-machine/)
 
 ### Reconstruct State from External Systems
 Store session checkpoints only at irreversible decision points. Everything between checkpoints can be regenerated from git history, API state, and on-disk artifacts. Eliminates redundant writes and simplifies recovery logic.
+
+**Why it matters:** Checkpointing every intermediate step creates stale state files that cause resume logic to conflict with actual git history.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude — Optimizing /start](https://adventuresinclaude.ai/posts/2026-03-15-optimizing-start-the-fifteen-step-state-machine/)
 
 ### Cache Computed Artifacts Across Pipeline Stages
 Compute expensive outputs (git diffs, file lists) once early in the workflow and reuse cached results throughout downstream operations. Prevents re-running `git diff` 3-4 times in a single commit pipeline.
+
+**Why it matters:** Re-computing git diffs at each pipeline stage wastes tokens on identical output and adds cumulative latency.
+
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Optimizing /commit](https://adventuresinclaude.ai/posts/2026-03-15-optimizing-commit-for-one-million-tokens/)
 
 ### Conditional Step Skipping Based on Content
 Skip expensive processing steps when content patterns indicate they will yield no value (e.g., skip learning capture for documentation-only commits, skip security review for CSS-only changes). Pattern-match on file paths and change types.
+
+**Why it matters:** Running every pipeline step on every commit regardless of content wastes tokens and time on steps that will produce empty results.
+
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Optimizing /commit](https://adventuresinclaude.ai/posts/2026-03-15-optimizing-commit-for-one-million-tokens/)
 
 ### Monorepo Boundary Enforcement
 Use Turborepo's `boundaries` feature (or equivalent) to prevent unintended cross-application imports within a monorepo. Enforces architectural separation that code review alone misses — catches violations at build time rather than during manual review.
+
+**Why it matters:** Without build-time import boundaries, Claude freely imports across application boundaries, creating coupling that is only caught during manual review.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude — Friday Night Fun](https://adventuresinclaude.ai/posts/friday-night-fun/)
 
 ### Parallel Background Agents for Independent Builds
 Spawn 6+ background agents simultaneously, each owning distinct output files. Use `run_in_background: true` on each Agent call. Agents notify on completion — don't poll. Real-world result: 6 agents (skills, audits, reconciliation) completed with zero conflicts in ~15 minutes vs 90+ minutes sequential. The key constraint: strict file ownership — two agents touching the same file causes overwrites.
+
+**Why it matters:** Running 6 independent build tasks sequentially takes 90+ minutes; parallel background agents with strict file ownership complete the same work in ~15 minutes.
+
 **Level:** Advanced
 
 ---
@@ -667,28 +730,46 @@ Spawn 6+ background agents simultaneously, each owning distinct output files. Us
 
 ### Auto Memory for Cross-Session Learning
 Claude accumulates knowledge across sessions: build commands, debugging insights, architecture notes, code style, workflow habits. Verify with `/memory`.
+
+**Why it matters:** Without persistent memory, Claude re-learns your project's build commands, naming conventions, and architecture decisions at the start of every session.
+
 **Level:** Beginner
 **Source:** [Claude Code Docs](https://code.claude.com/docs/en/memory)
 
 ### Subagent MEMORY.md
 Give subagents a memory directory. The first 200 lines of MEMORY.md are injected into the agent's system prompt on every run, building knowledge over time.
+
+**Why it matters:** Subagents without shared memory repeat the same mistakes across invocations because each run starts with zero project knowledge.
+
 **Level:** Advanced
 
 ### --continue for Momentum
 `claude --continue` picks up your last conversation with all context preserved. `claude --resume <session-id>` for a specific session.
+
+**Why it matters:** Starting a fresh session after an accidental terminal close loses all accumulated context from the prior conversation.
+
 **Level:** Beginner
 
 ### Project Plans in Your Knowledge Base, Not Hidden Dirs
 Claude Code stores plans in `.claude/plans/` with auto-generated names like `peaceful-imagining-kite.md`. These are invisible in Finder and VS Code. Instead, store active project plans in a visible repo with lifecycle prefixes: `wip-installer-plan.md` while building, rename to `ref-` when done. Link from MEMORY.md so Claude finds them across sessions. The `.claude/` files still exist (Claude manages those), but your authoritative version lives where you can browse it.
+
+**Why it matters:** Plans stored in `.claude/plans/` with auto-generated names are invisible in Finder and VS Code, so you cannot browse, search, or reference them.
+
 **Level:** Intermediate
 
 ### Persist Workflow State to Disk
 Store workflow progress in session state files (e.g., `.claude-session/TICKET-XXX.json`) tracking current step, status, target directory, and approval gates. The filesystem is reliable; context memory is not. After compaction, Claude can read the state file to resume exactly where it left off. Separate plan tracking (checkbox markdown) from session metadata (JSON).
+
+**Why it matters:** Context compaction can erase workflow progress from memory, causing Claude to restart multi-step tasks from the beginning.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude — Exploring /start](https://adventuresinclaude.ai/posts/2026-03-10-exploring-start-how-a-markdown-file-runs-my-development-workflow/)
 
 ### Symlink MEMORY.md Across Worktrees
 When running parallel Claude sessions in git worktrees, symlink MEMORY.md so every session starts with identical institutional knowledge. Without this, worktree-specific MEMORY.md copies drift apart as different sessions learn different things.
+
+**Why it matters:** Independent MEMORY.md copies in each worktree drift apart as different sessions learn different things, creating inconsistent behavior.
+
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Supermemory Evaluation](https://adventuresinclaude.ai/posts/2026-02-17-supermemory-evaluation/)
 
@@ -733,11 +814,16 @@ The script should:
 
 **Post-graduation validation:** 7 days after a graduation, the hook prompts `learn validate`. This checks each graduated rule: Is it still present in the target file? Is it being applied (no repeat failures)? Is it being ignored (same correction happening again)? Ineffective rules get revised or moved to a more prominent location. Validation is logged in REVIEW-LOG.md so the hook knows not to nag again.
 
+**Why it matters:** Auto memory captures individual facts but cannot detect recurring patterns across sessions, so the same mistakes repeat indefinitely without a structured graduation pipeline.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude](https://adventuresinclaude.ai/posts/one-hundred-forty-observations-and-a-dog-name/)
 
 ### Cross-Skill Gotchas Registry
 Create a single `~/.claude/skill-gotchas.md` aggregating gotchas from all skills, organized by category (MCP/Auth, Data Sources, Output/Formatting, Process/Workflow) rather than by skill. Add a CLAUDE.md rule to read it at session start for skill-adjacent tasks. Common gotchas (token expiry, pagination limits, output format drift) stay in context even when the specific skill isn't invoked. Also: mark observations older than 30 days as `[STALE]` if they haven't clustered — and track graduation-to-observation ratio (healthy: 15-25%).
+
+**Why it matters:** Gotchas discovered in one skill (token expiry, pagination limits) reappear in other skills because they are buried in per-skill context instead of a shared registry.
+
 **Level:** Intermediate
 
 ---
@@ -746,30 +832,51 @@ Create a single `~/.claude/skill-gotchas.md` aggregating gotchas from all skills
 
 ### The 4-Block Prompt Pattern
 Structure complex prompts: INSTRUCTIONS (what to do), CONTEXT (background), TASK (specific request), OUTPUT FORMAT (desired result shape). Reduces iterations by ~60%.
+
+**Why it matters:** Without explicit structure, Claude guesses at your output format and context boundaries, causing 2-3 extra back-and-forth cycles per task.
+
 **Level:** Intermediate
 
 ### Be Explicit About Actions
 "Change this function to improve performance" vs. "Can you suggest some changes?" — Claude is trained for precise instruction following.
+
+**Why it matters:** Vague prompts produce suggestions and commentary instead of working code changes, forcing you to re-prompt with the same intent.
+
 **Level:** Beginner
 
 ### Specify Target Files and Constraints
 "Fix the auth timeout bug in `/src/auth/login.ts` — we use JWT tokens with 24-hour expiry" beats "Fix the login bug."
+
+**Why it matters:** Without file paths and constraints, Claude spends tokens searching the codebase and may fix the wrong file or introduce incompatible patterns.
+
 **Level:** Beginner
 
 ### Iterate in 2-3 Cycles Maximum
 The sweet spot is 2-3 feedback cycles. Beyond that, use `/clear` and restart with a refined prompt.
+
+**Why it matters:** After 3+ iterations on the same problem, accumulated context makes Claude anchor on its earlier (wrong) approach rather than reconsidering from scratch.
+
 **Level:** Intermediate
 
 ### Start Simple, Add Complexity Only When Needed
 Longer prompts are NOT always better. Start with one sentence and add constraints only when results need improvement.
+
+**Why it matters:** Over-specified prompts confuse priority ordering — Claude cannot tell which constraints are essential vs. nice-to-have, so it satisfies none well.
+
 **Level:** Beginner
 
 ### Explore → Plan → Implement
 Follow Claude's natural three-phase workflow. Skipping exploration significantly increases the risk of undo. Start with "Explore this and tell me how it works" before asking for changes.
+
+**Why it matters:** Skipping exploration means Claude discovers constraints mid-implementation and must undo work, wasting tokens and introducing partial rewrites.
+
 **Level:** Intermediate
 
 ### Markdown as State Machine for Workflows
 Structure workflow instructions as numbered decision trees with explicit branching, not prose paragraphs. Step numbers provide unambiguous control flow: "Step 3: If ticket has comments containing 'bug' or 'regression', go to Step 3a. Otherwise, Step 4." Claude follows numbered steps more reliably than prose because the structure eliminates ambiguity about ordering and branching.
+
+**Why it matters:** Prose instructions let Claude skip steps or choose its own ordering, while numbered decision trees enforce the exact sequence and branching you intended.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude — Exploring /start](https://adventuresinclaude.ai/posts/2026-03-10-exploring-start-how-a-markdown-file-runs-my-development-workflow/)
 
@@ -779,28 +886,46 @@ Structure workflow instructions as numbered decision trees with explicit branchi
 
 ### Claude Cowork for Non-Technical Tasks
 Claude Desktop's Cowork mode provides the same agent without requiring a terminal. Draft documents, analyze data, reorganize files, manage invoices. Available on all paid plans.
+
+**Why it matters:** Non-technical users get the same agentic capabilities (file manipulation, multi-step workflows) without needing to install or learn a CLI.
+
 **Level:** Beginner
 **Source:** [Claude Cowork](https://claude.com/product/cowork)
 
 ### Process Meeting Notes Automatically
 Point Claude at meeting transcripts → get action-items organized by owner, priority, and due date. Reduces 15-30 minutes to 2 minutes.
+
+**Why it matters:** Unprocessed meeting notes decay in value within 24 hours — automating extraction ensures action items are captured before context fades.
+
 **Level:** Intermediate
 
 ### Headless Mode for Automation
 `claude -p "your prompt"` runs non-interactively as a Unix utility. Compatible with pipes: `cat data.csv | claude -p "Analyze trends" --output-format json`
+
+**Why it matters:** Headless mode lets you embed Claude into shell scripts, cron jobs, and CI pipelines where no human is present to interact with a session.
+
 **Level:** Advanced
 **Source:** [Claude Code Docs](https://code.claude.com/docs/en/headless)
 
 ### Content Creation Pipelines
 Use skills and MCPs together: research topics → draft content → format for platforms → schedule distribution. Connect Notion (content DB), Google Drive (storage), Slack (distribution).
+
+**Why it matters:** Manual content pipelines have 3-5 handoff points where work stalls; automating the chain means one prompt produces a published artifact.
+
 **Level:** Advanced
 
 ### Multi-Tool Research
 Create a skill that combines web search, Playwright (for sites requiring browser automation), and Notion (for internal knowledge) to produce comprehensive research reports.
+
+**Why it matters:** Single-source research misses context that lives in other systems — combining public web, authenticated sites, and internal wikis produces reports with fewer blind spots.
+
 **Level:** Advanced
 
 ### Capture Edit Diffs for Voice Learning
 At publish time, automatically diff Claude's draft against the human's final edited version. The edits reveal voice preferences, structural habits, and phrasing patterns that improve future drafts. Store diffs as training data for voice-matching skills. Over time, the gap between draft and final version should shrink.
+
+**Why it matters:** Without capturing what humans change, voice-matching skills repeat the same mistakes draft after draft because they have no feedback signal.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude — Voice Learning via Edit Diffs](https://adventuresinclaude.ai/posts/2026-02-17-dev-diary/)
 
@@ -810,14 +935,23 @@ At publish time, automatically diff Claude's draft against the human's final edi
 
 ### The opusplan Model Alias
 `/model opusplan` uses Opus for planning/reasoning and Sonnet for code execution. Opus-quality thinking at Sonnet execution costs.
+
+**Why it matters:** Most token spend is in code execution (not planning), so routing execution to Sonnet cuts costs ~60% while preserving Opus-level architectural decisions.
+
 **Level:** Intermediate
 
 ### Haiku for Quick Tasks
 `/model haiku` for simple queries, boilerplate, and routine tasks. 90% of Sonnet capability at 2x speed and 3x cost savings.
+
+**Why it matters:** Using Sonnet or Opus for tasks like "rename this variable" or "add a docstring" burns 3-10x more tokens than necessary for identical output.
+
 **Level:** Beginner
 
 ### Refresh After Major Milestones
 Use `/clear` after completing features or merging PRs. Long sessions accumulate context that makes everything slower and more expensive.
+
+**Why it matters:** Stale context from a completed task causes Claude to reference old code states, producing diffs against files that have already changed.
+
 **Level:** Beginner
 
 ---
@@ -826,40 +960,67 @@ Use `/clear` after completing features or merging PRs. Long sessions accumulate 
 
 ### Don't Trust Auto-Accept for Complex Tasks
 Auto-accept bypasses human review. Use only on feature branches with recent commits, never on main/production.
+
+**Why it matters:** Auto-accepted changes to main/production cannot be easily reverted once deployed, and Claude may introduce subtle logic errors that pass linting but break behavior.
+
 **Level:** Beginner
 
 ### Always Verify Output
 Claude may produce plausible-looking code that doesn't handle edge cases. Run tests, review diffs, and check edge cases before committing.
+
+**Why it matters:** Plausible-looking code that passes a quick read can introduce null-pointer errors, off-by-one bugs, or missing error handling that only surfaces in production.
+
 **Level:** Beginner
 
 ### Don't Skip the Explore Phase
 Let Claude explore before it changes things. Exploration reveals patterns, dependencies, and constraints that affect implementation.
+
+**Why it matters:** Without exploration, Claude modifies code based on assumptions and misses existing patterns, producing changes that conflict with the rest of the codebase.
+
 **Level:** Beginner
 
 ### Avoid "Kitchen Sink" Sessions
 Starting with one task, asking something unrelated, then going back degrades quality for everything. Use `/clear` between topics.
+
+**Why it matters:** Mixed-topic context causes Claude to cross-contaminate — referencing variable names from task A while working on task B, or applying the wrong coding style.
+
 **Level:** Beginner
 
 ### Don't Over-Specify CLAUDE.md
 If Claude keeps ignoring a rule, the file is probably too long. The fix is pruning, not adding more emphasis. A bloated CLAUDE.md is worse than none.
+
+**Why it matters:** Each additional rule dilutes attention on all other rules, so adding "IMPORTANT" markers to fix non-compliance actually makes the problem worse.
+
 **Level:** Intermediate
 
 ### Watch for Large Stdin Limitations
 Headless mode may return empty output with ~7,000+ character stdin input. For large documents, use file-based input (@-mentions) instead.
+
+**Why it matters:** Silent empty output from large stdin means your CI pipeline or script appears to succeed while producing no actual result.
+
 **Level:** Intermediate
 
 ### Inspect Data Before Hypothesizing
 For data-dependent bugs, examine actual data first — don't theorize about code paths. Claude defaults to reasoning about code rather than observing data flow. Explicitly instruct: "dump the field values at each pipeline stage before suggesting a fix." Add diagnostic logging early. Run with real data once. One production data inspection often solves bugs faster than 10 hours of code-path reasoning.
+
+**Why it matters:** Claude defaults to reasoning about code paths instead of observing actual data, so it proposes fixes for bugs that do not exist while missing the real cause.
+
 **Level:** Intermediate
 **Source:** [Adventures in Claude — The Bug That Was Right in Front of Me](https://adventuresinclaude.ai/posts/the-bug-that-was-right-in-front-of-me/)
 
 ### Snapshot-Based Regression Testing for Data Pipelines
 Take snapshots of algorithm outputs against production data and commit as baselines. Wire into pre-commit hooks to force review when outputs change. Catches silent behavioral regressions that unit tests miss — especially in ranking, scoring, or transformation logic where "correct" is defined by expected output, not by code structure.
+
+**Why it matters:** Unit tests verify code structure but miss behavioral regressions in ranking/scoring logic where a refactor silently changes output ordering or values.
+
 **Level:** Advanced
 **Source:** [Adventures in Claude — Snapshots and Dead Code](https://adventuresinclaude.ai/posts/2026-02-25-dev-diary/)
 
 ### Documentation Accuracy Audits
 Periodically verify that docs match actual code behavior. Incorrect docs are worse than missing docs — they create false confidence that leads to security vulnerabilities and integration bugs. Build a skill or checklist that cross-references README claims, API docs, and inline comments against what the code actually does.
+
+**Why it matters:** Incorrect docs create false confidence — developers trust documented behavior, skip testing it, and ship integrations that break against actual code.
+
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Sixty Tickets and a Backslash](https://adventuresinclaude.ai/posts/sixty-tickets-and-a-backslash/)
 
@@ -869,24 +1030,39 @@ Periodically verify that docs match actual code behavior. Incorrect docs are wor
 
 ### Shared Configs Across Worktrees
 Project configs and auto memory automatically share across git worktrees of the same repo. Consistent settings across parallel agents.
+
+**Why it matters:** Without shared configs, each worktree agent diverges in behavior — one follows your CLAUDE.md rules while others use defaults, producing inconsistent output.
+
 **Level:** Intermediate
 
 ### Custom Status Line
 Install a custom status line showing current model, git branch, uncommitted file count, sync status, and a visual context usage progress bar.
+
+**Why it matters:** Without visible context usage, you cannot tell when you are approaching the compaction threshold until Claude starts forgetting earlier instructions.
+
 **Level:** Advanced
 **Source:** [ykdojo/claude-code-tips](https://github.com/ykdojo/claude-code-tips)
 
 ### Container Mode for Safe Experimentation
 Run Claude Code in Docker with `--dangerously-skip-permissions` for fully autonomous experimentation in isolated environments. Never on your actual system.
+
+**Why it matters:** Full autonomy on your host machine risks destructive file operations or unreviewed network calls, but inside a disposable container the blast radius is zero.
+
 **Level:** Advanced
 
 ### 200+ Environment Variables
 Claude Code supports 200+ env vars (only ~50 documented). Control API endpoints, model selection, privacy, experimental features, and session parameters.
+
+**Why it matters:** Undocumented env vars control behaviors like telemetry, model routing, and experimental features that cannot be configured any other way.
+
 **Level:** Advanced
 **Source:** [Eesel Blog](https://www.eesel.ai/blog/environment-variables-claude-code)
 
 ### /permissions to Audit Rules
 List all permission rules and see which settings.json they're sourced from. Debug unexpected permission behavior.
+
+**Why it matters:** Permission rules cascade from multiple settings files (user, project, enterprise), and conflicts between them cause unexplained allow/deny behavior.
+
 **Level:** Intermediate
 
 ---
