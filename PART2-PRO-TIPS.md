@@ -9,6 +9,140 @@
 - **Intermediate** — requires some setup or familiarity
 - **Advanced** — power-user territory
 
+## Index
+
+| Technique | Category |
+|-----------|----------|
+| [Keep It Under 300 Lines](#keep-it-under-300-lines) | Writing CLAUDE.md |
+| [Use Progressive Disclosure](#use-progressive-disclosure) | Writing CLAUDE.md |
+| [Use Emphasis for Critical Rules](#use-emphasis-for-critical-rules) | Writing CLAUDE.md |
+| [Use Multiple CLAUDE.md Files for Large Projects](#use-multiple-claudemd-files-for-large-projects) | Writing CLAUDE.md |
+| [Structure as WHAT, WHY, HOW](#structure-as-what-why-how) | Writing CLAUDE.md |
+| [Check CLAUDE.md Into Git](#check-claudemd-into-git) | Writing CLAUDE.md |
+| [Failure-Mode Anchoring as a One-Line Append](#failure-mode-anchoring-as-a-one-line-append) | Writing CLAUDE.md |
+| [Use /clear Between Unrelated Tasks](#use-clear-between-unrelated-tasks) | Context Management |
+| [Use /compact at 70% Capacity](#use-compact-at-70-capacity) | Context Management |
+| [Audit Context with /context](#audit-context-with-context) | Context Management |
+| [Target 3-5 Files, Not Your Entire Project](#target-3-5-files-not-your-entire-project) | Context Management |
+| [Use Subagents to Preserve Main Context](#use-subagents-to-preserve-main-context) | Context Management |
+| [Write Design Docs to Markdown Files](#write-design-docs-to-markdown-files) | Context Management |
+| [Reduce Defensive Checkpointing as Context Grows](#reduce-defensive-checkpointing-as-context-grows) | Context Management |
+| [Audit Old Patterns When Constraints Change](#audit-old-patterns-when-constraints-change) | Context Management |
+| [ASCII Progress Bars During Multi-Phase Plans](#ascii-progress-bars-during-multi-phase-plans) | Context Management |
+| [Plan Mode (Shift+Tab)](#plan-mode-shifttab) | Slash Commands |
+| [/resume to Pick Up Where You Left Off](#resume-to-pick-up-where-you-left-off) | Slash Commands |
+| [/simplify After Completing Features](#simplify-after-completing-features) | Slash Commands |
+| [/batch for Parallel Worktree Operations](#batch-for-parallel-worktree-operations) | Slash Commands |
+| [/model to Switch Models Mid-Session](#model-to-switch-models-mid-session) | Slash Commands |
+| [/cost to Track Token Spending](#cost-to-track-token-spending) | Slash Commands |
+| [/install-github-app for Automated PR Reviews](#install-github-app-for-automated-pr-reviews) | Slash Commands |
+| [Auto-Format Code After Every Edit](#auto-format-code-after-every-edit) | Hooks |
+| [Block Writes to Sensitive Files](#block-writes-to-sensitive-files) | Hooks |
+| [Inject Context at Session Start](#inject-context-at-session-start) | Hooks |
+| [Run Tests After Code Changes](#run-tests-after-code-changes) | Hooks |
+| [HTTP Hooks for External Integrations](#http-hooks-for-external-integrations) | Hooks |
+| [MCP Audit Logging](#mcp-audit-logging) | Hooks |
+| [Post-Compact Context Reload](#post-compact-context-reload) | Hooks |
+| [Block Destructive Commands](#block-destructive-commands) | Hooks |
+| [Auto-Update MEMORY.md on Structural Changes](#auto-update-memorymd-on-structural-changes) | Hooks |
+| [Mobile Permission Approvals via ntfy.sh](#mobile-permission-approvals-via-ntfysh) | Hooks |
+| [Auto-Sync Test Suite on Skill/MCP Changes](#auto-sync-test-suite-on-skillmcp-changes) | Hooks |
+| [Circuit Breakers via Disk-Based State](#circuit-breakers-via-disk-based-state) | Hooks |
+| [Post-Commit TIL Capture Hook](#post-commit-til-capture-hook) | Hooks |
+| [Create Skills for Repetitive Tasks](#create-skills-for-repetitive-tasks) | Skills |
+| [Use disable-model-invocation for Dangerous Skills](#use-disable-model-invocation-for-dangerous-skills) | Skills |
+| [Write Strong Trigger Descriptions](#write-strong-trigger-descriptions) | Skills |
+| [Install Office Document Skills](#install-office-document-skills) | Skills |
+| [Build a Daily Briefing Skill](#build-a-daily-briefing-skill) | Skills |
+| [Bootstrap Prompt Under 2,000 Tokens](#bootstrap-prompt-under-2000-tokens) | Skills |
+| [TDD Enforcement via Skill File](#tdd-enforcement-via-skill-file) | Skills |
+| [Parameterized Skills for Portability](#parameterized-skills-for-portability) | Skills |
+| [Domain-Portable Learning Loops](#domain-portable-learning-loops) | Skills |
+| [Extract Methodology, Keep Skill Files Thin](#extract-methodology-keep-skill-files-thin) | Skills |
+| [Seven-Section Skill Template](#seven-section-skill-template) | Skills |
+| [Start with High-Value MCP Servers](#start-with-high-value-mcp-servers) | MCP |
+| [Disable Unused MCP Servers Per Session](#disable-unused-mcp-servers-per-session) | MCP |
+| [MCP Tool Search Loads Tools On-Demand](#mcp-tool-search-loads-tools-on-demand) | MCP |
+| [Use Environment Variables for Tokens](#use-environment-variables-for-tokens) | MCP |
+| [The 3-Point MCP Debug Check](#the-3-point-mcp-debug-check) | MCP |
+| [Follow the MCP Spec for Tool Definitions](#follow-the-mcp-spec-for-tool-definitions) | MCP |
+| [SQLite for Reads, JXA Only for Writes](#sqlite-for-reads-jxa-only-for-writes) | MCP |
+| [Register MCP Servers via CLI, Not Manual JSON Edits](#register-mcp-servers-via-cli-not-manual-json-edits) | MCP |
+| [@-Mentions with Line Ranges](#-mentions-with-line-ranges) | VS Code |
+| [Automatic Selection Detection](#automatic-selection-detection) | VS Code |
+| [Cmd+Esc to Toggle Focus](#cmdesc-to-toggle-focus) | VS Code |
+| [Sidebar vs. Panel Placement](#sidebar-vs-panel-placement) | VS Code |
+| [Cmd+T for Extended Thinking](#cmdt-for-extended-thinking) | VS Code |
+| [Customize Keyboard Shortcuts](#customize-keyboard-shortcuts) | VS Code |
+| [Create a Targeted Allowlist](#create-a-targeted-allowlist) | Permissions & Security |
+| [Use Deny Rules for Destructive Commands](#use-deny-rules-for-destructive-commands) | Permissions & Security |
+| [Project-Level vs. Local Settings](#project-level-vs-local-settings) | Permissions & Security |
+| [Sandbox Restrictions](#sandbox-restrictions) | Permissions & Security |
+| [Review Shell Commands Before Authorizing](#review-shell-commands-before-authorizing) | Permissions & Security |
+| [Approval Gates for Sensitive Content in Skills](#approval-gates-for-sensitive-content-in-skills) | Permissions & Security |
+| [URL-Parser Validation Over String Checks](#url-parser-validation-over-string-checks) | Permissions & Security |
+| [Error Message Sanitization for Auth Flows](#error-message-sanitization-for-auth-flows) | Permissions & Security |
+| [Git Worktrees for Parallel Sessions](#git-worktrees-for-parallel-sessions) | Agent Orchestration |
+| [Agent Teams (3-5 Teammates)](#agent-teams-3-5-teammates) | Agent Orchestration |
+| [Subagents for Quick, Focused Work](#subagents-for-quick-focused-work) | Agent Orchestration |
+| [Background Agents (Ctrl+B)](#background-agents-ctrlb) | Agent Orchestration |
+| [Give Each Agent a Narrow Scope](#give-each-agent-a-narrow-scope) | Agent Orchestration |
+| [Run Quality Gates Concurrently](#run-quality-gates-concurrently) | Agent Orchestration |
+| [Three-Level Review Triage](#three-level-review-triage) | Agent Orchestration |
+| [Simplify Before Review](#simplify-before-review) | Agent Orchestration |
+| [Autonomous Ticket Chains](#autonomous-ticket-chains) | Agent Orchestration |
+| [Team Registry for Multi-Repo Routing](#team-registry-for-multi-repo-routing) | Agent Orchestration |
+| [Post-Switch Pre-flight Checks](#post-switch-pre-flight-checks) | Agent Orchestration |
+| [Reopened Ticket Detection](#reopened-ticket-detection) | Agent Orchestration |
+| [Change Relevance Detection](#change-relevance-detection) | Agent Orchestration |
+| [Branch/Ticket Mismatch Safeguard](#branchticket-mismatch-safeguard) | Agent Orchestration |
+| [Review Overrides File](#review-overrides-file) | Agent Orchestration |
+| [Inline Plans for Narrow Scope, Subagent for Complexity](#inline-plans-for-narrow-scope-subagent-for-complexity) | Agent Orchestration |
+| [Reconstruct State from External Systems](#reconstruct-state-from-external-systems) | Agent Orchestration |
+| [Cache Computed Artifacts Across Pipeline Stages](#cache-computed-artifacts-across-pipeline-stages) | Agent Orchestration |
+| [Conditional Step Skipping Based on Content](#conditional-step-skipping-based-on-content) | Agent Orchestration |
+| [Monorepo Boundary Enforcement](#monorepo-boundary-enforcement) | Agent Orchestration |
+| [Parallel Background Agents for Independent Builds](#parallel-background-agents-for-independent-builds) | Agent Orchestration |
+| [Auto Memory for Cross-Session Learning](#auto-memory-for-cross-session-learning) | Memory & Persistence |
+| [Subagent MEMORY.md](#subagent-memorymd) | Memory & Persistence |
+| [--continue for Momentum](#--continue-for-momentum) | Memory & Persistence |
+| [Project Plans in Your Knowledge Base, Not Hidden Dirs](#project-plans-in-your-knowledge-base-not-hidden-dirs) | Memory & Persistence |
+| [Persist Workflow State to Disk](#persist-workflow-state-to-disk) | Memory & Persistence |
+| [Symlink MEMORY.md Across Worktrees](#symlink-memorymd-across-worktrees) | Memory & Persistence |
+| [Self-Improving Learning Loop (Capture → Graduate)](#self-improving-learning-loop-capture--graduate) | Memory & Persistence |
+| [Cross-Skill Gotchas Registry](#cross-skill-gotchas-registry) | Memory & Persistence |
+| [Cross-Linked Navigation Harness for Multi-File Docs](#cross-linked-navigation-harness-for-multi-file-docs) | Memory & Persistence |
+| [The 4-Block Prompt Pattern](#the-4-block-prompt-pattern) | Prompt Engineering |
+| [Be Explicit About Actions](#be-explicit-about-actions) | Prompt Engineering |
+| [Specify Target Files and Constraints](#specify-target-files-and-constraints) | Prompt Engineering |
+| [Iterate in 2-3 Cycles Maximum](#iterate-in-2-3-cycles-maximum) | Prompt Engineering |
+| [Start Simple, Add Complexity Only When Needed](#start-simple-add-complexity-only-when-needed) | Prompt Engineering |
+| [Explore → Plan → Implement](#explore--plan--implement) | Prompt Engineering |
+| [Markdown as State Machine for Workflows](#markdown-as-state-machine-for-workflows) | Prompt Engineering |
+| [Claude Cowork for Non-Technical Tasks](#claude-cowork-for-non-technical-tasks) | Business Workflows |
+| [Process Meeting Notes Automatically](#process-meeting-notes-automatically) | Business Workflows |
+| [Headless Mode for Automation](#headless-mode-for-automation) | Business Workflows |
+| [Content Creation Pipelines](#content-creation-pipelines) | Business Workflows |
+| [Multi-Tool Research](#multi-tool-research) | Business Workflows |
+| [Capture Edit Diffs for Voice Learning](#capture-edit-diffs-for-voice-learning) | Business Workflows |
+| [The opusplan Model Alias](#the-opusplan-model-alias) | Cost Optimization |
+| [Haiku for Quick Tasks](#haiku-for-quick-tasks) | Cost Optimization |
+| [Refresh After Major Milestones](#refresh-after-major-milestones) | Cost Optimization |
+| [Don't Trust Auto-Accept for Complex Tasks](#dont-trust-auto-accept-for-complex-tasks) | Common Pitfalls |
+| [Always Verify Output](#always-verify-output) | Common Pitfalls |
+| [Don't Skip the Explore Phase](#dont-skip-the-explore-phase) | Common Pitfalls |
+| [Avoid "Kitchen Sink" Sessions](#avoid-kitchen-sink-sessions) | Common Pitfalls |
+| [Don't Over-Specify CLAUDE.md](#dont-over-specify-claudemd) | Common Pitfalls |
+| [Watch for Large Stdin Limitations](#watch-for-large-stdin-limitations) | Common Pitfalls |
+| [Inspect Data Before Hypothesizing](#inspect-data-before-hypothesizing) | Common Pitfalls |
+| [Snapshot-Based Regression Testing for Data Pipelines](#snapshot-based-regression-testing-for-data-pipelines) | Common Pitfalls |
+| [Documentation Accuracy Audits](#documentation-accuracy-audits) | Common Pitfalls |
+| [Shared Configs Across Worktrees](#shared-configs-across-worktrees) | Latest Features |
+| [Custom Status Line](#custom-status-line) | Latest Features |
+| [Container Mode for Safe Experimentation](#container-mode-for-safe-experimentation) | Latest Features |
+| [200+ Environment Variables](#200-environment-variables) | Latest Features |
+| [/permissions to Audit Rules](#permissions-to-audit-rules) | Latest Features |
+
 ---
 
 ## Writing Effective CLAUDE.md Files
