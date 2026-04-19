@@ -1,4 +1,4 @@
-← [Back to README](README.md) | [Part 2: Pro-Tips](PART2-PRO-TIPS.md) | [Part 3: AI Wiki](PART3-AI-WIKI.md) | **Part 4: Quick Reference** | [Part 5: Implemented Patterns](PART5-IMPLEMENTED-PATTERNS.md)
+← [Back to README](README.md) | [Part 1: Core Architecture](PART1-CORE-ARCHITECTURE.md) | [Part 2: Techniques](PART2-TECHNIQUES.md) | [Part 3: Build a Knowledge Base](PART3-BUILD-A-KNOWLEDGE-BASE.md) | **Part 4: Quick Reference** | [Part 5: Live Examples](PART5-LIVE-EXAMPLES.md)
 
 ---
 
@@ -61,4 +61,4 @@
 
 ---
 
-← [Part 3: AI Wiki](PART3-AI-WIKI.md) | [Next: Part 5 — Implemented Patterns](PART5-IMPLEMENTED-PATTERNS.md) | [Back to README](README.md)
+← [Part 3: Build a Knowledge Base](PART3-BUILD-A-KNOWLEDGE-BASE.md) | [Next: Part 5 — Live Examples](PART5-LIVE-EXAMPLES.md) | [Back to README](README.md)

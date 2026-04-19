@@ -1,0 +1,167 @@
+# Baseline technique headings — post-restructure
+# Generated: 2026-04-19T18:18:58Z
+# Purpose: cross-check after refactor — zero deletions allowed
+
+## PART1-CORE-ARCHITECTURE.md
+## The "Two OS" Architecture
+## Trigger-Phrase Architecture
+## Skills as Markdown Files with Reference Data
+## MCP-First Data Gathering
+## Global MCP Configuration
+## Confirmation Gates on Destructive Actions
+## Pre-Approved Permissions for Speed
+## Structured Output to Defined Locations
+## Environment-Aware Skills
+## User Identity System
+## Hook-Driven Self-Maintenance
+
+## PART2-TECHNIQUES.md
+### Keep It Under 300 Lines
+### Use Progressive Disclosure
+### Use Emphasis for Critical Rules
+### Use Multiple CLAUDE.md Files for Large Projects
+### Structure as WHAT, WHY, HOW
+### Check CLAUDE.md Into Git
+### Failure-Mode Anchoring as a One-Line Append
+### Use /clear Between Unrelated Tasks
+### Use /compact at 78% Capacity
+### Audit Context with /context
+### Target 3-5 Files, Not Your Entire Project
+### Use Subagents to Preserve Main Context
+### Write Design Docs to Markdown Files
+### Reduce Defensive Checkpointing as Context Grows
+### Audit Old Patterns When Constraints Change
+### ASCII Progress Bars During Multi-Phase Plans
+### Plan Mode (Shift+Tab)
+### /resume to Pick Up Where You Left Off
+### /simplify After Completing Features
+### /batch for Parallel Worktree Operations
+### /model to Switch Models Mid-Session
+### /cost to Track Token Spending
+### /install-github-app for Automated PR Reviews
+### /loop for Recurring Tasks
+### Auto-Format Code After Every Edit
+### Inject Context at Session Start
+### Run Tests After Code Changes
+### HTTP Hooks for External Integrations
+### MCP Audit Logging
+### Post-Compact Context Reload
+### Auto-Update MEMORY.md on Structural Changes
+### Mobile Permission Approvals via ntfy.sh
+### Auto-Sync Test Suite on Skill/MCP Changes
+### Circuit Breakers via Disk-Based State
+### Post-Commit TIL Capture Hook
+### Create Skills for Repetitive Tasks
+### Use disable-model-invocation for Dangerous Skills
+### Write Strong Trigger Descriptions
+### Install Office Document Skills
+### Build a Daily Briefing Skill
+### Bootstrap Prompt Under 2,000 Tokens
+### TDD Enforcement via Skill File
+### Parameterized Skills for Portability
+### Domain-Portable Learning Loops
+### Extract Methodology, Keep Skill Files Thin
+### Seven-Section Skill Template
+### Start with High-Value MCP Servers
+### Disable Unused MCP Servers Per Session
+### MCP Tool Search Loads Tools On-Demand
+### Use Environment Variables for Tokens
+### The 3-Point MCP Debug Check
+### Follow the MCP Spec for Tool Definitions
+### SQLite for Reads, JXA Only for Writes
+### Register MCP Servers via CLI, Not Manual JSON Edits
+### @-Mentions with Line Ranges
+### Automatic Selection Detection
+### Cmd+Esc to Toggle Focus
+### Sidebar vs. Panel Placement
+### Cmd+T for Extended Thinking
+### Customize Keyboard Shortcuts
+### Create a Targeted Allowlist
+### Layered Safety: Deny Rules + Hooks
+### Project-Level vs. Local Settings
+### Sandbox Restrictions
+### Review Shell Commands Before Authorizing
+### Approval Gates for Sensitive Content in Skills
+### URL-Parser Validation Over String Checks
+### Error Message Sanitization for Auth Flows
+### Git Worktrees for Parallel Sessions
+### Agent Teams (3-5 Teammates)
+### Subagents for Quick, Focused Work
+### Background Agents (Ctrl+B)
+### Give Each Agent a Narrow Scope
+### Run Quality Gates Concurrently
+### Three-Level Review Triage
+### Simplify Before Review
+### Inline Plans for Narrow Scope, Subagent for Complexity
+### Autonomous Ticket Chains
+### Team Registry for Multi-Repo Routing
+### Post-Switch Pre-flight Checks
+### Reopened Ticket Detection
+### Change Relevance Detection
+### Branch/Ticket Mismatch Safeguard
+### Review Overrides File
+### Reconstruct State from External Systems
+### Cache Computed Artifacts Across Pipeline Stages
+### Conditional Step Skipping Based on Content
+### Monorepo Boundary Enforcement
+### Parallel Background Agents for Independent Builds
+### Auto Memory for Cross-Session Learning
+### Subagent MEMORY.md
+### --continue for Momentum
+### Project Plans in Your Knowledge Base, Not Hidden Dirs
+### Persist Workflow State to Disk
+### Symlink MEMORY.md Across Worktrees
+### Self-Improving Learning Loop (Capture → Graduate)
+### Cross-Skill Gotchas Registry
+### Cross-Linked Navigation Harness for Multi-File Docs
+### Project Pulse Files for Completion Tracking
+### Focus Lock with Context-Switch Detection
+### The 4-Block Prompt Pattern
+### Be Explicit About Actions
+### Specify Target Files and Constraints
+### Iterate in 2-3 Cycles Maximum
+### Start Simple, Add Complexity Only When Needed
+### Explore → Plan → Implement
+### Markdown as State Machine for Workflows
+### Claude Cowork for Non-Technical Tasks
+### Process Meeting Notes Automatically
+### Headless Mode for Automation
+### Content Creation Pipelines
+### Multi-Tool Research
+### Capture Edit Diffs for Voice Learning
+### The opusplan Model Alias
+### Haiku for Quick Tasks
+### Refresh After Major Milestones
+### Design Around the Prompt Cache TTL
+### Don't Trust Auto-Accept for Complex Tasks
+### Always Verify Output
+### Avoid "Kitchen Sink" Sessions
+### Don't Over-Specify CLAUDE.md
+### Watch for Large Stdin Limitations
+### Inspect Data Before Hypothesizing
+### Snapshot-Based Regression Testing for Data Pipelines
+### Documentation Accuracy Audits
+### MCP Server Won't Start or Silently Fails
+### Permission Denied Loops
+### Context Window Exhaustion Mid-Task
+### Hook Not Firing
+### Shared Configs Across Worktrees
+### Custom Status Line
+### Container Mode for Safe Experimentation
+### 200+ Environment Variables
+### /permissions to Audit Rules
+
+## PART3-BUILD-A-KNOWLEDGE-BASE.md
+### The Three-Layer Architecture (Sources → Wiki → Schema)
+### Obsidian as the Wiki Layer
+### Parallel Publishing: Obsidian + Notion
+### YAML Frontmatter as the Metadata Contract
+### Learning Loops: Capture → Review → Graduate
+### The Index File: Content Catalog the LLM Reads First
+### The Activity Log: Chronological Record of Knowledge Evolution
+### Source Provenance Tracking
+### Hooks as Behavioral Enforcement
+### Dual Identity: Personal vs. Distributable
+### Context Hygiene as Infrastructure
+### Auto-Enrichment: Side-Effect Knowledge Accumulation
+### Vault Lint: Periodic Health Checks

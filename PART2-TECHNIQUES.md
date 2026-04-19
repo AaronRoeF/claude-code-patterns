@@ -1,10 +1,10 @@
-← [Back to README](README.md) | **Part 2: Pro-Tips** | [Part 3: AI Wiki](PART3-AI-WIKI.md) | [Part 4: Quick Reference](PART4-QUICK-REFERENCE.md) | [Part 5: Implemented Patterns](PART5-IMPLEMENTED-PATTERNS.md)
+← [Back to README](README.md) | [Part 1: Core Architecture](PART1-CORE-ARCHITECTURE.md) | **Part 2: Techniques** | [Part 3: Build a Knowledge Base](PART3-BUILD-A-KNOWLEDGE-BASE.md) | [Part 4: Quick Reference](PART4-QUICK-REFERENCE.md) | [Part 5: Live Examples](PART5-LIVE-EXAMPLES.md)
 
 ---
 
-# Part 2: Pro-Tips by Category
+# Part 2: Techniques
 
-97 researched techniques organized into 15 categories. Each rated:
+134 field-tested techniques organized into 16 categories. Each rated:
 - **Beginner** — anyone can do this today
 - **Intermediate** — requires some setup or familiarity
 - **Advanced** — power-user territory
@@ -21,7 +21,7 @@
 | [Check CLAUDE.md Into Git](#check-claudemd-into-git) | Writing CLAUDE.md |
 | [Failure-Mode Anchoring as a One-Line Append](#failure-mode-anchoring-as-a-one-line-append) | Writing CLAUDE.md |
 | [Use /clear Between Unrelated Tasks](#use-clear-between-unrelated-tasks) | Context Management |
-| [Use /compact at 70% Capacity](#use-compact-at-70-capacity) | Context Management |
+| [Use /compact at 78% Capacity](#use-compact-at-78-capacity) | Context Management |
 | [Audit Context with /context](#audit-context-with-context) | Context Management |
 | [Target 3-5 Files, Not Your Entire Project](#target-3-5-files-not-your-entire-project) | Context Management |
 | [Use Subagents to Preserve Main Context](#use-subagents-to-preserve-main-context) | Context Management |
@@ -36,14 +36,13 @@
 | [/model to Switch Models Mid-Session](#model-to-switch-models-mid-session) | Slash Commands |
 | [/cost to Track Token Spending](#cost-to-track-token-spending) | Slash Commands |
 | [/install-github-app for Automated PR Reviews](#install-github-app-for-automated-pr-reviews) | Slash Commands |
+| [/loop for Recurring Tasks](#loop-for-recurring-tasks) | Slash Commands |
 | [Auto-Format Code After Every Edit](#auto-format-code-after-every-edit) | Hooks |
-| [Block Writes to Sensitive Files](#block-writes-to-sensitive-files) | Hooks |
 | [Inject Context at Session Start](#inject-context-at-session-start) | Hooks |
 | [Run Tests After Code Changes](#run-tests-after-code-changes) | Hooks |
 | [HTTP Hooks for External Integrations](#http-hooks-for-external-integrations) | Hooks |
 | [MCP Audit Logging](#mcp-audit-logging) | Hooks |
 | [Post-Compact Context Reload](#post-compact-context-reload) | Hooks |
-| [Block Destructive Commands](#block-destructive-commands) | Hooks |
 | [Auto-Update MEMORY.md on Structural Changes](#auto-update-memorymd-on-structural-changes) | Hooks |
 | [Mobile Permission Approvals via ntfy.sh](#mobile-permission-approvals-via-ntfysh) | Hooks |
 | [Auto-Sync Test Suite on Skill/MCP Changes](#auto-sync-test-suite-on-skillmcp-changes) | Hooks |
@@ -75,34 +74,34 @@
 | [Cmd+T for Extended Thinking](#cmdt-for-extended-thinking) | VS Code |
 | [Customize Keyboard Shortcuts](#customize-keyboard-shortcuts) | VS Code |
 | [Create a Targeted Allowlist](#create-a-targeted-allowlist) | Permissions & Security |
-| [Use Deny Rules for Destructive Commands](#use-deny-rules-for-destructive-commands) | Permissions & Security |
+| [Layered Safety: Deny Rules + Hooks](#layered-safety-deny-rules--hooks) | Permissions & Security |
 | [Project-Level vs. Local Settings](#project-level-vs-local-settings) | Permissions & Security |
 | [Sandbox Restrictions](#sandbox-restrictions) | Permissions & Security |
 | [Review Shell Commands Before Authorizing](#review-shell-commands-before-authorizing) | Permissions & Security |
 | [Approval Gates for Sensitive Content in Skills](#approval-gates-for-sensitive-content-in-skills) | Permissions & Security |
 | [URL-Parser Validation Over String Checks](#url-parser-validation-over-string-checks) | Permissions & Security |
 | [Error Message Sanitization for Auth Flows](#error-message-sanitization-for-auth-flows) | Permissions & Security |
-| [Git Worktrees for Parallel Sessions](#git-worktrees-for-parallel-sessions) | Agent Orchestration |
-| [Agent Teams (3-5 Teammates)](#agent-teams-3-5-teammates) | Agent Orchestration |
-| [Subagents for Quick, Focused Work](#subagents-for-quick-focused-work) | Agent Orchestration |
-| [Background Agents (Ctrl+B)](#background-agents-ctrlb) | Agent Orchestration |
-| [Give Each Agent a Narrow Scope](#give-each-agent-a-narrow-scope) | Agent Orchestration |
-| [Run Quality Gates Concurrently](#run-quality-gates-concurrently) | Agent Orchestration |
-| [Three-Level Review Triage](#three-level-review-triage) | Agent Orchestration |
-| [Simplify Before Review](#simplify-before-review) | Agent Orchestration |
-| [Autonomous Ticket Chains](#autonomous-ticket-chains) | Agent Orchestration |
-| [Team Registry for Multi-Repo Routing](#team-registry-for-multi-repo-routing) | Agent Orchestration |
-| [Post-Switch Pre-flight Checks](#post-switch-pre-flight-checks) | Agent Orchestration |
-| [Reopened Ticket Detection](#reopened-ticket-detection) | Agent Orchestration |
-| [Change Relevance Detection](#change-relevance-detection) | Agent Orchestration |
-| [Branch/Ticket Mismatch Safeguard](#branchticket-mismatch-safeguard) | Agent Orchestration |
-| [Review Overrides File](#review-overrides-file) | Agent Orchestration |
-| [Inline Plans for Narrow Scope, Subagent for Complexity](#inline-plans-for-narrow-scope-subagent-for-complexity) | Agent Orchestration |
-| [Reconstruct State from External Systems](#reconstruct-state-from-external-systems) | Agent Orchestration |
-| [Cache Computed Artifacts Across Pipeline Stages](#cache-computed-artifacts-across-pipeline-stages) | Agent Orchestration |
-| [Conditional Step Skipping Based on Content](#conditional-step-skipping-based-on-content) | Agent Orchestration |
-| [Monorepo Boundary Enforcement](#monorepo-boundary-enforcement) | Agent Orchestration |
-| [Parallel Background Agents for Independent Builds](#parallel-background-agents-for-independent-builds) | Agent Orchestration |
+| [Git Worktrees for Parallel Sessions](#git-worktrees-for-parallel-sessions) | Agent Orchestration — Fundamentals |
+| [Agent Teams (3-5 Teammates)](#agent-teams-3-5-teammates) | Agent Orchestration — Fundamentals |
+| [Subagents for Quick, Focused Work](#subagents-for-quick-focused-work) | Agent Orchestration — Fundamentals |
+| [Background Agents (Ctrl+B)](#background-agents-ctrlb) | Agent Orchestration — Fundamentals |
+| [Give Each Agent a Narrow Scope](#give-each-agent-a-narrow-scope) | Agent Orchestration — Fundamentals |
+| [Run Quality Gates Concurrently](#run-quality-gates-concurrently) | Agent Orchestration — Fundamentals |
+| [Three-Level Review Triage](#three-level-review-triage) | Agent Orchestration — Fundamentals |
+| [Simplify Before Review](#simplify-before-review) | Agent Orchestration — Fundamentals |
+| [Inline Plans for Narrow Scope, Subagent for Complexity](#inline-plans-for-narrow-scope-subagent-for-complexity) | Agent Orchestration — Fundamentals |
+| [Autonomous Ticket Chains](#autonomous-ticket-chains) | Agent Orchestration — CI/CD Pipeline |
+| [Team Registry for Multi-Repo Routing](#team-registry-for-multi-repo-routing) | Agent Orchestration — CI/CD Pipeline |
+| [Post-Switch Pre-flight Checks](#post-switch-pre-flight-checks) | Agent Orchestration — CI/CD Pipeline |
+| [Reopened Ticket Detection](#reopened-ticket-detection) | Agent Orchestration — CI/CD Pipeline |
+| [Change Relevance Detection](#change-relevance-detection) | Agent Orchestration — CI/CD Pipeline |
+| [Branch/Ticket Mismatch Safeguard](#branchticket-mismatch-safeguard) | Agent Orchestration — CI/CD Pipeline |
+| [Review Overrides File](#review-overrides-file) | Agent Orchestration — CI/CD Pipeline |
+| [Reconstruct State from External Systems](#reconstruct-state-from-external-systems) | Agent Orchestration — CI/CD Pipeline |
+| [Cache Computed Artifacts Across Pipeline Stages](#cache-computed-artifacts-across-pipeline-stages) | Agent Orchestration — CI/CD Pipeline |
+| [Conditional Step Skipping Based on Content](#conditional-step-skipping-based-on-content) | Agent Orchestration — CI/CD Pipeline |
+| [Monorepo Boundary Enforcement](#monorepo-boundary-enforcement) | Agent Orchestration — CI/CD Pipeline |
+| [Parallel Background Agents for Independent Builds](#parallel-background-agents-for-independent-builds) | Agent Orchestration — CI/CD Pipeline |
 | [Auto Memory for Cross-Session Learning](#auto-memory-for-cross-session-learning) | Memory & Persistence |
 | [Subagent MEMORY.md](#subagent-memorymd) | Memory & Persistence |
 | [--continue for Momentum](#--continue-for-momentum) | Memory & Persistence |
@@ -112,6 +111,8 @@
 | [Self-Improving Learning Loop (Capture → Graduate)](#self-improving-learning-loop-capture--graduate) | Memory & Persistence |
 | [Cross-Skill Gotchas Registry](#cross-skill-gotchas-registry) | Memory & Persistence |
 | [Cross-Linked Navigation Harness for Multi-File Docs](#cross-linked-navigation-harness-for-multi-file-docs) | Memory & Persistence |
+| [Project Pulse Files for Completion Tracking](#project-pulse-files-for-completion-tracking) | Memory & Persistence |
+| [Focus Lock with Context-Switch Detection](#focus-lock-with-context-switch-detection) | Memory & Persistence |
 | [The 4-Block Prompt Pattern](#the-4-block-prompt-pattern) | Prompt Engineering |
 | [Be Explicit About Actions](#be-explicit-about-actions) | Prompt Engineering |
 | [Specify Target Files and Constraints](#specify-target-files-and-constraints) | Prompt Engineering |
@@ -128,15 +129,19 @@
 | [The opusplan Model Alias](#the-opusplan-model-alias) | Cost Optimization |
 | [Haiku for Quick Tasks](#haiku-for-quick-tasks) | Cost Optimization |
 | [Refresh After Major Milestones](#refresh-after-major-milestones) | Cost Optimization |
+| [Design Around the Prompt Cache TTL](#design-around-the-prompt-cache-ttl) | Cost Optimization |
 | [Don't Trust Auto-Accept for Complex Tasks](#dont-trust-auto-accept-for-complex-tasks) | Common Pitfalls |
 | [Always Verify Output](#always-verify-output) | Common Pitfalls |
-| [Don't Skip the Explore Phase](#dont-skip-the-explore-phase) | Common Pitfalls |
 | [Avoid "Kitchen Sink" Sessions](#avoid-kitchen-sink-sessions) | Common Pitfalls |
 | [Don't Over-Specify CLAUDE.md](#dont-over-specify-claudemd) | Common Pitfalls |
 | [Watch for Large Stdin Limitations](#watch-for-large-stdin-limitations) | Common Pitfalls |
 | [Inspect Data Before Hypothesizing](#inspect-data-before-hypothesizing) | Common Pitfalls |
 | [Snapshot-Based Regression Testing for Data Pipelines](#snapshot-based-regression-testing-for-data-pipelines) | Common Pitfalls |
 | [Documentation Accuracy Audits](#documentation-accuracy-audits) | Common Pitfalls |
+| [MCP Server Won't Start or Silently Fails](#mcp-server-wont-start-or-silently-fails) | Troubleshooting |
+| [Permission Denied Loops](#permission-denied-loops) | Troubleshooting |
+| [Context Window Exhaustion Mid-Task](#context-window-exhaustion-mid-task) | Troubleshooting |
+| [Hook Not Firing](#hook-not-firing) | Troubleshooting |
 | [Shared Configs Across Worktrees](#shared-configs-across-worktrees) | Latest Features |
 | [Custom Status Line](#custom-status-line) | Latest Features |
 | [Container Mode for Safe Experimentation](#container-mode-for-safe-experimentation) | Latest Features |
@@ -213,10 +218,10 @@ Wipe conversation history when switching topics. Claude re-reads your CLAUDE.md 
 
 **Level:** Beginner
 
-### Use /compact at 70% Capacity
-Manually run `/compact` when your context window reaches ~70%, rather than waiting for auto-compaction at 95%. You can focus it: `/compact Focus on the API changes`.
+### Use /compact at 78% Capacity
+Manually run `/compact` when your context window reaches ~78%, rather than waiting for auto-compaction at 95%. You can focus it: `/compact Focus on the API changes`. The 78% number gives Claude room to do a thoughtful summary rather than an emergency compression.
 
-**Why it matters:** Auto-compaction at 95% is an emergency measure that compresses under pressure, losing more useful context than a deliberate compaction at 70%.
+**Why it matters:** Auto-compaction at 95% is an emergency measure that compresses under pressure, losing more useful context than a deliberate compaction at 78%. Manual compaction at 78% produces better summaries while preserving maximum useful context. *Sign you waited too long: repeated searches for things already discussed, slower reasoning, or auto-compact firing and compressing critical context into noise.*
 
 **Level:** Intermediate
 **Source:** [MCPcat Guide](https://mcpcat.io/guides/managing-claude-code-context/)
@@ -328,6 +333,13 @@ Set up Claude as an automated PR reviewer that launches 4 review agents in paral
 **Level:** Intermediate
 **Source:** [Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions)
 
+### /loop for Recurring Tasks
+Run a prompt or slash command on a recurring interval: `/loop 5m /run-tests` checks tests every 5 minutes. Omit the interval and Claude self-paces based on what it's waiting for. Use for polling build status, watching deployments, running periodic health checks, or any task that benefits from repetition.
+
+**Why it matters:** Many operational tasks require periodic checking — build status, deployment health, test suites after refactors. Without `/loop`, you either poll manually or forget to check back. `/loop` with self-pacing is particularly powerful because Claude adjusts the interval based on what it observes (checking more frequently as a build nears completion, less frequently during idle periods).
+
+**Level:** Intermediate
+
 ---
 
 ## Hooks (Automated Triggers)
@@ -339,13 +351,6 @@ Set up a PostToolUse hook that runs your formatter (prettier, gofmt) automatical
 
 **Level:** Intermediate
 **Source:** [Claude Code Docs](https://code.claude.com/docs/en/hooks)
-
-### Block Writes to Sensitive Files
-PreToolUse hook that blocks writes to `.env`, production configs, or `.git`. Exits with code 2 to prevent the action — deterministic safety net.
-
-**Why it matters:** CLAUDE.md instructions can be reasoned around, but a hook that exits with code 2 blocks the action deterministically regardless of context.
-
-**Level:** Advanced
 
 ### Inject Context at Session Start
 SessionStart hook that loads recent tickets, coding checklists, or project status into every new conversation automatically.
@@ -381,13 +386,6 @@ SessionStart hook with `compact` matcher that re-injects current git branch, rec
 **Why it matters:** Compaction discards raw conversation history, so without re-injection, Claude loses awareness of the current branch, recent commits, and active projects.
 
 **Level:** Intermediate
-
-### Block Destructive Commands
-PreToolUse hook on Bash that checks for `git push --force`, `git reset --hard`, `rm -rf`, and `DROP TABLE`. Exit code 2 blocks the action deterministically — can't be reasoned around like an instruction in CLAUDE.md.
-
-**Why it matters:** A single destructive command can delete branches, drop databases, or wipe directories, and natural-language instructions alone cannot guarantee prevention.
-
-**Level:** Advanced
 
 ### Auto-Update MEMORY.md on Structural Changes
 PostToolUse hook (`Edit|Write`) that watches for edits to skills, hook scripts, MCP source files, and CLAUDE.md. When a match fires, it appends a timestamped entry to `MEMORY.md` — so the *next* session automatically knows what was recently modified without you having to remember to log it. Debounced to prevent duplicate entries for rapid edits.
@@ -635,17 +633,27 @@ Cmd+K, Cmd+S → search "Claude" to see all available commands and rebind them.
 ### Create a Targeted Allowlist
 Define specific allowed tools in `.claude/settings.json`. Pre-approve safe commands (`git log`, `npm test`, `git diff`) while keeping risky operations on "Ask."
 
+**See also:** Part 1 Core Architecture for the foundational pattern.
+
 **Why it matters:** Without an allowlist, Claude prompts for permission on every shell command, including read-only ones you would always approve.
 
 **Level:** Intermediate
 **Source:** [Claude Code Docs](https://code.claude.com/docs/en/permissions)
 
-### Use Deny Rules for Destructive Commands
-Explicit deny for `rm -rf`, `git push --force`, `npm publish`. Deny always takes precedence over allow.
+### Layered Safety: Deny Rules + Hooks
+Protect against destructive actions with three complementary layers, each catching what the others miss:
 
-**Why it matters:** Allow rules alone cannot prevent accidental approval of destructive commands during fast-moving sessions.
+**Layer 1 — settings.json deny rules:** Explicit deny entries in `.claude/settings.json` for destructive commands: `rm -rf`, `git push --force`, `npm publish`, `DROP TABLE`. Deny always takes precedence over allow. This is your first line of defense — zero setup beyond editing a JSON file.
 
-**Level:** Intermediate
+**Layer 2 — PreToolUse hooks for file protection:** A PreToolUse hook that matches on `Edit|Write` and checks whether the target file is `.env`, a production config, or anything in `.git/`. Exit code 2 blocks the action deterministically. Unlike a CLAUDE.md instruction (which Claude can reason around), a hook that exits with code 2 prevents the action regardless of context.
+
+**Layer 3 — PreToolUse hooks for command blocking:** A PreToolUse hook that matches on `Bash` and scans the command string for `git push --force`, `git reset --hard`, `rm -rf`, `DROP TABLE`, and other destructive patterns. Same exit-code-2 enforcement. This catches destructive commands even if they are not in the deny list (e.g., constructed dynamically or piped through another command).
+
+**Why three layers:** Deny rules are static and only match exact command prefixes. File-protection hooks cover write operations that deny rules don't see. Command-blocking hooks catch destructive shell commands that are constructed dynamically or embedded in scripts. Together, they form a defense-in-depth that no single mechanism provides alone. CLAUDE.md instructions ("never force-push") are the weakest layer — they can be reasoned around under pressure, after compaction, or when Claude believes it has good reason. Hooks and deny rules cannot.
+
+**Why it matters:** A single destructive command can delete branches, drop databases, wipe directories, or expose secrets — and natural-language instructions alone cannot guarantee prevention.
+
+**Level:** Intermediate (deny rules) / Advanced (hooks)
 
 ### Project-Level vs. Local Settings
 `.claude/settings.json` (in git) for team-shared rules. `.claude/settings.local.json` (gitignored) for personal preferences.
@@ -694,6 +702,8 @@ Replace verbose error messages in redirect URLs with opaque codes. `?error=Token
 ---
 
 ## Agent Orchestration & Parallel Work
+
+#### Agent Orchestration — Fundamentals
 
 ### Git Worktrees for Parallel Sessions
 Run multiple Claude sessions in parallel, each in its own git worktree with an isolated branch and filesystem. No branch-switching overhead.
@@ -755,6 +765,16 @@ Run a "simplify pass" (extract utilities, remove redundancy, clean up imports) *
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Exploring /commit](https://adventuresinclaude.ai/posts/2026-03-11-exploring-commit-how-my-code-reviews-itself-before-i-push/)
 
+### Inline Plans for Narrow Scope, Subagent for Complexity
+For tickets scoping to 1-3 files with clear descriptions, generate plans directly in the main context rather than dispatching expensive subagents. Reserve subagent dispatch for ambiguous, multi-file, or reopened tickets. Saves 15-30 seconds and 10K+ tokens per simple ticket.
+
+**Why it matters:** Dispatching a subagent for a 3-line change in one file burns 10K+ tokens and 15-30 seconds of latency for no quality gain.
+
+**Level:** Advanced
+**Source:** [Adventures in Claude — Optimizing /start](https://adventuresinclaude.ai/posts/2026-03-15-optimizing-start-the-fifteen-step-state-machine/)
+
+#### Agent Orchestration — CI/CD Pipeline Patterns
+
 ### Autonomous Ticket Chains
 For batch refactoring work, run chains of independent tickets where each promotes app-specific code to shared platform libraries. Auto-approve plans and auto-commit between tickets. Works best when tickets are truly independent and the pattern is mechanical (e.g., extracting duplicated utilities).
 
@@ -810,14 +830,6 @@ Maintain a `.claude/review-overrides.json` to suppress known false positives fro
 
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Exploring /commit](https://adventuresinclaude.ai/posts/2026-03-11-exploring-commit-how-my-code-reviews-itself-before-i-push/)
-
-### Inline Plans for Narrow Scope, Subagent for Complexity
-For tickets scoping to 1-3 files with clear descriptions, generate plans directly in the main context rather than dispatching expensive subagents. Reserve subagent dispatch for ambiguous, multi-file, or reopened tickets. Saves 15-30 seconds and 10K+ tokens per simple ticket.
-
-**Why it matters:** Dispatching a subagent for a 3-line change in one file burns 10K+ tokens and 15-30 seconds of latency for no quality gain.
-
-**Level:** Advanced
-**Source:** [Adventures in Claude — Optimizing /start](https://adventuresinclaude.ai/posts/2026-03-15-optimizing-start-the-fifteen-step-state-machine/)
 
 ### Reconstruct State from External Systems
 Store session checkpoints only at irreversible decision points. Everything between checkpoints can be regenerated from git history, API state, and on-disk artifacts. Eliminates redundant writes and simplifies recovery logic.
@@ -975,6 +987,53 @@ For automated enforcement: add a pre-publish check that verifies every file in a
 **Level:** Beginner
 **Pattern to copy:** For any repo with 3+ related markdown files, add a one-line nav bar (pipe-separated links) to the first and last lines of every file. Bold the current file. Link everything else. Add a structure check to your CI or pre-publish script.
 
+### Project Pulse Files for Completion Tracking
+
+Give every project a `PULSE.md` file that tracks status, completion %, last stop, next actions, and what "finished" looks like. The PULSE is the authoritative source for project state — not your memory, not a task list, not a Jira board.
+
+The minimum viable PULSE:
+
+```yaml
+---
+project: Feature X
+status: active     # idea | active | blocked | done | archived
+health: green      # green | yellow | red
+completion: 45
+priority: p1       # p0 | p1 | p2 | p3
+last_touched: 2026-04-19
+---
+```
+
+Plus three sections: **Last Stop** (where you left off — enough detail that a cold resume works), **Next Actions** (concrete tasks, not vague goals), and **What Finishing Looks Like** (the exit criteria that prevent scope creep).
+
+**Why it matters:** Without explicit project state, every session starts with "where were we?" and loses 10-15 minutes of context reconstruction. The PULSE file eliminates this entirely — Claude reads it and resumes at exactly the right point. More importantly, the "What Finishing Looks Like" section prevents the natural drift from "ship this feature" to "also refactor that module."
+
+**Level:** Intermediate
+
+### Focus Lock with Context-Switch Detection
+
+Use a PreToolUse hook to detect when Claude is about to edit files in a different project directory than the declared focus project. When a switch is detected, the hook injects a warning that forces Claude to update the departing project's PULSE before proceeding.
+
+The pattern:
+1. At session start, declare a focus project (write to `~/.claude/current-focus.txt`)
+2. A PreToolUse hook on Edit/Write checks if the target file is in a different project directory
+3. If it is: inject a "CONTEXT SWITCH DETECTED" warning that halts work until the departing project's PULSE is updated
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Edit|Write",
+      "hooks": [{ "type": "command", "command": "~/.claude/hooks/focus-gate.sh" }]
+    }]
+  }
+}
+```
+
+**Why it matters:** Context switching without bookmarking is how projects stall at 80%. The focus gate makes switching conscious — you can still switch, but you have to close the loop on what you're leaving. This is mechanical enforcement against wandering, which CLAUDE.md rules alone cannot provide because they degrade after compaction.
+
+**Level:** Advanced
+
 ---
 
 ## Prompt Engineering
@@ -1001,7 +1060,7 @@ Structure complex prompts: INSTRUCTIONS (what to do), CONTEXT (background), TASK
 **Level:** Beginner
 
 ### Iterate in 2-3 Cycles Maximum
-The sweet spot is 2-3 feedback cycles. Beyond that, use `/clear` and restart with a refined prompt.
+The sweet spot is 2-3 feedback cycles. Beyond that, restart with a refined prompt rather than continuing to iterate on a failing approach.
 
 **Why it matters:** After 3+ iterations on the same problem, accumulated context makes Claude anchor on its earlier (wrong) approach rather than reconsidering from scratch.
 
@@ -1016,6 +1075,13 @@ Longer prompts are NOT always better. Start with one sentence and add constraint
 
 ### Explore → Plan → Implement
 Follow Claude's natural three-phase workflow. Skipping exploration significantly increases the risk of undo. Start with "Explore this and tell me how it works" before asking for changes.
+
+**The three phases in practice:**
+1. **Explore:** "Read the auth module and tell me how sessions work." Claude reads files, traces call paths, discovers patterns, dependencies, and constraints. This is where Claude finds the existing helper it should reuse instead of writing a duplicate, or the config flag that changes behavior.
+2. **Plan:** "Now propose a plan to add session refresh." Claude outlines what to change, in what order, considering what it learned during exploration. Review the plan before proceeding — this is your cheapest intervention point.
+3. **Implement:** "Go ahead." Claude executes the approved plan with full awareness of the codebase.
+
+**Common failure mode:** Jumping straight to "add session refresh to the auth module" without exploration. Claude modifies code based on assumptions, misses existing patterns, produces changes that conflict with the rest of the codebase, then discovers constraints mid-implementation and must undo work. The undo itself introduces partial rewrites that leave the codebase in a worse state than before. *Sign you skipped this: Claude starts implementing, then says "wait, I see there's already a..." or "I need to undo what I just did because..."*
 
 **Why it matters:** Skipping exploration means Claude discovers constraints mid-implementation and must undo work, wasting tokens and introducing partial rewrites.
 
@@ -1097,11 +1163,25 @@ At publish time, automatically diff Claude's draft against the human's final edi
 **Level:** Beginner
 
 ### Refresh After Major Milestones
-Use `/clear` after completing features or merging PRs. Long sessions accumulate context that makes everything slower and more expensive.
+After completing features or merging PRs, start a fresh session. Long sessions accumulate stale context that makes everything slower and more expensive.
 
 **Why it matters:** Stale context from a completed task causes Claude to reference old code states, producing diffs against files that have already changed.
 
 **Level:** Beginner
+
+### Design Around the Prompt Cache TTL
+
+The Anthropic prompt cache has a 5-minute TTL. When Claude Code sleeps past 300 seconds between actions, the next turn reads your full conversation context uncached — slower and more expensive. Design your workflows around cache windows:
+
+- **Under 270 seconds:** Cache stays warm. Right for active work — checking builds, polling status, iterating on code.
+- **Over 300 seconds:** Cache miss. Right when there's genuinely no point checking sooner — waiting on deployments, long builds.
+- **Avoid exactly 300 seconds.** It's the worst of both: you pay the cache miss without amortizing it over a meaningfully longer wait.
+
+For `/loop` iterations, pace them to stay inside cache windows when possible. A build that takes 8 minutes? Sleep ~270 seconds twice rather than sleeping 60 seconds eight times (8 cache misses vs. 0).
+
+**Why it matters:** Cache misses multiply your cost per turn by 2-3x with no benefit to output quality. In long autonomous sessions with dozens of iterations, cache-aware pacing can cut total cost by 40-60%.
+
+**Level:** Advanced
 
 ---
 
@@ -1121,15 +1201,8 @@ Claude may produce plausible-looking code that doesn't handle edge cases. Run te
 
 **Level:** Beginner
 
-### Don't Skip the Explore Phase
-Let Claude explore before it changes things. Exploration reveals patterns, dependencies, and constraints that affect implementation.
-
-**Why it matters:** Without exploration, Claude modifies code based on assumptions and misses existing patterns, producing changes that conflict with the rest of the codebase.
-
-**Level:** Beginner
-
 ### Avoid "Kitchen Sink" Sessions
-Starting with one task, asking something unrelated, then going back degrades quality for everything. Use `/clear` between topics.
+Starting with one task, asking something unrelated, then going back degrades quality for everything. Keep sessions focused on a single topic or task.
 
 **Why it matters:** Mixed-topic context causes Claude to cross-contaminate — referencing variable names from task A while working on task B, or applying the wrong coding style.
 
@@ -1175,6 +1248,74 @@ Periodically verify that docs match actual code behavior. Incorrect docs are wor
 
 ---
 
+## Troubleshooting
+
+### MCP Server Won't Start or Silently Fails
+
+**Symptom:** Tools from an MCP server don't appear in the deferred tool set, or calls return connection errors.
+
+**Diagnosis:** Run `claude mcp list` to see server status. Check if the server process is running (`ps aux | grep mcp`). For hosted servers (Notion, etc.), they fail silently at session init — you won't get an error, the tools just won't be available.
+
+**Common fixes:**
+- **Auth expired:** Re-run `claude mcp add` to refresh OAuth tokens. Google OAuth tokens expire and need periodic refresh.
+- **npm not found:** MCP servers need `npm`/`node` on the PATH. Check that your shell profile loads nvm/fnm.
+- **Port conflict:** If using stdio-based servers, check for zombie processes holding the port.
+- **Scopes insufficient:** A 403 from a tool usually means the app's OAuth scopes need updating (e.g., HubSpot Private App scopes), not a code fix.
+
+**Why it matters:** Silent MCP failures are the worst kind — skills run without their data sources and produce thin output, and you don't realize the server was down until you notice the briefing is missing email context or CRM data.
+
+**Level:** Intermediate
+
+### Permission Denied Loops
+
+**Symptom:** Claude keeps asking for permission on the same command, even after you approve it.
+
+**Diagnosis:** Check `~/.claude/settings.json` and `.claude/settings.json` — permissions cascade from enterprise → user → project → local. A deny rule at a higher level overrides your allow.
+
+**Common fixes:**
+- Run `/permissions` to see all active rules and their sources
+- Check for deny rules that match too broadly (e.g., `Bash(*)` denying everything)
+- Ensure your allow rules are in the right settings file — project-level rules don't apply in other projects
+
+**Why it matters:** Permission loops kill flow state. Each approve/deny prompt breaks your concentration, and if the same command keeps prompting, it usually means a deny rule is overriding your allow at a higher cascade level.
+
+**Level:** Beginner
+
+### Context Window Exhaustion Mid-Task
+
+**Symptom:** Claude starts losing track of earlier decisions, searching for files it already read, or producing inconsistent output partway through a task.
+
+**Diagnosis:** Run `/context` to check token usage. If you're above 80%, the context is getting crowded. Run `/cost` to see where tokens are being spent.
+
+**Common fixes:**
+- Run `/compact` with a focus topic: `/compact Focus on the database migration changes`
+- Delegate research to subagents to keep the main context clean
+- Use `@file` mentions instead of pasting file contents into the conversation
+- If you have 10+ MCP servers, unused tool definitions consume tokens on every turn — disable servers you don't need for this task with `--disable-mcp`
+
+**Why it matters:** Context exhaustion degrades gradually — you don't get an error, you get worse output. Claude starts repeating searches, losing track of decisions, and producing inconsistent code. By the time you notice, you've wasted significant tokens and time.
+
+**Level:** Intermediate
+
+### Hook Not Firing
+
+**Symptom:** A hook you configured doesn't seem to execute.
+
+**Diagnosis:** Check the event type and matcher pattern. Hooks only fire for their registered event (`SessionStart`, `PreToolUse`, `PostToolUse`, `Notification`, `PermissionRequest`). The matcher pattern must match the tool name or subtype.
+
+**Common fixes:**
+- Verify the hook is in the right settings file (user vs. project)
+- Check that the script is executable (`chmod +x`)
+- Test the script independently: `echo '{}' | /path/to/hook.sh`
+- Exit code matters: 0 = allow (stdout injected), 2 = block (stderr as feedback), other = allow + log
+- Matcher uses glob patterns, not regex — `Edit|Write` matches either tool name
+
+**Why it matters:** Hooks are the enforcement layer — if they're not firing, your CLAUDE.md rules are running unsupported. A non-firing hook is invisible until the behavior it was supposed to enforce fails silently.
+
+**Level:** Intermediate
+
+---
+
 ## Latest Features (2025-2026)
 
 ### Shared Configs Across Worktrees
@@ -1216,4 +1357,4 @@ List all permission rules and see which settings.json they're sourced from. Debu
 
 ---
 
-← [Back to README](README.md) | [Next: Part 3 — AI Wiki](PART3-AI-WIKI.md)
+← [Back to README](README.md) | [Part 1: Core Architecture](PART1-CORE-ARCHITECTURE.md) | **Part 2: Techniques** | [Part 3: Build a Knowledge Base](PART3-BUILD-A-KNOWLEDGE-BASE.md) | [Part 4: Quick Reference](PART4-QUICK-REFERENCE.md) | [Part 5: Live Examples](PART5-LIVE-EXAMPLES.md)

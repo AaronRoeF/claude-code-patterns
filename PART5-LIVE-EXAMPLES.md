@@ -1,8 +1,8 @@
-← [Back to README](README.md) | [Part 2: Pro-Tips](PART2-PRO-TIPS.md) | [Part 3: AI Wiki](PART3-AI-WIKI.md) | [Part 4: Quick Reference](PART4-QUICK-REFERENCE.md) | **Part 5: Implemented Patterns**
+← [Back to README](README.md) | [Part 1: Core Architecture](PART1-CORE-ARCHITECTURE.md) | [Part 2: Techniques](PART2-TECHNIQUES.md) | [Part 3: Build a Knowledge Base](PART3-BUILD-A-KNOWLEDGE-BASE.md) | [Part 4: Quick Reference](PART4-QUICK-REFERENCE.md) | **Part 5: Live Examples**
 
 ---
 
-# Part 5: Implemented Patterns — Live Examples
+# Part 5: Live Examples
 
 What's actually running in a production setup, as of April 2026. Not aspirational — deployed.
 
@@ -77,3 +77,4 @@ Three scripts in `~/.claude/hooks/`:
 ---
 
 ← [Part 4: Quick Reference](PART4-QUICK-REFERENCE.md) | [Back to README](README.md)
+

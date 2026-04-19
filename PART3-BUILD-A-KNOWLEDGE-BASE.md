@@ -1,8 +1,8 @@
-← [Back to README](README.md) | [Part 2: Pro-Tips](PART2-PRO-TIPS.md) | **Part 3: AI Wiki** | [Part 4: Quick Reference](PART4-QUICK-REFERENCE.md) | [Part 5: Implemented Patterns](PART5-IMPLEMENTED-PATTERNS.md)
+← [Back to README](README.md) | [Part 1: Core Architecture](PART1-CORE-ARCHITECTURE.md) | [Part 2: Techniques](PART2-TECHNIQUES.md) | **Part 3: Build a Knowledge Base** | [Part 4: Quick Reference](PART4-QUICK-REFERENCE.md) | [Part 5: Live Examples](PART5-LIVE-EXAMPLES.md)
 
 ---
 
-# Part 3: The AI Wiki Pattern
+# Part 3: Build a Knowledge Base
 
 Building a persistent, compounding knowledge base that an LLM maintains for you — not just retrieves from.
 
@@ -274,6 +274,8 @@ knowledge-base/
 ├── skills/                     ← Layer 3 target: graduated skill improvements
 └── people/ accounts/ intel/    ← Layer 3 target: graduated knowledge updates
 ```
+
+**See also:** [Part 2: Self-Improving Learning Loop](PART2-TECHNIQUES.md#self-improving-learning-loop-capture--graduate) for operational details — hook implementation, graduation targets by pattern type, post-graduation validation, and the full capture → accumulate → graduate → validate cycle.
 
 **Level:** Advanced
 **Pattern to copy:** Start with capture only. Add a CLAUDE.md rule: "When I say 'TIL: [text]', append an observation to `observations/YYYY-MM-DD.md` with the standard format." Run your first review after 30 observations accumulate. Graduate one pattern into a real artifact. The loop will feel valuable immediately, and it compounds over time.
@@ -612,4 +614,4 @@ Add a CLAUDE.md trigger: "When I say 'vault lint' or 'vault health', run the hea
 
 ---
 
-← [Part 2: Pro-Tips](PART2-PRO-TIPS.md) | [Next: Part 4 — Quick Reference](PART4-QUICK-REFERENCE.md) | [Back to README](README.md)
+← [Part 2: Techniques](PART2-TECHNIQUES.md) | [Next: Part 4 — Quick Reference](PART4-QUICK-REFERENCE.md) | [Back to README](README.md)

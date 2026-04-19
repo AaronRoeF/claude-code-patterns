@@ -1,177 +1,120 @@
 # Claude Code Pattern Library
 
-**153 techniques for getting the most out of Claude Code + VS Code — for power users, business operators, and anyone who wants to 10x their productivity.**
+**Clone this repo. Point Claude at it. Tell it to build you a plan.**
 
-By the community | April 2026 | 153 techniques
+That's the whole idea. This is a field-tested collection of patterns, architecture decisions, and operational techniques for turning Claude Code into something that compounds — where every session makes the next one smarter. 158 techniques, all production-tested, organized so both humans and AI agents can consume them.
 
-> This is a community-maintained collection of real-world patterns, tips, and architectural decisions for Claude Code. Everything here has been tested in production setups. Contributions welcome — see the bottom of this file.
+I built the system this grew out of to run my company. Meeting prep that pulls calendar, email, CRM, and LinkedIn data in 30 seconds. Skills that ghostwrite in my voice. A knowledge base that gets richer every session without me maintaining it. Hooks that enforce discipline I'd otherwise forget. The patterns here are the genericized versions — stripped of anything company-specific, structured so you can replicate them.
+
+> **For AI agents:** This repo is designed to be consumed programmatically. Each part is self-contained with clear headings, structured examples, and implementation details. Point your agent at any part file and it has enough context to build an implementation plan.
 
 ---
 
-## How This Guide Is Organized
+## Get Started in 60 Seconds
 
-| Part | What's Inside | Count |
+```
+git clone https://github.com/AaronRoeF/claude-code-patterns.git
+cd claude-code-patterns
+```
+
+Then open Claude Code and say:
+
+> "Read PART3-BUILD-A-KNOWLEDGE-BASE.md and build me a plan for setting this up with my stack."
+
+Claude reads the patterns, asks what you're working with, and produces a step-by-step implementation plan. That's it.
+
+**Already have a setup?** Point Claude at `PART2-TECHNIQUES.md` for 129 specific tips to sharpen what you've got. Or `PART1-CORE-ARCHITECTURE.md` to compare your architecture against 11 foundational patterns.
+
+---
+
+## The Architecture (How This Actually Works)
+
+The system that produced these patterns runs three layers. You don't need all three to start — but understanding the shape helps you see where the patterns fit.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    CLAUDE.md (Schema)                    │
+│          Identity · Routing · Rules · Guardrails         │
+│                                                         │
+│  "prep Sarah" → loads meeting-prep skill                │
+│  "scan email" → loads email-triage skill                │
+│  "draft a post" → loads voice skill                     │
+└──────────────────────────┬──────────────────────────────┘
+                           │ dispatches to
+          ┌────────────────┼────────────────┐
+          ▼                ▼                ▼
+┌─────────────────┐ ┌──────────────┐ ┌──────────────────┐
+│   WORK SKILLS   │ │   PERSONAL   │ │  KNOWLEDGE BASE  │
+│   (Team repo)   │ │   SKILLS     │ │  (Obsidian vault) │
+│                 │ │  (Private)   │ │                  │
+│ Meeting prep    │ │ Health data  │ │ people/          │
+│ PM workflows    │ │ Task mgmt   │ │ accounts/        │
+│ CRM analytics   │ │ Msg analysis│ │ projects/        │
+│ Content review  │ │ Learning    │ │ observations/    │
+│ Email triage    │ │ Vault ops   │ │ decisions/       │
+└────────┬────────┘ └──────┬──────┘ └────────┬─────────┘
+         │                 │                  │
+         └────────┬────────┘                  │
+                  ▼                           │
+┌─────────────────────────────────────────────┤
+│         MCP SERVERS (Global)                │
+│                                             │
+│  Gmail · Calendar · Slack · Drive           │
+│  Jira · Notion · Playwright · CRM          │
+│  + custom servers for local data            │
+└─────────────────────────────────────────────┤
+                  │                           │
+                  ▼                           │
+┌─────────────────────────────────────────────┘
+│              HOOKS (Enforcement)
+│
+│  SessionStart:  project dashboard, context reload
+│  PreToolUse:    focus gate, safety checks
+│  PostToolUse:   audit log, test sync, learning capture
+│  Notification:  desktop/mobile alerts
+│  Permission:    phone approval via push notification
+└─────────────────────────────────────────────────────┘
+```
+
+**The flywheel:** Skills pull live data from MCP servers → process and produce output → write enriched data to the knowledge base → next session starts with richer context. Meeting prep reads contact files that were updated by the last debrief. Every session compounds.
+
+**Five architectural decisions that make it work:**
+
+1. **Separation of concerns.** Work skills in one repo (distributable to teammates), personal skills in another (private), knowledge base separate from both. Each has its own focused CLAUDE.md.
+
+2. **Progressive disclosure.** CLAUDE.md is the router, not the encyclopedia. Heavy reference data (personas, brand guides, API docs) loads only when a skill fires. Keeps baseline token cost low.
+
+3. **Hooks for enforcement, CLAUDE.md for judgment.** CLAUDE.md rules degrade after `/compact`. Hooks fire mechanically regardless. Use hooks for anything that must never be skipped.
+
+4. **Broad permissions, narrow gates.** Claude can read all email, access Slack, browse the web. Guardrails are in the skills, not the permissions. Draft-then-confirm at the point of consequence.
+
+5. **The knowledge base compounds.** Every skill that touches external data writes enriched data back to the knowledge base. The 10th meeting prep for the same contact is dramatically better than the first.
+
+---
+
+## What's Inside
+
+| Part | What You Get | Count |
 |------|-------------|-------|
-| **[Part 1: What I'm Already Doing Well](#part-1-what-im-already-doing-well)** | Patterns from a real setup worth sharing | 11 |
-| **[Part 2: Pro-Tips by Category](PART2-PRO-TIPS.md)** | 129 researched techniques in 15 categories, each rated Beginner / Intermediate / Advanced | 129 |
-| **[Part 3: The AI Wiki Pattern](PART3-AI-WIKI.md)** | Building a persistent, compounding knowledge base with Claude Code + Obsidian (Karpathy's LLM Wiki, production-grade) | 13 |
-| **[Part 4: Quick Reference](PART4-QUICK-REFERENCE.md)** | Cheat sheets, keyboard shortcuts, slash commands, MCP starter kit | — |
-| **[Part 5: Implemented Patterns](PART5-IMPLEMENTED-PATTERNS.md)** | Live examples: hooks, test suites, and scripts actually running in production | — |
+| **[Part 1: Core Architecture](PART1-CORE-ARCHITECTURE.md)** | Foundational patterns from a live production setup — the decisions that create leverage | 11 |
+| **[Part 2: Techniques](PART2-TECHNIQUES.md)** | Field-tested tips in 16 categories, each rated Beginner / Intermediate / Advanced | 134 |
+| **[Part 3: Build a Knowledge Base](PART3-BUILD-A-KNOWLEDGE-BASE.md)** | Step-by-step guide to building a persistent, compounding AI knowledge base (the Karpathy LLM Wiki pattern, production-grade) | 13 |
+| **[Part 4: Quick Reference](PART4-QUICK-REFERENCE.md)** | Cheat sheets — keyboard shortcuts, slash commands, MCP starter kit, 5-minute setup | — |
+| **[Part 5: Live Examples](PART5-LIVE-EXAMPLES.md)** | Hooks, test suites, and scripts actually running in production right now | — |
+
+**Total: 158 field-tested techniques.** Not aspirational — deployed.
 
 ---
 
-## Two Ways to Use This
+## Who This Is For
 
-**Browse it.** Read on GitHub, scan categories, click through to what interests you.
+**Power users** who've been using Claude Code for weeks and want to go from productive to compounding. You're past "how do I set up CLAUDE.md" and into "how do I build a system that gets smarter every session."
 
-**Feed it to Claude.** Add this repo to your Claude Code context — Claude will reference these patterns when relevant. Point at specific parts for targeted guidance:
-- `PART2-PRO-TIPS.md` for the full technique catalog
-- `PART3-AI-WIKI.md` for building a persistent knowledge base
-- `PART4-QUICK-REFERENCE.md` for cheat sheets and shortcuts
+**Business operators** who use Claude Code for more than coding — meeting prep, email triage, document generation, CRM analytics. The patterns here treat Claude as an operating system, not a code assistant.
 
----
+**Teams** evaluating how to standardize Claude Code across an org. The architecture section shows how one skill set serves multiple users with identity-aware execution.
 
-# Part 1: What I'm Already Doing Well
-
-These are patterns from a live setup that are genuinely worth replicating. Each one represents real operational leverage.
-
-## The "Two OS" Architecture
-
-I run two separate repos, each with their own `CLAUDE.md`:
-- **WorkOS** — work skills shared across the team (meeting workflows, document generation, CRM analytics, content review)
-- **PersonalOS** — personal skills and custom MCP servers (health tracking, productivity tools, private data analysis)
-
-**Why it matters:** Clean separation of concerns. Work context never bleeds into personal tools and vice versa. Each CLAUDE.md stays focused and under the ~300-line sweet spot.
-
-**Pattern to copy:** If you have distinct domains (work vs. personal, or multiple projects), give each its own repo with its own CLAUDE.md rather than cramming everything into one.
-
-## Trigger-Phrase Architecture
-
-Instead of slash commands or memorizing syntax, I use natural language triggers:
-
-| I say... | Claude loads... |
-|----------|----------------|
-| "prep [name]" | meeting-prep skill → pre-brief with calendar, email, and web research |
-| "draft a post" | content skill → drafted output in my voice and format |
-| "PM a [concept]" | product skill → structured artifact (brief, PRD, or spec) |
-| "scan email" | email skill → inbox triage with batch actions |
-| "health sleep" | health skill → biometric analysis from wearable data |
-
-**Why it matters:** Zero friction. I don't think about *tools* — I think about *outcomes*. Claude matches my intent to the right skill using LLM reasoning, not regex.
-
-**Pattern to copy:** Write your skill descriptions as natural phrases people would actually say. "Create a deployment plan for staging or production" beats "Deploy stuff."
-
-## Skills as Markdown Files with Reference Data
-
-Each skill is a directory:
-```
-skills/meeting-prep/
-├── meeting-prep.md    ← the skill (triggers, workflows, guardrails)
-└── ref-tools.md       ← reference material (API docs, tool catalog)
-```
-
-**Why it matters:** The skill file tells Claude *what to do*. The ref file gives it *what it needs to know*. Progressive disclosure — Claude loads ref data only when the skill is triggered, not on every conversation.
-
-**Pattern to copy:** Don't paste your entire API reference into CLAUDE.md. Put it in a ref file and tell Claude where to find it.
-
-## MCP-First Data Gathering
-
-My skills are designed to pull live data from every available source *before* producing output. The meeting-prep skill, for example:
-- Pulls calendar events (Google Calendar MCP)
-- Searches email threads (Gmail MCP)
-- Researches attendees (Playwright MCP → LinkedIn)
-- Pulls meeting transcripts (Granola MCP)
-- Searches Notion for relevant docs
-- Does web research on companies
-
-**Why it matters:** The briefing is always richer than what I could assemble manually. Claude does in 30 seconds what would take me 15-20 minutes.
-
-**Pattern to copy:** When building skills, list every data source Claude should pull from. Be explicit: "Search Gmail for threads with [attendee]. Search Notion for relevant docs. Web search [company] for recent news."
-
-## Global MCP Configuration
-
-All 7+ MCP servers are configured globally in `~/.claude.json`, not per-project. They're available everywhere:
-
-| Server | What It Does |
-|--------|-------------|
-| Google Drive | Drive, Docs, Sheets, Slides, Calendar |
-| Gmail | Read/send email |
-| Jira | Issues, projects, boards, sprints |
-| Slack | Channels, messages, conversations |
-| iMessage | 25 read-only tools for message history |
-| Playwright | Browser automation (LinkedIn, web research) |
-| Granola | Meeting transcripts |
-| Notion | Search, fetch, create/update (built-in connector) |
-
-**Why it matters:** No configuration drift. Every session has the same capabilities. I never think "do I have access to X?" — the answer is always yes.
-
-**Pattern to copy:** Use `claude mcp add` to configure servers globally. Reserve per-project MCP for project-specific servers only.
-
-## Confirmation Gates on Destructive Actions
-
-My skills explicitly do NOT send emails, push Slack messages, or make calendar changes without confirmation. Claude drafts, I confirm.
-
-**Why it matters:** I can let Claude operate with broad access (push to git, read all my email, access Slack) because the guardrails are in the *skills*, not the *permissions*. Trust but verify at the action boundary.
-
-**Pattern to copy:** In your skill files, add explicit rules like: "Draft the Slack message and present it for approval. Do NOT send until the user confirms."
-
-## Pre-Approved Permissions for Speed
-
-My `settings.local.json` pre-approves dozens of commands:
-- Safe git operations (log, status, diff, push to specific repos)
-- npm/node commands for MCP servers
-- Specific MCP tools (Jira search, iMessage read, Notion fetch)
-- WebFetch for specific domains
-
-**Why it matters:** Eliminates the "approve/deny" friction that makes Claude feel slow. Safe commands fly through instantly. Risky commands still prompt me.
-
-**Pattern to copy:** Start with a small allowlist and expand it over time. Pre-approve `git log`, `git status`, `git diff`, and your test runner first.
-
-## Structured Output to Defined Locations
-
-- Analyses → `analyses/<name>.md`
-- Documents → `docs/` or a Notion database
-- Meeting outputs → team channels (after confirmation)
-
-**Why it matters:** I always know where to find things. No ad hoc files scattered everywhere.
-
-**Pattern to copy:** Define output locations in your skill files. "Save the analysis to `analyses/<name>.md`" ensures consistency.
-
-## Environment-Aware Skills
-
-Every skill documents what's available in Claude Code vs. Claude AI:
-```
-Claude Code: Google Drive MCP, Gmail MCP, Jira MCP, Slack MCP, Playwright...
-Claude AI: Google Calendar (built-in), Email (built-in), Web search...
-```
-
-**Why it matters:** The same skills work in both environments. Claude gracefully degrades when a tool isn't available, following inline fallbacks.
-
-**Pattern to copy:** If your skills need to work across environments, document what's available where and add fallback instructions.
-
-## User Identity System
-
-WorkOS detects who's using it (via `git config user.name`) and adapts:
-- If the owner → apply personal voice and default preferences
-- If a team member → use standard professional tone, with option to invoke the owner's voice for content written on their behalf
-
-**Why it matters:** One skill set serves the entire team. No per-user configuration needed.
-
-**Pattern to copy:** If multiple people share your CLAUDE.md, add identity detection. "Check `git config user.name` to determine the current user."
-
-## Hook-Driven Self-Maintenance
-
-The most durable environments don't need manual upkeep — the hooks keep them in sync. Three hooks run silently on every file edit:
-
-- **`claude-context-updater.sh`** — when a skill, hook script, or MCP source file is modified, appends a timestamped note to `MEMORY.md` so the next session knows what changed
-- **`test-suite-updater.sh`** — when a new skill or MCP source file is created, automatically inserts the corresponding `assert_file_exists` assertion into `run-tests.sh`, keeping test coverage current without manual edits
-- **`remote-approver.sh`** — on any `PermissionRequest`, sends a push notification to phone via ntfy.sh with Approve/Deny action buttons; falls back to local prompt after 90 seconds
-
-The result: add a new skill file → tests automatically cover it. Edit a hook → MEMORY.md logs it. Start a long autonomous task → approve permissions from your phone.
-
-**Why it matters:** Maintenance work that requires developer attention compounds over time. Hooks that maintain the environment autonomously pay back immediately and permanently.
-
-**Pattern to copy:** Think about what goes stale in your setup (tests, docs, logs) and write PostToolUse hooks that update them. Start with file existence tests — they're simple to auto-generate and prevent silent gaps.
+**AI agents** consuming this repo as reference material. Every part file is self-contained with enough context to generate implementation plans.
 
 ---
 
@@ -180,7 +123,7 @@ The result: add a new skill file → tests automatically cover it. Edit a hook �
 For full attribution, see [SOURCES.md](SOURCES.md).
 
 - [Andrej Karpathy — LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — the pattern that inspired Part 3
-- [Adventures in Claude](https://adventuresinclaude.ai/) — 35 posts on Claude Code workflows, learning loops, security patterns, and workflow state machines
+- [Adventures in Claude](https://adventuresinclaude.ai/) — 35 posts on Claude Code workflows and operational patterns
 - [Claude Code Official Docs](https://code.claude.com/docs/en/best-practices)
 - [Builder.io — How to Write a Good CLAUDE.md](https://www.builder.io/blog/claude-md-guide)
 - [HumanLayer — Writing a Good CLAUDE.md](https://www.humanlayer.dev/blog/writing-a-good-claude-md)
@@ -191,13 +134,13 @@ For full attribution, see [SOURCES.md](SOURCES.md).
 - [ykdojo/claude-code-tips](https://github.com/ykdojo/claude-code-tips)
 - [DataCamp — Claude Code Hooks Tutorial](https://www.datacamp.com/tutorial/claude-code-hooks)
 - [Claude Cowork](https://claude.com/product/cowork)
-- [MCP Specification — Tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools.md) — official tool definition requirements, error handling, naming rules
+- [MCP Specification — Tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools.md)
 
 ---
 
 ## Contributing
 
-This pattern library is a living document. If you've discovered a technique that makes Claude Code significantly more effective, we'd love to include it.
+This pattern library is a living document. If you've discovered a technique that makes Claude Code significantly more effective, we want it.
 
 **How to contribute:**
 
