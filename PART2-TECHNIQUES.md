@@ -108,7 +108,9 @@
 | [Project Plans in Your Knowledge Base, Not Hidden Dirs](#project-plans-in-your-knowledge-base-not-hidden-dirs) | Memory & Persistence |
 | [Persist Workflow State to Disk](#persist-workflow-state-to-disk) | Memory & Persistence |
 | [Symlink MEMORY.md Across Worktrees](#symlink-memorymd-across-worktrees) | Memory & Persistence |
+| [Sync ~/.claude/ Subpaths Across Machines via Cloud-Backed Symlinks](#sync-claude-subpaths-across-machines-via-cloud-backed-symlinks) | Memory & Persistence |
 | [Self-Improving Learning Loop (Capture → Graduate)](#self-improving-learning-loop-capture--graduate) | Memory & Persistence |
+| [Memory Consolidation Pass (Capture → Consolidate → Graduate)](#memory-consolidation-pass-capture--consolidate--graduate) | Memory & Persistence |
 | [Cross-Skill Gotchas Registry](#cross-skill-gotchas-registry) | Memory & Persistence |
 | [Cross-Linked Navigation Harness for Multi-File Docs](#cross-linked-navigation-harness-for-multi-file-docs) | Memory & Persistence |
 | [Project Pulse Files for Completion Tracking](#project-pulse-files-for-completion-tracking) | Memory & Persistence |
@@ -919,6 +921,57 @@ When running parallel Claude sessions in git worktrees, symlink MEMORY.md so eve
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Supermemory Evaluation](https://adventuresinclaude.ai/posts/2026-02-17-supermemory-evaluation/)
 
+### Sync ~/.claude/ Subpaths Across Machines via Cloud-Backed Symlinks
+
+If you use Claude Code on more than one machine, the parts of `~/.claude/` that hold learned state (auto-memory, cross-skill gotchas, your global CLAUDE.md) diverge silently. Each machine builds its own picture; consolidation passes (see *Memory Consolidation Pass*) see only the local fragment. Fix by symlinking the *shared* subpaths into a cloud-synced or git-synced directory you control, leaving the rest of `~/.claude/` per-machine.
+
+**Shared (symlink these):**
+
+| Source in `~/.claude/` | Why share |
+|---|---|
+| `~/.claude/projects/<hash>/memory/` | Auto-memory store — learned facts about the user/project |
+| `~/.claude/skill-gotchas.md` | Cross-skill gotchas registry |
+| `~/.claude/CLAUDE.md` | Your global private CLAUDE.md |
+| `~/.claude/commands/*.md` (optional) | Slash commands you want machine-global |
+
+**Per-machine (do NOT share):** `settings.local.json`, `hooks/*`, plugin caches, session transcripts, OAuth tokens, any project memory dir that isn't a working directory you share across machines.
+
+**Bootstrap script (idempotent, safe-renames originals — no deletion):**
+
+```bash
+set -e
+SHARED_DIR="$HOME/your-shared-repo/_claude_local"   # this dir lives in iCloud / Dropbox / private git
+CC_PROJECT_HASH="<the hash dir Claude Code generates for your shared working dir>"
+TAG="before-sync-$(date +%Y-%m-%d)"
+
+# memory dir
+if [ ! -L "$HOME/.claude/projects/$CC_PROJECT_HASH/memory" ]; then
+  mv "$HOME/.claude/projects/$CC_PROJECT_HASH/memory" \
+     "$HOME/.claude/projects/$CC_PROJECT_HASH/memory.$TAG" 2>/dev/null || true
+  ln -s "$SHARED_DIR/memory" "$HOME/.claude/projects/$CC_PROJECT_HASH/memory"
+fi
+
+# skill-gotchas + global CLAUDE.md
+for f in skill-gotchas.md CLAUDE.md; do
+  if [ ! -L "$HOME/.claude/$f" ]; then
+    mv "$HOME/.claude/$f" "$HOME/.claude/$f.$TAG" 2>/dev/null || true
+    ln -s "$SHARED_DIR/$f" "$HOME/.claude/$f"
+  fi
+done
+```
+
+Run once on each machine after the shared directory is populated. Skips if already symlinked (idempotent). Originals are renamed `*.before-sync-YYYY-MM-DD` — keep them as a rollback safety net for a week before deleting.
+
+**Caveats:**
+
+- **Concurrent writes.** Cloud-sync backends (iCloud, Dropbox) use last-writer-wins with conflict copies. If both machines run Claude Code simultaneously and both write to memory, you'll see suffixed conflict files. Avoid concurrent sessions or stagger work.
+- **Sync backend + git.** If the shared directory is *also* a git repo (auto-memory commits build up over time), occasional contention between the sync backend's filesystem watcher and `.git/objects` locks can appear. Wait a minute and retry.
+- **The hash directory.** Claude Code generates a per-working-directory hash under `~/.claude/projects/`. The same shared working directory produces the *same* hash on both machines — that's the directory whose `memory/` you symlink. Other working directories have their own hashes and stay per-machine. If you don't know the hash, open Claude Code once in the shared working dir; the hash dir will be created.
+
+**Why it matters:** Without shared state, each machine's auto-memory, gotchas registry, and global rules drift independently — and any consolidation pass that reads memory sees only half the corpus on whichever machine you run it from.
+
+**Level:** Intermediate
+
 ### Self-Improving Learning Loop (Capture → Graduate)
 
 Auto memory captures individual learnings, but it can't spot *patterns across sessions*. Build a two-phase learning loop:
@@ -964,6 +1017,89 @@ The script should:
 
 **Level:** Advanced
 **Source:** [Adventures in Claude](https://adventuresinclaude.ai/posts/one-hundred-forty-observations-and-a-dog-name/)
+
+### Memory Consolidation Pass (Capture → Consolidate → Graduate)
+
+Capture and Graduate alone leave a cadence gap: capture happens daily, manual graduation review happens every few weeks, and useful patterns sit unpromoted in observation files for weeks while the next sessions keep tripping on rules nobody surfaced yet. Add a third process — a **scheduled consolidation pass** that reads the whole memory corpus at once, surfaces cross-source patterns, and proposes promotions. Anthropic shipped this pattern for Claude Managed Agents in May 2026 under the name "dreaming"; the same shape works locally for any stack with persistent memory.
+
+**Signs you need this:** (1) Your daily capture file has "graduation candidate" flags that haven't been promoted in 7+ days. (2) You can name patterns you've noticed multiple times but haven't written down as rules. (3) Different projects show the same blocker shape and you only see it when you happen to look at both PULSE files in one sitting.
+
+**Three things make it different from in-session reasoning:**
+
+| | Reflex (in-session) | Consolidation (scheduled) |
+|---|---|---|
+| **Posture** | Apply rules, catch drift now | Patient, global, no single goal |
+| **Cadence** | Every session | Weekly / on-demand |
+| **Reading** | One file at a time | Whole corpus as one thing |
+
+**What it reads (one canonical set):**
+
+- The capture corpus (daily observation files within a window — 14 days is a good default)
+- The persistent memory store (typed `feedback_*.md` / `user_*.md` / `project_*.md` files)
+- The graduation review log (for collision-checking — see below)
+- Cross-cutting state files (project trackers / `PULSE.md` files, decision logs, skill gotchas)
+- NOT raw session transcripts in v1 — distilled artifacts only. Transcripts are the highest-priority v2 addition.
+
+**What it produces:** one dated report with three sections that earn their place — patterns surfaced (with frequency + exemplar quotes), curation proposals for the memory store (merges, archives, retires), and cross-source patterns visible across project trackers. Every proposed change has an `[ ] approve` checkbox. A separate apply command reads the checked items and makes the edits.
+
+**Three design choices that matter more than they look:**
+
+1. **Cap the proposals.** Without a cap, consolidation over-produces — your first run will find more than seven things worth promoting, and the wall of proposals defeats human approval. Hard caps (e.g., 7 graduations + 7 memory curation items + 3 cross-source patterns per pass) force ranking and push deferred items into a watch list where they age.
+2. **Collide-check against the graduation log.** The most embarrassing failure is re-proposing a rule already promoted. Before surfacing each candidate, grep the graduation log; mark collisions `[ALREADY GRADUATED]` and skip. Without this guard, the first run will re-propose rules already in force.
+3. **Sample if oversized.** Token budget for a single consolidation pass is bounded. If the corpus exceeds it, sample the most recent half and note the truncation in metadata. Do not silently truncate — the failure mode of "consolidation quietly stopped working at scale" is the worst kind of decay in a system whose value compounds with the corpus.
+
+**Skeleton consolidation report (lift this structure):**
+
+```markdown
+---
+type: dream-report
+date: YYYY-MM-DD
+window: <human-readable>
+inputs: { observations: N, memory_files: N, pulse_files: N }
+truncated: false
+---
+
+# Consolidation — YYYY-MM-DD
+
+## tl;dr — Top 3 by impact
+1. <rule | finding | recommendation> → <target | action>
+2. ...
+3. ...
+
+## Patterns surfaced
+### Pattern 1 — <theme>  [GRADUATION_CANDIDATE | WATCH | INSIGHT]
+- Frequency: N occurrences across M days
+- Exemplars: "<quote>" — obs/YYYY-MM-DD.md
+- Note: <one-sentence interpretation>
+
+## Graduation proposals (capped at 7)
+### Graduation 1 — <one-line rule>
+Rule: <full rule text as it should appear in the target file>
+Target: <CLAUDE.md section | memory/file.md | skill file>
+Suggested edit: <diff block>
+[ ] approve  [ ] reject  [ ] defer
+
+## Memory curation proposals (capped at 7)
+### Memory 1 — Merge near-duplicates
+Files: <a.md + b.md>  Keeper: <a.md>
+[ ] approve  [ ] reject
+
+## Cross-source patterns (capped at 3)
+### Cross-source 1 — <theme>
+Sources: <which project trackers / memory files>
+Signal: <one-line interpretation>
+
+## Watch list growth
+<patterns with only 2 occurrences — aged here for next pass>
+```
+
+**Auto-apply vs human-gated:** auto-apply only safe housekeeping (byte-identical duplicates, archived to a folder you can restore from — never deleted). Everything else proposes; the human ticks `[x] approve`; a separate apply command makes the edits.
+
+**Why it matters:** Capture-to-promotion cadence gap means useful patterns sit unpromoted in daily files for weeks, and cross-source patterns (the same blocker across multiple projects, a memory rule contradicting itself) are invisible to any single-session view.
+
+**Level:** Advanced
+**Source:** [Anthropic Managed Agents — Dreaming announcement](https://www.anthropic.com/news) (May 2026); local implementation: [Exo column — "The Half of Dreaming We Were Missing"](https://aaronfulkerson.com/)
+**Pattern to copy:** Build one slash command (e.g., `/dream`, `/consolidate`) that reads the corpus, writes a report following the skeleton above, and a sibling `/apply` command that processes the checkboxes. Run it weekly. Cap, collide-check, and sample-if-oversized are required from day one — they get harder to add later.
 
 ### Cross-Skill Gotchas Registry
 Create a single `~/.claude/skill-gotchas.md` aggregating gotchas from all skills, organized by category (MCP/Auth, Data Sources, Output/Formatting, Process/Workflow) rather than by skill. Add a CLAUDE.md rule to read it at session start for skill-adjacent tasks. Common gotchas (token expiry, pagination limits, output format drift) stay in context even when the specific skill isn't invoked. Also: mark observations older than 30 days as `[STALE]` if they haven't clustered — and track graduation-to-observation ratio (healthy: 15-25%).
