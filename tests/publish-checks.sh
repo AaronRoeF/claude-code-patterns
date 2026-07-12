@@ -24,6 +24,9 @@ privacy_details=()
 quality_details=()
 structure_details=()
 
+# Helper: file view with fenced code blanked out (line numbers preserved)
+fence_blanked() { awk '/^```/{c=!c; print ""; next} {print (c ? "" : $0)}' "$1"; }
+
 # ═══════════════════════════════════════════
 # SECURITY CHECKS
 # ═══════════════════════════════════════════
@@ -61,7 +64,7 @@ done < <(scan_grep -rn -E '(\.env\b|credentials\.json|\.pem\b|\.key\b)' --includ
 # ═══════════════════════════════════════════
 
 # Allowlist patterns (kept as extended regex)
-ALLOWLIST='(opaque codes|Sarah Chen|James Park|Acme Corp)'
+ALLOWLIST='(opaque codes|Sarah Chen|James Park|Acme Corp)|OPAQUE.s brand design system'
 
 # Internal names
 while IFS= read -r line; do
@@ -128,28 +131,28 @@ fi
 for file in PART2-TECHNIQUES.md; do
     [[ -f "$file" ]] || continue
     while IFS=: read -r lineno heading; do
-        next_heading=$(awk "NR>$lineno && /^### /{print NR; exit}" "$file")
+        next_heading=$(fence_blanked "$file" | awk -v L="$lineno" 'NR>L && /^### / && !found{print NR; found=1}')
         end_line=${next_heading:-$(wc -l < "$file")}
         has_why=$(sed -n "$((lineno+1)),$((end_line))p" "$file" | grep -c '\*\*Why it matters' || true)
         if [[ "$has_why" -eq 0 ]]; then
             quality_details+=("Tip in $file:$lineno missing 'Why it matters' line: $heading")
             ((quality_issues++))
         fi
-    done < <(grep -n '^### ' "$file" 2>/dev/null || true)
+    done < <(fence_blanked "$file" | grep -n '^### ' 2>/dev/null || true)
 done
 
 # Check every PART2 tip has **Level:** (PART2 uses Level consistently)
 for file in PART2-TECHNIQUES.md; do
     [[ -f "$file" ]] || continue
     while IFS=: read -r lineno heading; do
-        next_heading=$(awk "NR>$lineno && /^### /{print NR; exit}" "$file")
+        next_heading=$(fence_blanked "$file" | awk -v L="$lineno" 'NR>L && /^### / && !found{print NR; found=1}')
         end_line=${next_heading:-$(wc -l < "$file")}
         has_level=$(sed -n "$((lineno+1)),$((end_line))p" "$file" | grep -c '\*\*Level:\*\*' || true)
         if [[ "$has_level" -eq 0 ]]; then
             quality_details+=("Tip in $file:$lineno missing \"Level\" line: $heading")
             ((quality_issues++))
         fi
-    done < <(grep -n '^### ' "$file" 2>/dev/null || true)
+    done < <(fence_blanked "$file" | grep -n '^### ' 2>/dev/null || true)
 done
 
 # Check every ### tip in PART3 has **Pattern to copy:**
@@ -243,6 +246,23 @@ for file in README.md PART*.md SOURCES.md CLAUDE.md; do
         fi
     done < <(awk '/^```/{c=!c;next} !c{print}' "$file" 2>/dev/null | grep -oE '\]\([A-Z0-9a-z_-]+\.md[^)]*\)' | sed 's/\](//;s/)//' || true)
 done
+
+
+# Technique-count consistency (added 2026-07-12 — counts drifted to 153/158/134 while
+# actual was 160/136; a claimed number nobody verifies is a number that lies)
+p1=$(awk '/^```/{c=!c;next} !c && /^## /{n++} END{print n+0}' PART1-CORE-ARCHITECTURE.md)
+p2=$(awk '/^```/{c=!c;next} !c && /^### /{n++} END{print n+0}' PART2-TECHNIQUES.md)
+p3=$(awk '/^```/{c=!c;next} !c && /^### /{n++} END{print n+0}' PART3-BUILD-A-KNOWLEDGE-BASE.md)
+total=$((p1+p2+p3))
+claim_check() {
+    grep -qE "$2" "$1" || { structure_details+=("Count-claim drift in $1: no line matches /$2/ (actual: p1=$p1 p2=$p2 p3=$p3 total=$total)"); ((structure_issues++)); }
+}
+claim_check README.md "Total: $total field-tested techniques"
+claim_check README.md "$total techniques, all production-tested"
+claim_check README.md "\[Part 2: Techniques\].*\| $p2 \|"
+claim_check CLAUDE.md "^$total field-tested techniques"
+claim_check CLAUDE.md "Part 2: $p2 techniques"
+claim_check PART2-TECHNIQUES.md "^$p2 field-tested techniques"
 
 # Verify nav bars at top and bottom of PART*.md files
 for file in PART*.md; do

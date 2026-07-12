@@ -4,7 +4,7 @@
 
 # Part 5: Live Examples
 
-What's actually running in a production setup, as of April 2026. Not aspirational — deployed.
+What's actually running in a production setup, as of April 2026 — content refresh ships with the next release. Not aspirational — deployed.
 
 ## Hooks (`~/.claude/settings.json`)
 

@@ -2,7 +2,7 @@
 
 **Clone this repo. Point Claude at it. Tell it to build you a plan.**
 
-That's the whole idea. This is a field-tested collection of patterns, architecture decisions, and operational techniques for turning Claude Code into something that compounds — where every session makes the next one smarter. 158 techniques, all production-tested, organized so both humans and AI agents can consume them.
+That's the whole idea. This is a field-tested collection of patterns, architecture decisions, and operational techniques for turning Claude Code into something that compounds — where every session makes the next one smarter. 161 techniques, all production-tested, organized so both humans and AI agents can consume them.
 
 I built the system this grew out of to run my company. Meeting prep that pulls calendar, email, CRM, and LinkedIn data in 30 seconds. Skills that ghostwrite in my voice. A knowledge base that gets richer every session without me maintaining it. Hooks that enforce discipline I'd otherwise forget. The patterns here are the genericized versions — stripped of anything company-specific, structured so you can replicate them.
 
@@ -97,12 +97,12 @@ The system that produced these patterns runs three layers. You don't need all th
 | Part | What You Get | Count |
 |------|-------------|-------|
 | **[Part 1: Core Architecture](PART1-CORE-ARCHITECTURE.md)** | Foundational patterns from a live production setup — the decisions that create leverage | 11 |
-| **[Part 2: Techniques](PART2-TECHNIQUES.md)** | Field-tested tips in 16 categories, each rated Beginner / Intermediate / Advanced | 134 |
+| **[Part 2: Techniques](PART2-TECHNIQUES.md)** | Field-tested tips in 16 categories, each rated Beginner / Intermediate / Advanced | 137 |
 | **[Part 3: Build a Knowledge Base](PART3-BUILD-A-KNOWLEDGE-BASE.md)** | Step-by-step guide to building a persistent, compounding AI knowledge base (the Karpathy LLM Wiki pattern, production-grade) | 13 |
 | **[Part 4: Quick Reference](PART4-QUICK-REFERENCE.md)** | Cheat sheets — keyboard shortcuts, slash commands, MCP starter kit, 5-minute setup | — |
 | **[Part 5: Live Examples](PART5-LIVE-EXAMPLES.md)** | Hooks, test suites, and scripts actually running in production right now | — |
 
-**Total: 158 field-tested techniques.** Not aspirational — deployed.
+**Total: 161 field-tested techniques.** Not aspirational — deployed.
 
 ---
 

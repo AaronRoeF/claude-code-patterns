@@ -4,7 +4,7 @@
 
 # Part 2: Techniques
 
-134 field-tested techniques organized into 16 categories. Each rated:
+137 field-tested techniques organized into 16 categories. Each rated:
 - **Beginner** — anyone can do this today
 - **Intermediate** — requires some setup or familiarity
 - **Advanced** — power-user territory
@@ -128,6 +128,7 @@
 | [Content Creation Pipelines](#content-creation-pipelines) | Business Workflows |
 | [Multi-Tool Research](#multi-tool-research) | Business Workflows |
 | [Capture Edit Diffs for Voice Learning](#capture-edit-diffs-for-voice-learning) | Business Workflows |
+| [Standalone HTML as the Deliverable (the Fungible Artifact)](#standalone-html-as-the-deliverable-the-fungible-artifact) | Business Workflows |
 | [The opusplan Model Alias](#the-opusplan-model-alias) | Cost Optimization |
 | [Haiku for Quick Tasks](#haiku-for-quick-tasks) | Cost Optimization |
 | [Refresh After Major Milestones](#refresh-after-major-milestones) | Cost Optimization |
@@ -1098,7 +1099,7 @@ Signal: <one-line interpretation>
 **Why it matters:** Capture-to-promotion cadence gap means useful patterns sit unpromoted in daily files for weeks, and cross-source patterns (the same blocker across multiple projects, a memory rule contradicting itself) are invisible to any single-session view.
 
 **Level:** Advanced
-**Source:** [Anthropic Managed Agents — Dreaming announcement](https://www.anthropic.com/news) (May 2026); local implementation: [Exo column — "The Half of Dreaming We Were Missing"](https://aaronfulkerson.com/)
+**Source:** field report: [The Half of Dreaming We Were Missing](https://aaronfulkerson.com/2026/05/13/what-the-dream-found/) (May 2026); survival doctrine from a real 31-day outage: [exo hardening doctrine](https://github.com/AaronRoeF/exo/blob/main/docs/hardening-doctrine.md)
 **Pattern to copy:** Build one slash command (e.g., `/dream`, `/consolidate`) that reads the corpus, writes a report following the skeleton above, and a sibling `/apply` command that processes the checkboxes. Run it weekly. Cap, collide-check, and sample-if-oversized are required from day one — they get harder to add later.
 
 ### Cross-Skill Gotchas Registry
@@ -1281,6 +1282,23 @@ At publish time, automatically diff Claude's draft against the human's final edi
 **Source:** [Adventures in Claude — Voice Learning via Edit Diffs](https://adventuresinclaude.ai/posts/2026-02-17-dev-diary/)
 
 ---
+
+### Standalone HTML as the Deliverable (the Fungible Artifact)
+
+**WIIFM:** Your reports, plans, and trackers become single files that open perfectly for anyone — your exec team, your phone, another AI agent — with no portal, no permissions, and no formatting roulette.
+
+For anything a human will *read* — a research report, a project plan, a decision brief, a tracker — ask Claude for **one self-contained `.html` file** instead of markdown. Self-contained means everything (styling, any interactivity) lives inside the one file: no internet needed, nothing external to break. The browser is the one runtime everyone already has: the file mails, Slacks, and opens on a phone with perfect formatting, needs no portal or permissions, and — because HTML is still plain text — any agent can re-ingest and edit it later. It's a *fungible* artifact: the same single file moves between human readers, review passes, and Claude sessions without conversion.
+
+The trick that turns format into workflow is **the markup loop**: reviewers drop comments directly into the file — visible callout spans, or invisible `<!-- [reviewer] change this -->` comments — then hand the file back to Claude: *"process every comment, apply the edits, strip the markup."* One artifact carries the draft, the review, and the revision.
+
+**Prompt to copy:** "Produce this as ONE self-contained HTML file — all CSS and JS inline, no external requests, no CDN fonts — styled for reading (max-width column, print-friendly). Include an inline comment convention I can use for review markup."
+
+Field-tested twice over: a ~40-page internal research report shipped company-wide as a single HTML file — no wiki, no access requests, renders identically everywhere; review rounds ran through the comment loop. And OPAQUE's brand design system ships the same way — one standalone HTML file that designers read as the styleguide and agents ingest to apply the brand mechanically. One artifact, both audiences, zero drift between "the doc" and "the spec." Markdown stays for repo docs; HTML is for deliverables.
+
+**Why it matters:** Distribution beats format purity. A deliverable that renders perfectly for a non-technical reader *and* stays machine-editable ends the export-to-PDF / paste-into-docs / lose-the-source cycle — one file is the source, the deliverable, and the review surface.
+
+**Level:** Beginner
+**Source:** Thariq Shihipar (Anthropic, Claude Code) — ["HTML is the new markdown"](https://x.com/trq212/status/2052809885763747935) ([long-form in Lenny's Newsletter](https://www.lennysnewsletter.com/p/html-is-the-new-markdown-how-anthropic)). Credited by this repo's author as the inspiration for the practice.
 
 ## Cost Optimization
 
