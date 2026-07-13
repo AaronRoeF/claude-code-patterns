@@ -53,15 +53,15 @@ The system that produced these patterns runs three layers. You don't need all th
 │  Content review  │ │  Learning        │ │  observations/   │
 │  Email triage    │ │  Vault ops       │ │  decisions/      │
 └────────┬─────────┘ └────────┬─────────┘ └────────┬─────────┘
-         └──────────┬─────────┘                   │
-                    ▼                          │
-┌─────────────────────────────────────────┐
-│           MCP SERVERS (global)          │◄─────┐
+         └──────────┬─────────┘                    │
+                    ▼                              │
+┌─────────────────────────────────────────┐        │
+│           MCP SERVERS (global)          │◄───────┘
 │                                         │
 │  Gmail · Calendar · Slack · Drive       │
 │  Jira · Notion · Playwright · CRM       │
 │  + custom servers for local data        │
-└───────────────────┬─────────────────────┘      │
+└───────────────────┬─────────────────────┘
                     ▼
 ┌──────────────────────────────────────────────────────────┐
 │                   HOOKS (Enforcement)                    │
