@@ -23,7 +23,7 @@ Then open Claude Code and say:
 
 Claude reads the patterns, asks what you're working with, and produces a step-by-step implementation plan. That's it.
 
-**Already have a setup?** Point Claude at `PART2-TECHNIQUES.md` for 129 specific tips to sharpen what you've got. Or `PART1-CORE-ARCHITECTURE.md` to compare your architecture against 11 foundational patterns.
+**Already have a setup?** Point Claude at `PART2-TECHNIQUES.md` for 137 specific tips to sharpen what you've got. Or `PART1-CORE-ARCHITECTURE.md` to compare your architecture against 11 foundational patterns.
 
 ---
 

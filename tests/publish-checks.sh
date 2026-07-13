@@ -258,6 +258,7 @@ claim_check() {
     grep -qE "$2" "$1" || { structure_details+=("Count-claim drift in $1: no line matches /$2/ (actual: p1=$p1 p2=$p2 p3=$p3 total=$total)"); ((structure_issues++)); }
 }
 claim_check README.md "Total: $total field-tested techniques"
+claim_check README.md "$p2 specific tips"
 claim_check README.md "$total techniques, all production-tested"
 claim_check README.md "\[Part 2: Techniques\].*\| $p2 \|"
 claim_check CLAUDE.md "^$total field-tested techniques"

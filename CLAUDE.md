@@ -17,3 +17,4 @@ This repo is designed to be consumed programmatically. To build an implementatio
 2. Read Part 3 (BUILD-A-KNOWLEDGE-BASE) for the step-by-step builder table
 3. Read Part 2 (TECHNIQUES) for specific tips relevant to the user's stack
 4. Produce a sequenced implementation plan with dependencies
+5. Create a PULSE.md tracker for the adoption project itself (see "Project Pulse Files for Completion Tracking" in Part 2) and update it every session, so each future session resumes exactly where this one stopped
