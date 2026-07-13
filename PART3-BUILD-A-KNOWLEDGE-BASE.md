@@ -4,6 +4,8 @@
 
 # Part 3: Build a Knowledge Base
 
+**What's in it for you:** a memory that works while you sleep — your people, projects, and decisions maintained by your AI, so you stop re-explaining your world every Monday. For product leaders and operators, this is the single highest-leverage part of the library.
+
 Building a persistent, compounding knowledge base that an LLM maintains for you — not just retrieves from.
 
 Andrej Karpathy [codified this pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) as the "LLM Wiki" — three layers (raw sources, wiki, schema) where the LLM incrementally builds and maintains a structured knowledge base rather than rediscovering knowledge from scratch on every query. Brad Feld's [Adventures in Claude](https://adventuresinclaude.ai/) demonstrated what's possible when you push Claude Code beyond coding into full operational workflows.

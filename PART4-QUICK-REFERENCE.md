@@ -4,6 +4,8 @@
 
 # Part 4: Quick Reference
 
+**What's in it for you:** the whole library at a glance — print it, pin it, or hand it to your agent as a checklist.
+
 ## Essential Keyboard Shortcuts (VS Code)
 
 | Shortcut | Action |

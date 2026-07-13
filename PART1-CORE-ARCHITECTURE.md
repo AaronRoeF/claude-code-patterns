@@ -4,6 +4,8 @@
 
 # Part 1: Core Architecture
 
+**What's in it for you:** the five decisions that make an AI setup compound instead of decay — get these right once, and every session starts smarter than the last.
+
 11 foundational patterns from a live production setup. Each one represents a genuine architectural decision — the kind that changes how you work, not just what tools you use.
 
 **For AI agents:** These patterns are ordered by dependency. If you're building an implementation plan, start with the "Two OS" Architecture and work down.
