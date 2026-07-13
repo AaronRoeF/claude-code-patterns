@@ -32,48 +32,46 @@ Claude reads the patterns, asks what you're working with, and produces a step-by
 The system that produced these patterns runs three layers. You don't need all three to start — but understanding the shape helps you see where the patterns fit.
 
 ```
-┌─────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────┐
 │                    CLAUDE.md (Schema)                    │
-│          Identity · Routing · Rules · Guardrails         │
-│                                                         │
-│  "prep Sarah" → loads meeting-prep skill                │
-│  "scan email" → loads email-triage skill                │
-│  "draft a post" → loads voice skill                     │
-└──────────────────────────┬──────────────────────────────┘
-                           │ dispatches to
-          ┌────────────────┼────────────────┐
-          ▼                ▼                ▼
-┌─────────────────┐ ┌──────────────┐ ┌──────────────────┐
-│   WORK SKILLS   │ │   PERSONAL   │ │  KNOWLEDGE BASE  │
-│   (Team repo)   │ │   SKILLS     │ │  (Obsidian vault) │
-│                 │ │  (Private)   │ │                  │
-│ Meeting prep    │ │ Health data  │ │ people/          │
-│ PM workflows    │ │ Task mgmt   │ │ accounts/        │
-│ CRM analytics   │ │ Msg analysis│ │ projects/        │
-│ Content review  │ │ Learning    │ │ observations/    │
-│ Email triage    │ │ Vault ops   │ │ decisions/       │
-└────────┬────────┘ └──────┬──────┘ └────────┬─────────┘
-         │                 │                  │
-         └────────┬────────┘                  │
-                  ▼                           │
-┌─────────────────────────────────────────────┤
-│         MCP SERVERS (Global)                │
-│                                             │
-│  Gmail · Calendar · Slack · Drive           │
-│  Jira · Notion · Playwright · CRM          │
-│  + custom servers for local data            │
-└─────────────────────────────────────────────┤
-                  │                           │
-                  ▼                           │
-┌─────────────────────────────────────────────┘
-│              HOOKS (Enforcement)
-│
-│  SessionStart:  project dashboard, context reload
-│  PreToolUse:    focus gate, safety checks
-│  PostToolUse:   audit log, test sync, learning capture
-│  Notification:  desktop/mobile alerts
-│  Permission:    phone approval via push notification
-└─────────────────────────────────────────────────────┘
+│         Identity · Routing · Rules · Guardrails          │
+│                                                          │
+│  "prep Sarah"    → loads meeting-prep skill              │
+│  "scan email"    → loads email-triage skill              │
+│  "draft a post"  → loads voice skill                     │
+└────────────────────────────┬─────────────────────────────┘
+                            │ dispatches to
+            ┌───────────────┴────────────────┐
+            ▼                ▼                 ▼
+┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐
+│   WORK SKILLS    │ │ PERSONAL SKILLS  │ │  KNOWLEDGE BASE  │
+│   (team repo)    │ │    (private)     │ │ (Obsidian vault) │
+│                  │ │                  │ │                  │
+│  Meeting prep    │ │  Health data     │ │  people/         │
+│  PM workflows    │ │  Task mgmt       │ │  accounts/       │
+│  CRM analytics   │ │  Msg analysis    │ │  projects/       │
+│  Content review  │ │  Learning        │ │  observations/   │
+│  Email triage    │ │  Vault ops       │ │  decisions/      │
+└────────┬─────────┘ └────────┬─────────┘ └────────┬─────────┘
+         └──────────┬─────────┘                   │
+                    ▼                          │
+┌─────────────────────────────────────────┐
+│           MCP SERVERS (global)          │◄─────┐
+│                                         │
+│  Gmail · Calendar · Slack · Drive       │
+│  Jira · Notion · Playwright · CRM       │
+│  + custom servers for local data        │
+└───────────────────┬─────────────────────┘      │
+                    ▼
+┌──────────────────────────────────────────────────────────┐
+│                   HOOKS (Enforcement)                    │
+│                                                          │
+│  SessionStart:  project dashboard, context reload        │
+│  PreToolUse:    focus gate, safety checks                │
+│  PostToolUse:   audit log, test sync, learning capture   │
+│  Notification:  desktop/mobile alerts                    │
+│  Permission:    phone approval via push notification     │
+└──────────────────────────────────────────────────────────┘
 ```
 
 **The flywheel:** Skills pull live data from MCP servers → process and produce output → write enriched data to the knowledge base → next session starts with richer context. Meeting prep reads contact files that were updated by the last debrief. Every session compounds.
