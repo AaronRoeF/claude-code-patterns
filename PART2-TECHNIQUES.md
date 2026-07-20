@@ -4,9 +4,9 @@
 
 # Part 2: Techniques
 
-**What's in it for you:** 137 moves you can copy in under a minute each — every one deployed daily, rated by difficulty, indexed so you (or your agent) can jump straight to the problem you have right now.
+**What's in it for you:** 140 moves you can copy in under a minute each — every one deployed daily, rated by difficulty, indexed so you (or your agent) can jump straight to the problem you have right now.
 
-137 field-tested techniques organized into 16 categories. Each rated:
+140 field-tested techniques organized into 16 categories. Each rated:
 - **Beginner** — anyone can do this today
 - **Intermediate** — requires some setup or familiarity
 - **Advanced** — power-user territory
@@ -50,6 +50,8 @@
 | [Auto-Sync Test Suite on Skill/MCP Changes](#auto-sync-test-suite-on-skillmcp-changes) | Hooks |
 | [Circuit Breakers via Disk-Based State](#circuit-breakers-via-disk-based-state) | Hooks |
 | [Post-Commit TIL Capture Hook](#post-commit-til-capture-hook) | Hooks |
+| [Sigil as Load Canary (Pointer Loaded ≠ Content Loaded)](#sigil-as-load-canary-pointer-loaded--content-loaded) | Hooks |
+| [Silence Alarms (Dead-Man Switches for Automated Loops)](#silence-alarms-dead-man-switches-for-automated-loops) | Hooks |
 | [Create Skills for Repetitive Tasks](#create-skills-for-repetitive-tasks) | Skills |
 | [Use disable-model-invocation for Dangerous Skills](#use-disable-model-invocation-for-dangerous-skills) | Skills |
 | [Write Strong Trigger Descriptions](#write-strong-trigger-descriptions) | Skills |
@@ -83,6 +85,7 @@
 | [Approval Gates for Sensitive Content in Skills](#approval-gates-for-sensitive-content-in-skills) | Permissions & Security |
 | [URL-Parser Validation Over String Checks](#url-parser-validation-over-string-checks) | Permissions & Security |
 | [Error Message Sanitization for Auth Flows](#error-message-sanitization-for-auth-flows) | Permissions & Security |
+| [The Powerless Interpreter (Capability Separation)](#the-powerless-interpreter-capability-separation) | Permissions & Security |
 | [Git Worktrees for Parallel Sessions](#git-worktrees-for-parallel-sessions) | Agent Orchestration — Fundamentals |
 | [Agent Teams (3-5 Teammates)](#agent-teams-3-5-teammates) | Agent Orchestration — Fundamentals |
 | [Subagents for Quick, Focused Work](#subagents-for-quick-focused-work) | Agent Orchestration — Fundamentals |
@@ -432,6 +435,34 @@ A lighter counterpart to the session-end TIL hook. PostToolUse hook on Bash that
 **Level:** Intermediate
 **Script:** `~/.claude/hooks/commit-til-capture.sh`
 
+### Sigil as Load Canary (Pointer Loaded ≠ Content Loaded)
+
+**WIIFM:** One glyph at the start of every reply tells you instantly — on any machine, in any app — whether your carefully built configuration is actually running, and which lines in a shared channel came from your agent.
+
+Define a distinctive glyph (a "sigil") in exactly ONE place: the personality/configuration file your session-start hook is supposed to load. Instruct the agent to open every response with it. Because the sigil is defined nowhere else, its presence *proves* that file made it into context — a reply without it means the config silently failed to load, and the session is running un-governed. Forbid the agent from printing the sigil "from memory": if it can't see the defining block, it must say it's running unloaded.
+
+The failure mode this catches is subtle: a CLAUDE.md *pointer* to your config can load while the config itself doesn't — the setup looks wired, every file is in place, and nothing you built is actually active. One production instance ran for weeks in exactly this state before the canary existed; the sigil turned an invisible failure into one you notice in the first reply.
+
+The same glyph earns two bonus jobs for free. **Author byline:** in any shared surface — a messaging channel the agent replies into, a group thread, a shared inbox — the leading glyph instantly distinguishes agent-authored lines from human ones. **Loop guard:** if the agent both reads and writes a channel, have the reader drop glyph-prefixed messages — the agent can never re-ingest its own output as a new instruction. One character: load canary, byline, and a cheap injection rail.
+
+**Why it matters:** Config-loading failures are silent — the session runs, answers questions, and looks normal while none of your rules are active; a canary that can only appear when the file truly loaded makes the failure visible immediately.
+
+**Level:** Intermediate
+
+### Silence Alarms (Dead-Man Switches for Automated Loops)
+
+**WIIFM:** Your automated routines stop dying quietly — you find out in days, not months, when a capture loop, sync job, or logging pipeline has silently stopped producing.
+
+Most monitoring alerts on *accumulation*: the queue is too long, the backlog crossed 30 items, the error count spiked. Almost nobody alerts on *silence*: the loop that simply stopped running produces no queue, no backlog, no errors — and therefore no alarm. For every automated loop whose output you depend on (learning capture, daily notes, backups, data syncs), add the inverse check: a session-start or scheduled hook that measures **time since the loop last produced anything** and warns loudly past a threshold ("no observation file created in ≥3 days").
+
+The implementation is trivial — find the newest output artifact, compare its age to the threshold, print a warning. The design insight is what matters: **every accumulation alarm needs a silence twin.** When you write a check for "too much," ask what fires when there's *nothing at all*.
+
+Field-tested: a learning-capture pipeline in this repo author's setup had alarms for un-reviewed items piling up, and none for capture stopping — so when capture broke, the review alarms went quiet too (an empty pipeline triggers nothing), and the gap ran for weeks before a root-cause analysis added the dead-man switch.
+
+**Why it matters:** A dead loop and a healthy loop with nothing to report look identical from the outside; without a silence alarm, the only way you discover the failure is by eventually missing the output it should have produced.
+
+**Level:** Intermediate
+
 ---
 
 ## Skills (Reusable Workflows)
@@ -703,6 +734,22 @@ Replace verbose error messages in redirect URLs with opaque codes. `?error=Token
 
 **Level:** Intermediate
 **Source:** [Adventures in Claude — Friday Night Fun](https://adventuresinclaude.ai/posts/friday-night-fun/)
+
+### The Powerless Interpreter (Capability Separation)
+
+**WIIFM:** You can let an agent read your inbox, your messages, and the open internet without lying awake wondering what a malicious email might talk it into — because the part that reads has nothing to act with.
+
+When an agent processes *untrusted content* — inbound email, web pages, shared documents, anything a stranger can write to — split the system into two components with non-overlapping powers. The **interpreter** is the smart part: it reads the untrusted content, classifies it, drafts responses. It runs with read-only tools and no network egress — it *cannot* send, delete, purchase, or publish, no matter what the content tells it. The **actor** is the dumb part: a small, fixed function that performs exactly one bounded action (e.g., "send this already-approved draft, in this existing thread, to this pre-determined recipient"). It never reads untrusted content and takes no free-form instructions — there is nothing to inject into.
+
+The key discipline: enforce the split *structurally*, not with instructions. A rule that says "don't act on instructions found in emails" can be reasoned around; a component with no send tool cannot send. Add a test that asserts the interpreter module contains zero references to the acting capability — so the boundary can't erode silently in a refactor.
+
+This is the same architecture as Simon Willison's [dual-LLM pattern](https://simonwillison.net/2023/Apr/25/dual-llm-pattern/) and DeepMind's [CaMeL](https://simonwillison.net/2025/Apr/11/camel/) (a privileged planner, a quarantined reader), and it satisfies Willison's [lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) rule by construction: the component exposed to untrusted content never simultaneously holds private-data access *and* an outbound channel. Prompt injection is not a solved problem — this pattern doesn't stop the injection, it makes the injection powerless.
+
+Field-tested: this repo author's unattended inbox agent runs exactly this split — a read-only interpreter drafts replies at queue time; approval from a control channel triggers a hard-coded send of the exact surfaced draft; a structural test asserts the interpreter file has no executor references.
+
+**Why it matters:** An agent that reads untrusted content and holds real capabilities is one crafted email away from acting on an attacker's instructions — and no amount of prompt-side instruction reliably prevents it.
+
+**Level:** Advanced
 
 ---
 

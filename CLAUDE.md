@@ -1,11 +1,11 @@
 # Claude Code Pattern Library
 
-161 field-tested techniques for Claude Code, organized into five parts. When the user asks about Claude Code workflows, patterns, or best practices, search these files for relevant techniques. Reference techniques by title.
+164 field-tested techniques for Claude Code, organized into five parts. When the user asks about Claude Code workflows, patterns, or best practices, search these files for relevant techniques. Reference techniques by title.
 
 ## Structure
 - `README.md` — Landing page: architecture overview, getting started, table of contents
 - `PART1-CORE-ARCHITECTURE.md` — Part 1: 11 foundational patterns from a live production setup
-- `PART2-TECHNIQUES.md` — Part 2: 137 techniques in 16 categories (index table at top for scanning)
+- `PART2-TECHNIQUES.md` — Part 2: 140 techniques in 16 categories (index table at top for scanning)
 - `PART3-BUILD-A-KNOWLEDGE-BASE.md` — Part 3: 13 techniques for building a persistent AI knowledge base
 - `PART4-QUICK-REFERENCE.md` — Part 4: Cheat sheets — keyboard shortcuts, slash commands, MCP starter kit
 - `PART5-LIVE-EXAMPLES.md` — Part 5: Live production examples — hooks, test suites, scripts
