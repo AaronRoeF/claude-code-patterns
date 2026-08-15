@@ -383,6 +383,8 @@ Why this matters: a vault lint (see Vault Lint below) can flag files where `orig
 
 Provenance also affects how Claude should treat content. Add this CLAUDE.md rule: "When citing information from a wiki page, note its origin. Treat `human` and `mcp-ingested` as factual. Treat `llm-generated` and `llm-synthesized` as provisional — verify against live sources when accuracy matters."
 
+Beyond lint, the labels give review a target. Because `origin` is set per file, a review pass can be routed instead of exhaustive: pull the `llm-generated` and `llm-synthesized` files touched this week and spend your attention there, rather than re-reading the whole vault asking "is any of this true?" Inside a single long document, where one `origin` value covers everything, Anthropic's guidance applies the same idea per claim — [have Claude find a supporting quote for each claim and retract any it cannot support](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations).
+
 **Level:** Intermediate
 **Pattern to copy:** Add `origin:` to your frontmatter schema. Set it when files are created — do not try to retroactively classify existing files (just mark them `human` and move on). Let the provenance data accumulate naturally.
 

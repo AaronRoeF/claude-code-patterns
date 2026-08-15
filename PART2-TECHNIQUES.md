@@ -6,7 +6,7 @@
 
 **What's in it for you:** 140 moves you can copy in under a minute each — every one deployed daily, rated by difficulty, indexed so you (or your agent) can jump straight to the problem you have right now.
 
-140 field-tested techniques organized into 16 categories. Each rated:
+141 field-tested techniques organized into 16 categories. Each rated:
 - **Beginner** — anyone can do this today
 - **Intermediate** — requires some setup or familiarity
 - **Advanced** — power-user territory
@@ -127,6 +127,7 @@
 | [Start Simple, Add Complexity Only When Needed](#start-simple-add-complexity-only-when-needed) | Prompt Engineering |
 | [Explore → Plan → Implement](#explore--plan--implement) | Prompt Engineering |
 | [Markdown as State Machine for Workflows](#markdown-as-state-machine-for-workflows) | Prompt Engineering |
+| [Test Whether the Agent's Reasons Rule Anything Out](#test-whether-the-agents-reasons-rule-anything-out) | Prompt Engineering |
 | [Claude Cowork for Non-Technical Tasks](#claude-cowork-for-non-technical-tasks) | Business Workflows |
 | [Process Meeting Notes Automatically](#process-meeting-notes-automatically) | Business Workflows |
 | [Headless Mode for Automation](#headless-mode-for-automation) | Business Workflows |
@@ -1280,6 +1281,25 @@ Structure workflow instructions as numbered decision trees with explicit branchi
 
 **Level:** Advanced
 **Source:** [Adventures in Claude — Exploring /start](https://adventuresinclaude.ai/posts/2026-03-10-exploring-start-how-a-markdown-file-runs-my-development-workflow/)
+
+---
+
+### Test Whether the Agent's Reasons Rule Anything Out
+
+**WIIFM** (what's in it for me): two throwaway questions that test whether an agent's recommendation rests on real reasons. No setup, no technical knowledge — you type them into the same conversation the recommendation came from.
+
+**The swap test.** Take each reason the agent gave and substitute the option it rejected. If the reason is equally true of both, it never separated them. This is the old "proves too much" objection, pointed at machine output instead of an argument.
+
+**The audience probe.** Ask who bears the cost of each option. An agent counts costs it can see in the conversation — files to change, steps to run — while costs landing on people the conversation never mentioned tend to go uncounted. (My working model, untested; the probe works either way.)
+
+**Prompt to copy:** "Restate each reason you gave. For each, ask whether it would also be true of the option you rejected — if so, drop it, because it wasn't separating them. If you never named an alternative, name the strongest one and test against it. Then list who bears the cost of each option, including people this conversation hasn't mentioned; the people affected here are [describe who is downstream]. Does your recommendation change?"
+
+Used on two decisions in one session: one recommendation was rejected for requiring a large reference sweep, then replaced with an alternative requiring the same sweep; another minimised work visible in the conversation while requiring a command line from colleagues who don't use one. Two for two is not a hit rate — I have not run these on a recommendation I already believed correct, so the false-positive cost is unmeasured. Expect some: a reviewer prompted to find gaps will usually report some, sound work included. If the agent drops two reasons and its recommendation still stands, the probe worked.
+
+**Why it matters:** An agent's reasons are generated alongside its recommendation, not tested against it. A reason that would equally justify the rejected option has done no work — and you cannot see that by reading, you have to substitute.
+
+**Level:** Intermediate
+**Source:** False-positive caveat adapted from [Claude Code Best Practices](https://code.claude.com/docs/en/best-practices), "Add an adversarial review step."
 
 ---
 
