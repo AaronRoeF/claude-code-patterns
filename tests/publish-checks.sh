@@ -39,24 +39,24 @@ scan_grep() {
 # API keys, tokens, passwords, secrets
 while IFS= read -r line; do
     security_details+=("$line")
-    ((security_issues++))
+    security_issues=$((security_issues+1))
 done < <(scan_grep -rn -i -E '(api[_-]?key|secret[_-]?key|password|passwd)\s*[:=]\s*["\x27]?[A-Za-z0-9]' --include='*.md' . 2>/dev/null || true)
 
 while IFS= read -r line; do
     security_details+=("$line")
-    ((security_issues++))
+    security_issues=$((security_issues+1))
 done < <(scan_grep -rn -E '(gho_|ghp_|sk-[a-zA-Z0-9]{20,}|xoxb-|xoxp-|AKIA[A-Z0-9]{16})' --include='*.md' . 2>/dev/null || true)
 
 # Absolute file paths
 while IFS= read -r line; do
     security_details+=("$line")
-    ((security_issues++))
+    security_issues=$((security_issues+1))
 done < <(scan_grep -rn -E '(/Users/[a-zA-Z]|/home/[a-zA-Z]|~/Library/|iCloud~md~obsidian)' --include='*.md' . 2>/dev/null || true)
 
 # .env file contents or credential file references
 while IFS= read -r line; do
     security_details+=("$line")
-    ((security_issues++))
+    security_issues=$((security_issues+1))
 done < <(scan_grep -rn -E '(\.env\b|credentials\.json|\.pem\b|\.key\b)' --include='*.md' . 2>/dev/null | grep -v -E '(\.env file|\.env example|example\.env|\.env\.local|\.env`|\.env\b.*\.sh|naming-conventions\.env)' || true)
 
 # ═══════════════════════════════════════════
@@ -69,27 +69,27 @@ ALLOWLIST='(opaque codes|Sarah Chen|James Park|Acme Corp)|OPAQUE.s brand design 
 # Internal names
 while IFS= read -r line; do
     if echo "$line" | grep -qiE "$ALLOWLIST"; then
-        ((privacy_allowlisted++))
+        privacy_allowlisted=$((privacy_allowlisted+1))
     else
         privacy_details+=("$line")
-        ((privacy_issues++))
+        privacy_issues=$((privacy_issues+1))
     fi
 done < <(scan_grep -rn -i -E '\b(OPAQUE|CompanyOS|RoebotOS|afkb|ExecOS)\b' --include='*.md' . 2>/dev/null || true)
 
 # Personal identifiers
 while IFS= read -r line; do
     if echo "$line" | grep -qiE "$ALLOWLIST"; then
-        ((privacy_allowlisted++))
+        privacy_allowlisted=$((privacy_allowlisted+1))
     else
         privacy_details+=("$line")
-        ((privacy_issues++))
+        privacy_issues=$((privacy_issues+1))
     fi
 done < <(scan_grep -rn -i -E '\b(aaron|fulkerson|roebot)\b|opaque\.co|aaronroe@gmail' --include='*.md' . 2>/dev/null || true)
 
 # Internal URLs
 while IFS= read -r line; do
     privacy_details+=("$line")
-    ((privacy_issues++))
+    privacy_issues=$((privacy_issues+1))
 done < <(scan_grep -rn -E 'notion\.so/opaque-systems|[^/][0-9a-f]{32}[^/0-9a-f]' --include='*.md' . 2>/dev/null || true)
 
 # ═══════════════════════════════════════════
@@ -110,21 +110,21 @@ claimed_count=$(grep -oE '[0-9]+ techniques' README.md 2>/dev/null | head -1 | g
 
 if [[ "$actual_count" -ne "$claimed_count" ]]; then
     quality_details+=("Technique count mismatch: README claims $claimed_count, found $actual_count (PART1=$part1_tips, PART2=$part2_tips, PART3=$part3_tips)")
-    ((quality_issues++))
+    quality_issues=$((quality_issues+1))
 fi
 
 # Verify PART2 header count matches actual ### heading count
 part2_claimed=$(grep -oE '[0-9]+ .*(technique|field-tested)' PART2-TECHNIQUES.md 2>/dev/null | head -1 | grep -oE '[0-9]+' || echo "0")
 if [[ "$part2_tips" -ne "$part2_claimed" ]]; then
     quality_details+=("PART2 header mismatch: claims $part2_claimed techniques, found $part2_tips ### headings")
-    ((quality_issues++))
+    quality_issues=$((quality_issues+1))
 fi
 
 # Verify no numbered headings remain (regression check)
 numbered=$( (grep -r -cE '^##+ [0-9]+\.' PART1-CORE-ARCHITECTURE.md PART2-TECHNIQUES.md PART3-BUILD-A-KNOWLEDGE-BASE.md 2>/dev/null || true) | awk -F: '{s+=$NF}END{print s+0}')
 if [[ "$numbered" -gt 0 ]]; then
     quality_details+=("Found $numbered numbered tip headings — should be title-only")
-    ((quality_issues++))
+    quality_issues=$((quality_issues+1))
 fi
 
 # Verify every ### tip in PART2 has a "Why it matters" within the tip body
@@ -136,7 +136,7 @@ for file in PART2-TECHNIQUES.md; do
         has_why=$(sed -n "$((lineno+1)),$((end_line))p" "$file" | grep -c '\*\*Why it matters' || true)
         if [[ "$has_why" -eq 0 ]]; then
             quality_details+=("Tip in $file:$lineno missing 'Why it matters' line: $heading")
-            ((quality_issues++))
+            quality_issues=$((quality_issues+1))
         fi
     done < <(fence_blanked "$file" | grep -n '^### ' 2>/dev/null || true)
 done
@@ -150,7 +150,7 @@ for file in PART2-TECHNIQUES.md; do
         has_level=$(sed -n "$((lineno+1)),$((end_line))p" "$file" | grep -c '\*\*Level:\*\*' || true)
         if [[ "$has_level" -eq 0 ]]; then
             quality_details+=("Tip in $file:$lineno missing \"Level\" line: $heading")
-            ((quality_issues++))
+            quality_issues=$((quality_issues+1))
         fi
     done < <(fence_blanked "$file" | grep -n '^### ' 2>/dev/null || true)
 done
@@ -162,7 +162,7 @@ for file in PART3-BUILD-A-KNOWLEDGE-BASE.md; do
         has_pattern=$(sed -n "$((lineno+1)),$((end_line))p" "$file" | grep -c '\*\*Pattern to copy:\*\*' || true)
         if [[ "$has_pattern" -eq 0 ]]; then
             quality_details+=("Tip in $file:$lineno missing \"Pattern to copy\" section: $heading")
-            ((quality_issues++))
+            quality_issues=$((quality_issues+1))
         fi
     done < <(awk '
         BEGIN { in_code=0; prev_line=0; prev_heading="" }
@@ -185,7 +185,7 @@ for file in PART1-CORE-ARCHITECTURE.md; do
         has_pattern=$(sed -n "$((lineno+1)),$((end_line))p" "$file" | grep -c '\*\*Pattern to copy:\*\*' || true)
         if [[ "$has_pattern" -eq 0 ]]; then
             quality_details+=("Tip in $file:$lineno missing \"Pattern to copy\" section: $heading")
-            ((quality_issues++))
+            quality_issues=$((quality_issues+1))
         fi
     done < <(grep -n '^## ' "$file" 2>/dev/null || true)
 done
@@ -193,7 +193,7 @@ done
 # TODO/FIXME/TBD/[! markers
 while IFS= read -r line; do
     quality_details+=("$line")
-    ((quality_issues++))
+    quality_issues=$((quality_issues+1))
 done < <(scan_grep -rn -E '\b(TODO|FIXME|TBD)\b|\[!' --include='*.md' . 2>/dev/null || true)
 
 # Empty sections (heading immediately followed by same-level or higher heading)
@@ -201,7 +201,7 @@ for file in README.md PART*.md; do
     [[ -f "$file" ]] || continue
     while IFS= read -r line; do
         quality_details+=("Empty section in $file: $line")
-        ((quality_issues++))
+        quality_issues=$((quality_issues+1))
     done < <(awk '
         /^```/ { in_code = !in_code; next }
         in_code { next }
@@ -229,7 +229,7 @@ done
 for file in "${EXPECTED_FILES[@]}"; do
     if [[ ! -f "$file" ]]; then
         structure_details+=("Missing expected file: $file")
-        ((structure_issues++))
+        structure_issues=$((structure_issues+1))
     fi
 done
 
@@ -242,7 +242,7 @@ for file in README.md PART*.md SOURCES.md CLAUDE.md; do
         [[ -z "$target_file" ]] && continue
         if [[ ! -f "$target_file" ]]; then
             structure_details+=("Broken link in $file: $target_file not found")
-            ((structure_issues++))
+            structure_issues=$((structure_issues+1))
         fi
     done < <(awk '/^```/{c=!c;next} !c{print}' "$file" 2>/dev/null | grep -oE '\]\([A-Z0-9a-z_-]+\.md[^)]*\)' | sed 's/\](//;s/)//' || true)
 done
@@ -255,7 +255,7 @@ p2=$(awk '/^```/{c=!c;next} !c && /^### /{n++} END{print n+0}' PART2-TECHNIQUES.
 p3=$(awk '/^```/{c=!c;next} !c && /^### /{n++} END{print n+0}' PART3-BUILD-A-KNOWLEDGE-BASE.md)
 total=$((p1+p2+p3))
 claim_check() {
-    grep -qE "$2" "$1" || { structure_details+=("Count-claim drift in $1: no line matches /$2/ (actual: p1=$p1 p2=$p2 p3=$p3 total=$total)"); ((structure_issues++)); }
+    grep -qE "$2" "$1" || { structure_details+=("Count-claim drift in $1: no line matches /$2/ (actual: p1=$p1 p2=$p2 p3=$p3 total=$total)"); structure_issues=$((structure_issues+1)); }
 }
 claim_check README.md "Total: $total field-tested techniques"
 claim_check README.md "$p2 specific tips"
@@ -272,11 +272,11 @@ for file in PART*.md; do
     bottom_nav=$(tail -5 "$file" | grep -c 'Back to README' || true)
     if [[ "$top_nav" -eq 0 ]]; then
         structure_details+=("$file missing top nav bar")
-        ((structure_issues++))
+        structure_issues=$((structure_issues+1))
     fi
     if [[ "$bottom_nav" -eq 0 ]]; then
         structure_details+=("$file missing bottom nav bar")
-        ((structure_issues++))
+        structure_issues=$((structure_issues+1))
     fi
 done
 
@@ -285,7 +285,7 @@ for file in PART*.md; do
     [[ -f "$file" ]] || continue
     if ! grep -q "$file" README.md 2>/dev/null; then
         structure_details+=("README.md does not link to $file")
-        ((structure_issues++))
+        structure_issues=$((structure_issues+1))
     fi
 done
 
@@ -296,14 +296,14 @@ for file in PART*.md; do
     while IFS= read -r linked_file; do
         if [[ ! -f "$linked_file" ]]; then
             structure_details+=("Nav bar in $file references non-existent file: $linked_file")
-            ((structure_issues++))
+            structure_issues=$((structure_issues+1))
         fi
     done < <(head -1 "$file" | grep -oE '\]\([A-Z0-9a-z_-]+\.md\)' | sed 's/\](//;s/)//' || true)
     # Extract filenames from the bottom nav bar (last 5 lines)
     while IFS= read -r linked_file; do
         if [[ ! -f "$linked_file" ]]; then
             structure_details+=("Bottom nav in $file references non-existent file: $linked_file")
-            ((structure_issues++))
+            structure_issues=$((structure_issues+1))
         fi
     done < <(tail -5 "$file" | grep -oE '\]\([A-Z0-9a-z_-]+\.md\)' | sed 's/\](//;s/)//' || true)
 done
