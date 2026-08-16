@@ -6,7 +6,7 @@
 
 **What's in it for you:** 140 moves you can copy in under a minute each — every one deployed daily, rated by difficulty, indexed so you (or your agent) can jump straight to the problem you have right now.
 
-141 field-tested techniques organized into 16 categories. Each rated:
+143 field-tested techniques organized into 16 categories. Each rated:
 - **Beginner** — anyone can do this today
 - **Intermediate** — requires some setup or familiarity
 - **Advanced** — power-user territory
@@ -145,6 +145,8 @@
 | [Don't Over-Specify CLAUDE.md](#dont-over-specify-claudemd) | Common Pitfalls |
 | [Watch for Large Stdin Limitations](#watch-for-large-stdin-limitations) | Common Pitfalls |
 | [Inspect Data Before Hypothesizing](#inspect-data-before-hypothesizing) | Common Pitfalls |
+| [Red-Team Your Own Numbers (A Count Is a Signal, Not a Defect List)](#red-team-your-own-numbers-a-count-is-a-signal-not-a-defect-list) | Common Pitfalls |
+| [Verify the Span, Not the Citation (A Resolving Pointer Is Not a Supported Claim)](#verify-the-span-not-the-citation-a-resolving-pointer-is-not-a-supported-claim) | Common Pitfalls |
 | [Snapshot-Based Regression Testing for Data Pipelines](#snapshot-based-regression-testing-for-data-pipelines) | Common Pitfalls |
 | [Documentation Accuracy Audits](#documentation-accuracy-audits) | Common Pitfalls |
 | [MCP Server Won't Start or Silently Fails](#mcp-server-wont-start-or-silently-fails) | Troubleshooting |
@@ -1452,6 +1454,51 @@ For data-dependent bugs, examine actual data first — don't theorize about code
 
 **Level:** Intermediate
 **Source:** [Adventures in Claude — The Bug That Was Right in Front of Me](https://adventuresinclaude.ai/posts/the-bug-that-was-right-in-front-of-me/)
+
+### Red-Team Your Own Numbers (A Count Is a Signal, Not a Defect List)
+
+**WIIFM:** You stop authorizing bulk edits on the strength of a number that was wrong by two orders of magnitude — the check that catches it costs thirty seconds and one opened file.
+
+When a scan you or your agent wrote reports "198 broken links," "1,204 lint violations," or "43 stale files," that report tells you **how many things the pattern matched — not how many things are broken.** Those are two different quantities, and the gap between them is invisible in the output. The number arrives as a clean integer, reads like a fact, and points at an obvious next action: fix all of them. That next action is almost always a bulk write, which is the least reversible thing in the session.
+
+Before acting on a self-produced count, do two cheap things. **Open the matches** — a random five to ten of the actual items, not the summary line — and confirm each one is genuinely defective. Then **re-measure with a different method** and compare totals. The diagnostic that matters: *a metric that moves under re-measurement was never measuring what you thought.* When 198 becomes 7, the finding is not "the corpus is cleaner than we hoped" — it is "the detector is broken," which puts the surviving 7 under suspicion too.
+
+The inflation has a short list of shapes, worth checking by name:
+1. **Over-match** — the pattern caught text that merely resembles the target (prose that looks like link syntax, comments that look like code).
+2. **Out-of-scope paths** — the scan walked vendored, generated, or archived directories nobody intended to touch.
+3. **Multiple counting** — one defect counted once per occurrence instead of once per item.
+4. **Stale source** — the total came from a cache or index that predates the last fix.
+5. **Intentional hits** — real matches that are supposed to be that way: deliberate placeholders, illustrative examples, references kept dead on purpose.
+
+Scale the rigor to reversibility. A count feeding a read-only report can go unverified; a count feeding a bulk edit, a delete, a migration, or an outbound message never can. **The operating rule: the turn that produces a count must not be the turn that acts on it.** The anti-pattern to recognize in your own output is a single line reading "Found 198 issues — fixing them now."
+
+Field-tested: A knowledge-base link checker reported 198 broken links. Opening the matches showed that roughly 191 were ordinary prose the pattern had mistaken for link syntax — text that must never be rewritten. That left 7. Red-teaming those 7 against the actual link-resolution rules left 0 genuine breaks. 198 → 7 → 0. Acting on the raw 198 meant a bulk rewrite across years of historical documents to fix nothing.
+
+**Why it matters:** A self-produced count reads like a fact and points straight at a bulk write, so one over-matching pattern converts a detector bug into a mass edit across your corpus — and that edit is the least reversible thing in the session.
+
+**Level:** Intermediate
+
+### Verify the Span, Not the Citation (A Resolving Pointer Is Not a Supported Claim)
+
+**WIIFM:** You stop shipping agent-written claims that are wrong in a way no citation check will ever catch — because you start checking whether the cited passage actually says the sentence, instead of whether the pointer resolves.
+
+Requiring an agent to cite a source for every claim buys **traceability, not accuracy**. These are two different failures with two different fixes: a pointer that doesn't resolve is a *retrieval* failure, and a claim its own cited passage doesn't support is a *summarization* failure. A model writes the sentence and attaches the pointer in one pass, so the pointer gets selected to fit a sentence that already exists — which means citation coverage can be near-perfect while the claims are wrong. The only check that catches this is span-level entailment: **would a reader who saw only this passage write this exact sentence?**
+
+Five failure shapes cover nearly all of it, and each one is pattern-matchable:
+
+1. **Quote that was never a quote.** A string in quotation marks that is actually a section heading, a field label, or the agent's own paraphrase — presented as something a person said or wrote.
+2. **Unsearched superlative.** "First since," "the only," "never before." Claims about *absence* require a search that establishes the negative. A source showing one instance cannot show that no other instance exists.
+3. **Manufactured causation.** The source states two facts near each other; the claim says one *caused*, *drove*, or *was in response to* the other. The source made no causal statement.
+4. **Aggregate inflation.** A number nothing in the source produces — summing a column and reporting the total as a count, double-counting rows, rounding up. An 11-row table became "50 data points."
+5. **Actor swap.** Right event, right date, wrong subject: who called the meeting, who made the decision, who wrote the document.
+
+The fix is a second pass, not a stricter first pass. Re-read each claim against its own cited span in a fresh context that reads the passage *before* it reads the sentence, and score on four values — CONFIRMED, OVERSTATED, WRONG, UNVERIFIABLE. **The four-value scale is the load-bearing part.** A binary grader asked "does the source support this?" answers *yes* for every claim that is directionally true and materially inflated, and inflation is the modal failure — it is the bucket a yes/no rubric silently launders. Anything that comes back not-CONFIRMED gets rewritten down to what the span supports, or deleted. The anti-pattern to reject on sight: treating "every claim has a citation" as evidence that the claims are accurate.
+
+Field-tested: an audit of 119 claims an automated agent had written into project records, each claim carrying a source pointer. 118 of the 119 pointers resolved correctly — 99% sourcing accuracy. Independent verification of each claim against that same cited source returned 59 CONFIRMED, 40 OVERSTATED, 18 WRONG, 2 UNVERIFIABLE. Roughly half the claims were not accurate as written, the sourcing discipline was near-flawless, and essentially all of the drift happened between the source and the sentence rather than between the claim and the source list. The five shapes above are the ones that audit actually produced.
+
+**Why it matters:** A citation requirement makes wrong claims look verified — a reviewer spot-checks that the pointer resolves, finds that it does, and passes the claim through, after which the error propagates into every downstream document that cites the record.
+
+**Level:** Advanced
 
 ### Snapshot-Based Regression Testing for Data Pipelines
 Take snapshots of algorithm outputs against production data and commit as baselines. Wire into pre-commit hooks to force review when outputs change. Catches silent behavioral regressions that unit tests miss — especially in ranking, scoring, or transformation logic where "correct" is defined by expected output, not by code structure.
