@@ -1301,6 +1301,7 @@ Used on two decisions in one session: one recommendation was rejected for requir
 **Why it matters:** An agent's reasons are generated alongside its recommendation, not tested against it. A reason that would equally justify the rejected option has done no work — and you cannot see that by reading, you have to substitute.
 
 **Level:** Intermediate
+**See also:** [Verify the Span, Not the Citation (A Resolving Pointer Is Not a Supported Claim)](#verify-the-span-not-the-citation-a-resolving-pointer-is-not-a-supported-claim) — the same failure one layer down: a claim whose cited passage does not support it.
 **Source:** False-positive caveat adapted from [Claude Code Best Practices](https://code.claude.com/docs/en/best-practices), "Add an adversarial review step."
 
 ---
@@ -1499,6 +1500,7 @@ Field-tested: an audit of 119 claims an automated agent had written into project
 **Why it matters:** A citation requirement makes wrong claims look verified — a reviewer spot-checks that the pointer resolves, finds that it does, and passes the claim through, after which the error propagates into every downstream document that cites the record.
 
 **Level:** Advanced
+**See also:** [Test Whether the Agent's Reasons Rule Anything Out](#test-whether-the-agents-reasons-rule-anything-out) — the same failure one layer up: a reason that would equally justify the rejected option.
 
 ### Snapshot-Based Regression Testing for Data Pipelines
 Take snapshots of algorithm outputs against production data and commit as baselines. Wire into pre-commit hooks to force review when outputs change. Catches silent behavioral regressions that unit tests miss — especially in ranking, scoring, or transformation logic where "correct" is defined by expected output, not by code structure.
