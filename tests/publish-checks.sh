@@ -105,18 +105,21 @@ part2_tips=$(awk 'BEGIN{n=0;c=0} /^```/{c=!c;next} !c && /^### /{n++} END{print 
 part3_tips=$(awk 'BEGIN{n=0;c=0} /^```/{c=!c;next} !c && /^### /{n++} END{print n}' PART3-BUILD-A-KNOWLEDGE-BASE.md 2>/dev/null || echo 0)
 actual_count=$((part1_tips + part2_tips + part3_tips))
 
-# Get claimed count from README header (e.g., "158 techniques")
-claimed_count=$(grep -oE '[0-9]+ techniques' README.md 2>/dev/null | head -1 | grep -oE '[0-9]+' || echo "0")
+# Claimed total now comes from the README's Total line — the single source of
+# truth (2026-08-16). It used to be scraped from a prose intro that no longer
+# carries a number, which would have made this check read 0 and fail forever.
+claimed_count=$(grep -oE 'Total: [0-9]+ field-tested techniques' README.md 2>/dev/null | grep -oE '[0-9]+' | head -1 || echo "0")
 
 if [[ "$actual_count" -ne "$claimed_count" ]]; then
     quality_details+=("Technique count mismatch: README claims $claimed_count, found $actual_count (PART1=$part1_tips, PART2=$part2_tips, PART3=$part3_tips)")
     quality_issues=$((quality_issues+1))
 fi
 
-# Verify PART2 header count matches actual ### heading count
-part2_claimed=$(grep -oE '[0-9]+ .*(technique|field-tested)' PART2-TECHNIQUES.md 2>/dev/null | head -1 | grep -oE '[0-9]+' || echo "0")
+# PART2 no longer states its own count (single-source policy); verify the
+# README parts-table cell for Part 2 instead.
+part2_claimed=$(grep -oE '\[Part 2: Techniques\].*\| [0-9]+ \|' README.md 2>/dev/null | grep -oE '[0-9]+ \|' | grep -oE '[0-9]+' | head -1 || echo "0")
 if [[ "$part2_tips" -ne "$part2_claimed" ]]; then
-    quality_details+=("PART2 header mismatch: claims $part2_claimed techniques, found $part2_tips ### headings")
+    quality_details+=("README parts-table Part 2 cell says $part2_claimed, found $part2_tips ### headings in PART2-TECHNIQUES.md")
     quality_issues=$((quality_issues+1))
 fi
 
@@ -257,13 +260,26 @@ total=$((p1+p2+p3))
 claim_check() {
     grep -qE "$2" "$1" || { structure_details+=("Count-claim drift in $1: no line matches /$2/ (actual: p1=$p1 p2=$p2 p3=$p3 total=$total)"); structure_issues=$((structure_issues+1)); }
 }
+# SINGLE SOURCE OF TRUTH (2026-08-16, Aaron): counts appear ONLY in README's
+# parts table and its total line. Previously seven places carried a number and
+# they drifted apart repeatedly — the earlier fix added more checks instead of
+# removing the duplication, which is why 140/143/16/17 were all live at once.
+# Now: verify the four numbers that remain, then ENFORCE that no others exist.
 claim_check README.md "Total: $total field-tested techniques"
-claim_check README.md "$p2 specific tips"
-claim_check README.md "$total techniques, all production-tested"
+claim_check README.md "\[Part 1: Core Architecture\].*\| $p1 \|"
 claim_check README.md "\[Part 2: Techniques\].*\| $p2 \|"
-claim_check CLAUDE.md "^$total field-tested techniques"
-claim_check CLAUDE.md "Part 2: $p2 techniques"
-claim_check PART2-TECHNIQUES.md "^$p2 field-tested techniques"
+claim_check README.md "\[Part 3: Build a Knowledge Base\].*\| $p3 \|"
+
+# Policy guard: a pattern count anywhere OUTSIDE the README is drift waiting to
+# happen. SOURCES.md is exempt — its "~30 techniques" attributes a third-party
+# blog as a source, not a count of this repo.
+stray=$(grep -rnoE "\b[0-9]{2,3}\b[^.]{0,40}(techniques|patterns|tips|moves|categories)" \
+          --include='*.md' . 2>/dev/null | grep -vE "^\./(README|SOURCES)\.md:" || true)
+if [ -n "$stray" ]; then
+    while IFS= read -r l; do
+        [ -n "$l" ] && { structure_details+=("Count outside README (counts belong only in README's parts table): $l"); structure_issues=$((structure_issues+1)); }
+    done <<< "$stray"
+fi
 
 # Verify nav bars at top and bottom of PART*.md files
 for file in PART*.md; do

@@ -4,9 +4,9 @@
 
 # Part 2: Techniques
 
-**What's in it for you:** 140 moves you can copy in under a minute each — every one deployed daily, rated by difficulty, indexed so you (or your agent) can jump straight to the problem you have right now.
+**What's in it for you:** moves you can copy in under a minute each — every one deployed daily, rated by difficulty, indexed so you (or your agent) can jump straight to the problem you have right now.
 
-143 field-tested techniques organized into 16 categories. Each rated:
+Field-tested techniques organized by category. Each rated:
 - **Beginner** — anyone can do this today
 - **Intermediate** — requires some setup or familiarity
 - **Advanced** — power-user territory
