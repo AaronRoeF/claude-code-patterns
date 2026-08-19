@@ -23,8 +23,9 @@ structure_issues=0
 security_details=()
 privacy_details=()
 quality_details=()
-# Retired vocabulary: the WIIFM acronym (PULSE invariant amended 2026-08-19).
-# Benefit-first ledes stay; the unexplained acronym does not.
+# Publish-boundary check: WIIFM is internal vocabulary ("why this matters")
+# and must not ship to this public endpoint. The benefit-first lede stays;
+# the label stays home. Rule: publishing-internal-vocabulary-boundary.
 for f in "${EXPECTED_FILES[@]}"; do
   if grep -n "WIIFM" "$f" >/dev/null 2>&1; then
     quality_issues=$((quality_issues+1))
