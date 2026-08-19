@@ -440,7 +440,7 @@ A lighter counterpart to the session-end TIL hook. PostToolUse hook on Bash that
 
 ### Sigil as Load Canary (Pointer Loaded ≠ Content Loaded)
 
-**WIIFM:** One glyph at the start of every reply tells you instantly — on any machine, in any app — whether your carefully built configuration is actually running, and which lines in a shared channel came from your agent.
+One glyph at the start of every reply tells you instantly — on any machine, in any app — whether your carefully built configuration is actually running, and which lines in a shared channel came from your agent.
 
 Define a distinctive glyph (a "sigil") in exactly ONE place: the personality/configuration file your session-start hook is supposed to load. Instruct the agent to open every response with it. Because the sigil is defined nowhere else, its presence *proves* that file made it into context — a reply without it means the config silently failed to load, and the session is running un-governed. Forbid the agent from printing the sigil "from memory": if it can't see the defining block, it must say it's running unloaded.
 
@@ -454,7 +454,7 @@ The same glyph earns two bonus jobs for free. **Author byline:** in any shared s
 
 ### Silence Alarms (Dead-Man Switches for Automated Loops)
 
-**WIIFM:** Your automated routines stop dying quietly — you find out in days, not months, when a capture loop, sync job, or logging pipeline has silently stopped producing.
+Your automated routines stop dying quietly — you find out in days, not months, when a capture loop, sync job, or logging pipeline has silently stopped producing.
 
 Most monitoring alerts on *accumulation*: the queue is too long, the backlog crossed 30 items, the error count spiked. Almost nobody alerts on *silence*: the loop that simply stopped running produces no queue, no backlog, no errors — and therefore no alarm. For every automated loop whose output you depend on (learning capture, daily notes, backups, data syncs), add the inverse check: a session-start or scheduled hook that measures **time since the loop last produced anything** and warns loudly past a threshold ("no observation file created in ≥3 days").
 
@@ -740,7 +740,7 @@ Replace verbose error messages in redirect URLs with opaque codes. `?error=Token
 
 ### The Powerless Interpreter (Capability Separation)
 
-**WIIFM:** You can let an agent read your inbox, your messages, and the open internet without lying awake wondering what a malicious email might talk it into — because the part that reads has nothing to act with.
+You can let an agent read your inbox, your messages, and the open internet without lying awake wondering what a malicious email might talk it into — because the part that reads has nothing to act with.
 
 When an agent processes *untrusted content* — inbound email, web pages, shared documents, anything a stranger can write to — split the system into two components with non-overlapping powers. The **interpreter** is the smart part: it reads the untrusted content, classifies it, drafts responses. It runs with read-only tools and no network egress — it *cannot* send, delete, purchase, or publish, no matter what the content tells it. The **actor** is the dumb part: a small, fixed function that performs exactly one bounded action (e.g., "send this already-approved draft, in this existing thread, to this pre-determined recipient"). It never reads untrusted content and takes no free-form instructions — there is nothing to inject into.
 
@@ -1292,7 +1292,7 @@ Structure workflow instructions as numbered decision trees with explicit branchi
 
 ### Test Whether the Agent's Reasons Rule Anything Out
 
-**WIIFM** (what's in it for me): two throwaway questions that test whether an agent's recommendation rests on real reasons. No setup, no technical knowledge — you type them into the same conversation the recommendation came from.
+Two throwaway questions that test whether an agent's recommendation rests on real reasons. No setup, no technical knowledge — you type them into the same conversation the recommendation came from.
 
 **The swap test.** Take each reason the agent gave and substitute the option it rejected. If the reason is equally true of both, it never separated them. This is the old "proves too much" objection, pointed at machine output instead of an argument.
 
@@ -1361,7 +1361,7 @@ At publish time, automatically diff Claude's draft against the human's final edi
 
 ### Standalone HTML as the Deliverable (the Fungible Artifact)
 
-**WIIFM:** Your reports, plans, and trackers become single files that open perfectly for anyone — your exec team, your phone, another AI agent — with no portal, no permissions, and no formatting roulette.
+Your reports, plans, and trackers become single files that open perfectly for anyone — your exec team, your phone, another AI agent — with no portal, no permissions, and no formatting roulette.
 
 For anything a human will *read* — a research report, a project plan, a decision brief, a tracker — ask Claude for **one self-contained `.html` file** instead of markdown. Self-contained means everything (styling, any interactivity) lives inside the one file: no internet needed, nothing external to break. The browser is the one runtime everyone already has: the file mails, Slacks, and opens on a phone with perfect formatting, needs no portal or permissions, and — because HTML is still plain text — any agent can re-ingest and edit it later. It's a *fungible* artifact: the same single file moves between human readers, review passes, and Claude sessions without conversion.
 
@@ -1462,7 +1462,7 @@ For data-dependent bugs, examine actual data first — don't theorize about code
 
 ### Red-Team Your Own Numbers (A Count Is a Signal, Not a Defect List)
 
-**WIIFM:** You stop authorizing bulk edits on the strength of a number that was wrong by two orders of magnitude — the check that catches it costs thirty seconds and one opened file.
+You stop authorizing bulk edits on the strength of a number that was wrong by two orders of magnitude — the check that catches it costs thirty seconds and one opened file.
 
 When a scan you or your agent wrote reports "198 broken links," "1,204 lint violations," or "43 stale files," that report tells you **how many things the pattern matched — not how many things are broken.** Those are two different quantities, and the gap between them is invisible in the output. The number arrives as a clean integer, reads like a fact, and points at an obvious next action: fix all of them. That next action is almost always a bulk write, which is the least reversible thing in the session.
 
@@ -1485,7 +1485,7 @@ Field-tested: A knowledge-base link checker reported 198 broken links. Opening t
 
 ### Verify the Span, Not the Citation (A Resolving Pointer Is Not a Supported Claim)
 
-**WIIFM:** You stop shipping agent-written claims that are wrong in a way no citation check will ever catch — because you start checking whether the cited passage actually says the sentence, instead of whether the pointer resolves.
+You stop shipping agent-written claims that are wrong in a way no citation check will ever catch — because you start checking whether the cited passage actually says the sentence, instead of whether the pointer resolves.
 
 Requiring an agent to cite a source for every claim buys **traceability, not accuracy**. These are two different failures with two different fixes: a pointer that doesn't resolve is a *retrieval* failure, and a claim its own cited passage doesn't support is a *summarization* failure. A model writes the sentence and attaches the pointer in one pass, so the pointer gets selected to fit a sentence that already exists — which means citation coverage can be near-perfect while the claims are wrong. The only check that catches this is span-level entailment: **would a reader who saw only this passage write this exact sentence?**
 

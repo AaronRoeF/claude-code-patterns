@@ -16,6 +16,15 @@ security_issues=0
 privacy_issues=0
 privacy_allowlisted=0
 quality_issues=0
+
+# Retired vocabulary: the WIIFM acronym (PULSE invariant amended 2026-08-19).
+# Benefit-first ledes stay; the unexplained acronym does not.
+for f in "${EXPECTED_FILES[@]}"; do
+  if grep -n "WIIFM" "$f" >/dev/null 2>&1; then
+    quality_issues=$((quality_issues+1))
+    quality_details+=("Retired term WIIFM in $f: $(grep -n 'WIIFM' "$f" | head -1)")
+  fi
+done
 structure_issues=0
 
 # Collectors
