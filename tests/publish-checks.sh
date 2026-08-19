@@ -17,6 +17,12 @@ privacy_issues=0
 privacy_allowlisted=0
 quality_issues=0
 
+structure_issues=0
+
+# Collectors
+security_details=()
+privacy_details=()
+quality_details=()
 # Retired vocabulary: the WIIFM acronym (PULSE invariant amended 2026-08-19).
 # Benefit-first ledes stay; the unexplained acronym does not.
 for f in "${EXPECTED_FILES[@]}"; do
@@ -25,12 +31,7 @@ for f in "${EXPECTED_FILES[@]}"; do
     quality_details+=("Retired term WIIFM in $f: $(grep -n 'WIIFM' "$f" | head -1)")
   fi
 done
-structure_issues=0
 
-# Collectors
-security_details=()
-privacy_details=()
-quality_details=()
 structure_details=()
 
 # Helper: file view with fenced code blanked out (line numbers preserved)
