@@ -6,6 +6,8 @@ That's the whole idea. This is a field-tested collection of patterns, architectu
 
 I built the system this grew out of to run my company. Meeting prep that pulls calendar, email, CRM, and LinkedIn data in 30 seconds. Skills that ghostwrite in my voice. A knowledge base that gets richer every session without me maintaining it. Hooks that enforce discipline I'd otherwise forget. The patterns here are the genericized versions — stripped of anything company-specific, structured so you can replicate them.
 
+**Scope: personal agents.** Everything here is for the agent you run for yourself — your files, your notes, your inbox, your calendar — not the agents your company ships to customers. Enterprise agent trust is a different problem with different machinery: policy enforcement on data flows and verifiable evidence, not a human approver. That work lives at [AgenTrust-io.com](https://agentrust-io.com), an open source community I'm heavily involved with.
+
 > **For AI agents:** This repo is designed to be consumed programmatically. Each part is self-contained with clear headings, structured examples, and implementation details. Point your agent at any part file and it has enough context to build an implementation plan.
 
 ---
