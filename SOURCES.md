@@ -5,7 +5,7 @@ This pattern library was built from the collective knowledge of the Claude Code 
 ## Named Sources
 
 - **Andrej Karpathy** — [LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): the three-layer architecture (Sources → Wiki → Schema) that inspired Part 3
-- **Brad Feld / Adventures in Claude** — [adventuresinclaude.ai](https://adventuresinclaude.ai/): 35 posts on Claude Code workflows, learning loops, hook architectures, and workflow state machines. Primary source for ~30 techniques.
+- **Brad Feld / Adventures in Claude** — [adventuresinclaude.ai](https://adventuresinclaude.ai/): 55 posts (as of 2026-09) on Claude Code workflows, learning loops, hook architectures, and workflow state machines. Primary source for ~30 techniques.
 
 ## Official Documentation
 
@@ -25,7 +25,7 @@ This pattern library was built from the collective knowledge of the Claude Code 
 - [Arize — CLAUDE.md Best Practices](https://arize.com/blog/claude-md-best-practices-learned-from-optimizing-claude-code-with-prompt-learning/)
 - [SFEIR Institute — Claude Code Courses](https://institute.sfeir.com/en/claude-code/)
 - [Addy Osmani — Claude Code Agent Teams](https://addyosmani.com/blog/claude-code-agent-teams/)
-- [MCPcat — Managing Context](https://mcpcat.io/guides/managing-claude-code-context/)
+- [AgentCat — Managing Context](https://agentcat.com/guides/managing-claude-code-context/)
 - [DataCamp — Claude Code Hooks Tutorial](https://www.datacamp.com/tutorial/claude-code-hooks)
 
 ## Community Repos

@@ -15,7 +15,7 @@ Field-tested techniques organized by category. Each rated:
 
 | Technique | Category |
 |-----------|----------|
-| [Keep It Under 300 Lines](#keep-it-under-300-lines) | Writing CLAUDE.md |
+| [Keep It Under 200 Lines](#keep-it-under-200-lines) | Writing CLAUDE.md |
 | [Use Progressive Disclosure](#use-progressive-disclosure) | Writing CLAUDE.md |
 | [Use Emphasis for Critical Rules](#use-emphasis-for-critical-rules) | Writing CLAUDE.md |
 | [Use Multiple CLAUDE.md Files for Large Projects](#use-multiple-claudemd-files-for-large-projects) | Writing CLAUDE.md |
@@ -75,7 +75,7 @@ Field-tested techniques organized by category. Each rated:
 | [Automatic Selection Detection](#automatic-selection-detection) | VS Code |
 | [Cmd+Esc to Toggle Focus](#cmdesc-to-toggle-focus) | VS Code |
 | [Sidebar vs. Panel Placement](#sidebar-vs-panel-placement) | VS Code |
-| [Cmd+T for Extended Thinking](#cmdt-for-extended-thinking) | VS Code |
+| [Option+T for Extended Thinking](#optiont-for-extended-thinking) | VS Code |
 | [Customize Keyboard Shortcuts](#customize-keyboard-shortcuts) | VS Code |
 | [Create a Targeted Allowlist](#create-a-targeted-allowlist) | Permissions & Security |
 | [Layered Safety: Deny Rules + Hooks](#layered-safety-deny-rules--hooks) | Permissions & Security |
@@ -163,13 +163,13 @@ Field-tested techniques organized by category. Each rated:
 
 ## Writing Effective CLAUDE.md Files
 
-### Keep It Under 300 Lines
+### Keep It Under 200 Lines
 Your CLAUDE.md is loaded into every conversation. Long instruction files cause Claude to miss critical rules — shorter files get better adherence. Ruthlessly prune instructions for things Claude already does correctly. Focus only on rules where Claude's default behavior diverges from what you want.
 
 **Why it matters:** Long instruction files cause Claude to miss critical rules, so shorter files get measurably better adherence.
 
 **Level:** Beginner
-**Source:** [Claude Code Best Practices](https://code.claude.com/docs/en/best-practices)
+**Source:** [How Claude remembers your project](https://code.claude.com/docs/en/memory) — "**Size**: target under 200 lines per CLAUDE.md file."
 
 ### Use Progressive Disclosure
 Don't dump all information into CLAUDE.md. Tell Claude *how to find* information instead. Write `"For database schema details, read /docs/schema.md"` rather than pasting the entire schema.
@@ -235,7 +235,7 @@ Manually run `/compact` when your context window reaches ~78%, rather than waiti
 **Why it matters:** Auto-compaction at 95% is an emergency measure that compresses under pressure, losing more useful context than a deliberate compaction at 78%. Manual compaction at 78% produces better summaries while preserving maximum useful context. *Sign you waited too long: repeated searches for things already discussed, slower reasoning, or auto-compact firing and compressing critical context into noise.*
 
 **Level:** Intermediate
-**Source:** [MCPcat Guide](https://mcpcat.io/guides/managing-claude-code-context/)
+**Source:** [AgentCat Guide](https://agentcat.com/guides/managing-claude-code-context/)
 
 ### Audit Context with /context
 Run `/context` to see exactly how many tokens each component consumes — system prompt, MCP tools, memory, skills, conversation. MCP servers can consume 30%+ of your window before you type anything.
@@ -411,6 +411,8 @@ PostToolUse hook (`Edit|Write`) that watches for edits to skills, hook scripts, 
 
 **Why it matters:** Without remote approval, Claude blocks on permission prompts whenever you step away from your desk, halting all progress until you return.
 
+**Security:** on the public ntfy.sh relay the topic name is the only secret. Command previews are published unauthenticated, and anyone who guesses or learns the topic can POST an approval. Treat the public relay as a demo: run your own ntfy server bound to a private network, with a token and deny-all defaults, before this hook approves anything that matters.
+
 **Level:** Advanced
 **Script:** `~/.claude/hooks/remote-approver.sh`
 
@@ -568,7 +570,7 @@ For business users, prioritize: GitHub (issues/PRs), Slack (communication), Noti
 **Source:** [Claude Code Docs](https://code.claude.com/docs/en/mcp)
 
 ### Disable Unused MCP Servers Per Session
-MCP tool definitions consume tokens just by being available. Run `/mcp` to see per-server token costs and disable servers you aren't using.
+MCP tool definitions consume tokens just by being available. Run `/context` to see what is consuming context, and `/mcp` to disable servers you aren't using.
 
 **Why it matters:** Idle MCP servers can consume 30%+ of your context window before you type a single prompt.
 
@@ -651,7 +653,7 @@ Use Cmd+Shift+P → search "Claude Code" to move between sidebar (like file expl
 
 **Level:** Beginner
 
-### Cmd+T for Extended Thinking
+### Option+T for Extended Thinking
 Toggle extended thinking for complex reasoning. Significantly improves quality for architectural decisions, debugging, and complex problems.
 
 **Why it matters:** Without extended thinking, Claude skips intermediate reasoning steps on multi-file architectural decisions and produces shallow answers.
@@ -1401,7 +1403,7 @@ After completing features or merging PRs, start a fresh session. Long sessions a
 
 ### Design Around the Prompt Cache TTL
 
-The Anthropic prompt cache has a 5-minute TTL. When Claude Code sleeps past 300 seconds between actions, the next turn reads your full conversation context uncached — slower and more expensive. Design your workflows around cache windows:
+The prompt cache lifetime is one hour on a Claude subscription, and five minutes on an API key, a cloud provider, or once you are drawing on usage credits. The pacing below applies to the five-minute case; on a subscription the same reasoning applies at the hour boundary. When Claude Code sleeps past 300 seconds between actions, the next turn reads your full conversation context uncached — slower and more expensive. Design your workflows around cache windows:
 
 - **Under 270 seconds:** Cache stays warm. Right for active work — checking builds, polling status, iterating on code.
 - **Over 300 seconds:** Cache miss. Right when there's genuinely no point checking sooner — waiting on deployments, long builds.
@@ -1567,7 +1569,7 @@ Periodically verify that docs match actual code behavior. Incorrect docs are wor
 - Run `/compact` with a focus topic: `/compact Focus on the database migration changes`
 - Delegate research to subagents to keep the main context clean
 - Use `@file` mentions instead of pasting file contents into the conversation
-- If you have 10+ MCP servers, unused tool definitions consume tokens on every turn — disable servers you don't need for this task with `--disable-mcp`
+- If you have 10+ MCP servers, unused tool definitions consume tokens on every turn — disable servers you don't need for this task with `/mcp`
 
 **Why it matters:** Context exhaustion degrades gradually — you don't get an error, you get worse output. Claude starts repeating searches, losing track of decisions, and producing inconsistent code. By the time you notice, you've wasted significant tokens and time.
 

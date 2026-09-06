@@ -18,7 +18,7 @@ Two separate repos, each with their own `CLAUDE.md`:
 - **WorkOS** — work skills shared across the team (meeting workflows, document generation, CRM analytics, content review)
 - **PersonalOS** — personal skills and custom MCP servers (health tracking, productivity tools, private data analysis)
 
-**Why it matters:** Clean separation of concerns. Work context never bleeds into personal tools and vice versa. Each CLAUDE.md stays focused and under the ~300-line sweet spot. WorkOS ships to teammates without dragging in personal configuration.
+**Why it matters:** Clean separation of concerns. Work context never bleeds into personal tools and vice versa. Each CLAUDE.md stays focused and under the ~200-line sweet spot. WorkOS ships to teammates without dragging in personal configuration.
 
 **What you need:** Two git repos with distinct purposes. Each gets its own CLAUDE.md with focused rules.
 

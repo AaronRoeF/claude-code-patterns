@@ -13,7 +13,7 @@
 | Cmd+Esc | Toggle focus between editor and Claude |
 | Option+K | Insert @-mention from current selection |
 | Shift+Tab (x2) | Enter Plan Mode |
-| Cmd+T | Toggle extended thinking |
+| Option+T (Alt+T) | Toggle extended thinking |
 | Cmd+K, Cmd+S | Open keyboard shortcuts (search "Claude") |
 
 ## Essential Slash Commands
@@ -21,7 +21,7 @@
 | Command | What It Does |
 |---------|-------------|
 | `/clear` | Wipe conversation, start fresh (CLAUDE.md persists) |
-| `/compact` | Compress context (use at 70% capacity) |
+| `/compact` | Compress context (use at 78% capacity) |
 | `/context` | Show token usage breakdown |
 | `/cost` | Show session cost and token stats |
 | `/model [name]` | Switch model (haiku, sonnet, opus, opusplan) |

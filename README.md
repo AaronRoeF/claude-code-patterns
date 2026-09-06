@@ -123,14 +123,14 @@ The system that produced these patterns runs three layers. You don't need all th
 For full attribution, see [SOURCES.md](SOURCES.md).
 
 - [Andrej Karpathy — LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — the pattern that inspired Part 3
-- [Adventures in Claude](https://adventuresinclaude.ai/) — 35 posts on Claude Code workflows and operational patterns
+- [Adventures in Claude](https://adventuresinclaude.ai/) — 55 posts (as of 2026-09) on Claude Code workflows and operational patterns
 - [Claude Code Official Docs](https://code.claude.com/docs/en/best-practices)
 - [Builder.io — How to Write a Good CLAUDE.md](https://www.builder.io/blog/claude-md-guide)
 - [HumanLayer — Writing a Good CLAUDE.md](https://www.humanlayer.dev/blog/writing-a-good-claude-md)
 - [Arize — CLAUDE.md Best Practices](https://arize.com/blog/claude-md-best-practices-learned-from-optimizing-claude-code-with-prompt-learning/)
 - [SFEIR Institute — Claude Code Courses](https://institute.sfeir.com/en/claude-code/)
 - [Addy Osmani — Claude Code Agent Teams](https://addyosmani.com/blog/claude-code-agent-teams/)
-- [MCPcat — Managing Context](https://mcpcat.io/guides/managing-claude-code-context/)
+- [AgentCat — Managing Context](https://agentcat.com/guides/managing-claude-code-context/)
 - [ykdojo/claude-code-tips](https://github.com/ykdojo/claude-code-tips)
 - [DataCamp — Claude Code Hooks Tutorial](https://www.datacamp.com/tutorial/claude-code-hooks)
 - [Claude Cowork](https://claude.com/product/cowork)
