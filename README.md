@@ -97,7 +97,7 @@ The system that produced these patterns runs three layers. You don't need all th
 | Part | What You Get | Count |
 |------|-------------|-------|
 | **[Part 1: Core Architecture](PART1-CORE-ARCHITECTURE.md)** | Foundational patterns from a live production setup — the decisions that create leverage | 11 |
-| **[Part 2: Techniques](PART2-TECHNIQUES.md)** | Field-tested tips by category, each rated Beginner / Intermediate / Advanced | 143 |
+| **[Part 2: Techniques](PART2-TECHNIQUES.md)** | Field-tested tips by category, each rated Beginner / Intermediate / Advanced | 147 |
 | **[Part 3: Build a Knowledge Base](PART3-BUILD-A-KNOWLEDGE-BASE.md)** | Step-by-step guide to building a persistent, compounding AI knowledge base (the Karpathy LLM Wiki pattern, production-grade) | 13 |
 | **[Part 4: Quick Reference](PART4-QUICK-REFERENCE.md)** | Cheat sheets — keyboard shortcuts, slash commands, MCP starter kit, 5-minute setup | — |
 | **[Part 5: Live Examples](PART5-LIVE-EXAMPLES.md)** | Hooks, test suites, and scripts actually running in production right now | — |
@@ -135,6 +135,20 @@ For full attribution, see [SOURCES.md](SOURCES.md).
 - [DataCamp — Claude Code Hooks Tutorial](https://www.datacamp.com/tutorial/claude-code-hooks)
 - [Claude Cowork](https://claude.com/product/cowork)
 - [MCP Specification — Tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools.md)
+
+---
+
+## Where these patterns actually run
+
+Patterns are cheap to read and expensive to prove. These are the two public systems this
+document was extracted from — read them if you want to see the patterns load-bearing
+rather than described.
+
+| | |
+|---|---|
+| **[exo](https://github.com/AaronRoeF/exo)** | A full instance of nearly everything here — skills, hooks, slash commands, an MCP server, and the plain-text knowledge base they all write to. The closest thing to a reference implementation. |
+| **[exo-mesh](https://github.com/AaronRoeF/exo-mesh)** | One subsystem built this way, in isolation: a local-first replica of mail, calendar, iMessage and contacts. Useful for seeing the patterns at the scale of a single tool instead of a whole environment. |
+| **[apply-what-you-read](https://github.com/AaronRoeF/apply-what-you-read)** | A smaller worked example — a pipeline that turns book highlights into one lesson a day, built with the same discipline. |
 
 ---
 

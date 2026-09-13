@@ -559,6 +559,36 @@ Structure each skill with seven sections: frontmatter (metadata), when to use (t
 
 ---
 
+### ADEPT Explanations (Intuition First, Rigor Last)
+
+**WIIFM:** Ask your agent to "explain X" and get an explanation that actually sticks — a mental model built first, the precise definition last — instead of a wall of jargon you bounce off.
+
+Package [Kalid Azad's ADEPT method](https://betterexplained.com/articles/adept-method/) (from BetterExplained) as a skill, so every "explain this to me" request runs the same five passes in the same order: **A**nalogy (connect the unknown to something known — and name where the analogy breaks), **D**iagram (show the shape of it), **E**xample (one concrete instance with real values), **P**lain-English (the definition in everyday words), **T**echnical (the formal version — earned, not front-loaded). The order is the whole point: experts and models both default to technical-first (the "curse of knowledge" — once you know a thing, you can't remember what it was like not to), and the skill's job is to mechanically prevent that.
+
+Three quality gates worth copying into your skill file verbatim: the **first-sentence test** (if your opening sentence contains a term the learner couldn't already define, you've front-loaded the technical pass — rewrite); **one analogy, fully developed, beats three shallow ones**; and every formal term in the technical pass must **map back to the specific piece of the analogy or example it names** — a term that can't be mapped back is floating, so anchor it or cut it.
+
+**Why it matters:** Without an enforced order, "explain X" produces a definition — accurate, complete, and forgotten by tomorrow; the five-pass sequence is what turns an answer into understanding.
+
+**Level:** Beginner
+**Source:** [Kalid Azad — the ADEPT Method (BetterExplained)](https://betterexplained.com/articles/adept-method/); skill walkthrough: [ADEPT as a Claude skill](https://aaronfulkerson.com/2026/07/19/adept-skill/)
+
+### LANTERN (Teach Concepts the Reader Resists)
+
+**WIIFM:** A seven-move sequence your agent can follow to present psychological, ethical, or values-laden ideas so they land instead of bouncing off — the sibling of ADEPT for concepts where the obstacle isn't complexity but resistance.
+
+Technical teaching fights complexity; teaching about human patterns (judgment, ego, attachment, forgiveness) fights *resistance* — the reader's self-image has a stake in not understanding. Direct statement triggers defense, so transmission has to be indirect. LANTERN packages that as seven moves, delivered in order: **L**ine (one compressed, slightly quotable aphorism), **A**nchor (a daily-life physical image the reader will actually encounter this week), **N**arrative (a story with a reversal — it forces the concept rather than illustrating it), **T**urn (the mirror question, pointed at the reader, answerable from the last two weeks), **E**nact (one under-5-minute experiment runnable within 24 hours), **R**ipples (second- and third-order consequences, with mechanisms), **N**emesis (the ego's counterfeit of this exact virtue, and how to tell the difference).
+
+Two rules keep it honest: the **Nemesis move is never dropped** — every virtue has a counterfeit the ego prefers, and a teaching that doesn't name its counterfeit trains the counterfeit; and the framework stays **domain-honest** — concepts that are actually technical or propositional route to ADEPT, not LANTERN.
+
+**Why it matters:** Inspirational content fails for a structural reason — the ego is both the student and the subject — and without a resistance-aware sequence, agents render these concepts as greeting-card fluff the reader nods at and ignores.
+
+**Level:** Intermediate
+**Source:** [Introducing LANTERN](https://aaronfulkerson.com/2026/08/01/introducing-lantern/); full skill file: [lantern.md](https://github.com/AaronRoeF/exo/blob/main/skills/lantern/lantern.md)
+
+---
+
+## MCP (Model Context Protocol)
+
 ## MCP (Model Context Protocol)
 
 ### Start with High-Value MCP Servers
@@ -1525,6 +1555,34 @@ Periodically verify that docs match actual code behavior. Incorrect docs are wor
 **Source:** [Adventures in Claude — Sixty Tickets and a Backslash](https://adventuresinclaude.ai/posts/sixty-tickets-and-a-backslash/)
 
 ---
+
+### Never Infer Liveness From a Status Counter
+
+Scheduler status fields — launchd's `runs`, `last exit code`, a systemd `ActiveState` — reset on reboot, and a process that failed authentication and exited cleanly reports as healthy. Reading `runs = 0` two days after a reboot says nothing about whether the job has ever fired. Assert on the **artifact** the job is supposed to produce: log mtime, the commit that landed, the row that got written, the file that got purged.
+
+**Why it matters:** A liveness check that reads the proxy instead of the product generates false alarms and false all-clears from the same data, and both cost real time — one sends you debugging a working system, the other leaves a dead one running.
+
+**Level:** Intermediate
+**Pattern to copy:** In any health check over scheduled jobs, make the assertion `stat` the output. If a job has no observable artifact, give it one (a heartbeat file it touches on success) rather than trusting the scheduler's own bookkeeping.
+
+---
+
+## Troubleshooting
+
+### Run Scheduled Agents From Local Disk, Not a Synced Vault
+
+A scheduled agent (launchd, cron, systemd timer) does not inherit your shell's environment, and on macOS it does not inherit your file access either. Three failures, all silent, all costing weeks before anyone noticed:
+
+- **The synced folder is unreadable.** macOS TCC denies launchd processes read access to iCloud Drive (`~/Library/Mobile Documents/`). The same `cat` that works in your terminal returns "Operation not permitted" under launchd. Worse, *writes* to that path can still succeed — so a working write proves nothing about reads. Mirror the whole runtime (runner, prompt, logs, every persona or config file the prompt reads) to local disk and point the schedule there.
+- **There is no PATH.** `zsh -lc "claude …"` does not find `claude`, because a login shell under launchd never picks up `~/.local/bin`. Pin the absolute binary path.
+- **A copied system shell will not launch.** A copy of `/bin/bash` placed elsewhere keeps `Identifier=com.apple.bash`, and macOS refuses to run it from a non-canonical path — `CODESIGNING / Launch Constraint Violation`, SIGKILL. The signature is valid; the location is not. Invoke the real interpreter by absolute path.
+
+The tell for all three is a bare exit code (127, 137) with no error text, on a schedule nobody is watching.
+
+**Why it matters:** Every one of these produces a job that *looks* installed and *reports* as loaded while never doing its work, so the loop it was supposed to close stays open indefinitely — and the artifact you depend on simply never appears.
+
+**Level:** Advanced
+**Pattern to copy:** Keep scheduled runtimes on local disk in a version-controlled directory, invoke real interpreters and binaries by absolute path, validate every plist with `plutil`, and prove one agent inertly (`RunAtLoad=false` → `bootstrap` → `kickstart` a single job) before arming the rest. Never test-fire a job whose side effects are outward-facing.
 
 ## Troubleshooting
 

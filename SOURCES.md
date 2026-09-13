@@ -36,3 +36,4 @@ This pattern library was built from the collective knowledge of the Claude Code 
 ## Contributing
 
 If your work is represented here and you'd like to be credited (or if we missed attributing something to you), please open an issue or PR.
+- [Kalid Azad — the ADEPT Method (BetterExplained)](https://betterexplained.com/articles/adept-method/) — the learning method behind the "ADEPT Explanations" pattern.
