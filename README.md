@@ -29,6 +29,12 @@ Claude reads the patterns, asks what you're working with, and produces a step-by
 
 ---
 
+## IMPORTANT NOTE ON GOVERNANCE AND SECURITY
+
+I'm leaving out big parts of my implementation because I'm not interested in disclosing all the specifics of my security and governance setup. You can see parts of what I'm doing here: agentrust-io.com if you're interested. And generally assume this is a project I'm sharing, not a product. I hope you get value. Enjoy! 
+
+---
+
 ## The Architecture (How This Actually Works)
 
 The system that produced these patterns runs three layers. You don't need all three to start — but understanding the shape helps you see where the patterns fit.
