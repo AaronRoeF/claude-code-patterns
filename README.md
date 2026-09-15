@@ -146,15 +146,14 @@ For full attribution, see [SOURCES.md](SOURCES.md).
 
 ## Where these patterns actually run
 
-Patterns are cheap to read and expensive to prove. These are the two public systems this
-document was extracted from — read them if you want to see the patterns load-bearing
-rather than described.
+Anyone can write a pattern down. These are the public repos it was extracted from, so you can see
+the patterns carrying weight instead of being described.
 
 | | |
 |---|---|
-| **[exo](https://github.com/AaronRoeF/exo)** | A full instance of nearly everything here — skills, hooks, slash commands, an MCP server, and the plain-text knowledge base they all write to. The closest thing to a reference implementation. |
-| **[exo-mesh](https://github.com/AaronRoeF/exo-mesh)** | One subsystem built this way, in isolation: a local-first replica of mail, calendar, iMessage and contacts. Useful for seeing the patterns at the scale of a single tool instead of a whole environment. |
-| **[apply-what-you-read](https://github.com/AaronRoeF/apply-what-you-read)** | A smaller worked example — a pipeline that turns book highlights into one lesson a day, built with the same discipline. |
+| **[exo](https://github.com/AaronRoeF/exo)** | A full instance of nearly everything here: skills, hooks, slash commands, an MCP server, and the plain-text knowledge base they all write to. The closest thing to a reference implementation. |
+| **[exo-mesh](https://github.com/AaronRoeF/exo-mesh)** | One subsystem built this way on its own: a local-first replica of mail, calendar, iMessage and contacts. Shows the patterns at the scale of a single tool rather than a whole environment. |
+| **[apply-what-you-read](https://github.com/AaronRoeF/apply-what-you-read)** | A smaller worked example. A pipeline that turns book highlights into continuous learning, built with the same discipline. |
 
 ---
 
