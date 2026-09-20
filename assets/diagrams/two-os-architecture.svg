@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 536" width="1000" height="536" role="img" aria-labelledby="two-os-architecture-title two-os-architecture-desc">
+<title id="two-os-architecture-title">The "Two OS" Architecture</title>
+<desc id="two-os-architecture-desc">Two repos separated by an information barrier: a work repo whose CLAUDE.md governs shared team skills and ships to teammates, and a personal repo whose CLAUDE.md governs private skills and custom MCP servers.</desc>
+<defs>
+<marker id="two-os-architecture-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4A5058"/></marker>
+<marker id="two-os-architecture-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#10BA87"/></marker>
+<marker id="two-os-architecture-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#00B0FF"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<rect x="64" y="72" width="384" height="320" rx="8" fill="none" stroke="#4A5058" stroke-width="0.8"/>
+<rect x="80" y="76" width="96" height="12" rx="2" fill="#FFFFFF"/>
+<text x="88" y="86" fill="#1F2125" font-size="8" font-weight="500" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.14em">WorkOS</text>
+<rect x="552" y="72" width="384" height="320" rx="8" fill="none" stroke="#4A5058" stroke-width="0.8"/>
+<rect x="568" y="76" width="96" height="12" rx="2" fill="#FFFFFF"/>
+<text x="576" y="86" fill="#1F2125" font-size="8" font-weight="500" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.14em">PersonalOS</text>
+<path d="M 500,48 V 440" stroke="#10BA87" stroke-width="1.2" fill="none" stroke-dasharray="6,4"/>
+<rect x="344" y="26" width="312" height="12" rx="2" fill="#FFFFFF"/>
+<text x="500" y="35" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">Work context never bleeds into personal tools and vice versa</text>
+<path d="M 256,192 V 248" stroke="#4A5058" stroke-width="1.2" fill="none" marker-end="url(#two-os-architecture-arrow)"/>
+<path d="M 744,192 V 248" stroke="#4A5058" stroke-width="1.2" fill="none" marker-end="url(#two-os-architecture-arrow)"/>
+<path d="M 256,352 V 432" stroke="#00B0FF" stroke-width="1.2" fill="none" marker-end="url(#two-os-architecture-arrow-link)"/>
+<rect x="274" y="406" width="52" height="12" rx="2" fill="#FFFFFF"/>
+<text x="300" y="415" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">ships to</text>
+<rect x="96" y="120" width="320" height="72" rx="6" fill="#FFFFFF"/>
+<rect x="96" y="120" width="320" height="72" rx="6" fill="#FFFFFF" stroke="#1F2125" stroke-width="1"/>
+<text x="256" y="152" fill="#1F2125" font-size="12" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">CLAUDE.md</text>
+<text x="256" y="168" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">under the ~200-line sweet spot</text>
+<rect x="584" y="120" width="320" height="72" rx="6" fill="#FFFFFF"/>
+<rect x="584" y="120" width="320" height="72" rx="6" fill="#FFFFFF" stroke="#1F2125" stroke-width="1"/>
+<text x="744" y="152" fill="#1F2125" font-size="12" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">CLAUDE.md</text>
+<text x="744" y="168" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">under the ~200-line sweet spot</text>
+<rect x="96" y="248" width="320" height="104" rx="6" fill="#FFFFFF"/>
+<rect x="96" y="248" width="320" height="104" rx="6" fill="#FFFFFF" stroke="#1F2125" stroke-width="1"/>
+<text x="256" y="288" fill="#1F2125" font-size="12" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">work skills shared across the team</text>
+<text x="256" y="312" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">meeting workflows, document generation,</text>
+<text x="256" y="328" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">CRM analytics, content review</text>
+<rect x="584" y="248" width="320" height="104" rx="6" fill="#FFFFFF"/>
+<rect x="584" y="248" width="320" height="104" rx="6" fill="#FFFFFF" stroke="#1F2125" stroke-width="1"/>
+<text x="744" y="288" fill="#1F2125" font-size="12" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">personal skills and custom MCP servers</text>
+<text x="744" y="312" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">health tracking, productivity tools,</text>
+<text x="744" y="328" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">private data analysis</text>
+<rect x="96" y="432" width="320" height="64" rx="6" fill="#FFFFFF"/>
+<rect x="96" y="432" width="320" height="64" rx="6" fill="#FFFFFF" stroke="#1F2125" stroke-width="1"/>
+<text x="256" y="468" fill="#1F2125" font-size="12" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">teammates</text>
+</svg>

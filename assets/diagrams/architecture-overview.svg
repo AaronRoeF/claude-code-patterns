@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 792" width="960" height="792" role="img" aria-labelledby="architecture-overview-title architecture-overview-desc">
+<title id="architecture-overview-title">The Architecture (How This Actually Works)</title>
+<desc id="architecture-overview-desc">Four tiers: a CLAUDE.md schema layer dispatches to work skills, personal skills and the knowledge base; those reach live data through globally registered MCP servers, and hooks enforce the whole flow on session, tool and permission events.</desc>
+<defs>
+<marker id="architecture-overview-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4A5058"/></marker>
+<marker id="architecture-overview-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#10BA87"/></marker>
+<marker id="architecture-overview-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#00B0FF"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<path d="M 200,128 V 208" stroke="#4A5058" stroke-width="1.2" fill="none" marker-end="url(#architecture-overview-arrow)"/>
+<path d="M 480,128 V 208" stroke="#4A5058" stroke-width="1.2" fill="none" marker-end="url(#architecture-overview-arrow)"/>
+<path d="M 760,128 V 208" stroke="#4A5058" stroke-width="1.2" fill="none" marker-end="url(#architecture-overview-arrow)"/>
+<rect x="496" y="162" width="80" height="12" rx="2" fill="#FFFFFF"/>
+<text x="536" y="171" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">dispatches to</text>
+<path d="M 200,368 V 424" stroke="#00B0FF" stroke-width="1.2" fill="none" marker-end="url(#architecture-overview-arrow-link)"/>
+<path d="M 480,368 V 424" stroke="#00B0FF" stroke-width="1.2" fill="none" marker-end="url(#architecture-overview-arrow-link)"/>
+<path d="M 760,368 V 472 Q 760,480 752,480 H 600" stroke="#00B0FF" stroke-width="1.2" fill="none" marker-end="url(#architecture-overview-arrow-link)"/>
+<path d="M 340,536 V 592" stroke="#4A5058" stroke-width="1.2" fill="none" marker-end="url(#architecture-overview-arrow)"/>
+<rect x="160" y="48" width="640" height="80" rx="6" fill="#FFFFFF"/>
+<rect x="160" y="48" width="640" height="80" rx="6" fill="#FFFFFF" stroke="#1F2125" stroke-width="1"/>
+<text x="480" y="84" fill="#1F2125" font-size="12" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">CLAUDE.md (Schema)</text>
+<text x="480" y="100" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">Identity · Routing · Rules · Guardrails</text>
+<rect x="80" y="208" width="240" height="160" rx="6" fill="#FFFFFF"/>
+<rect x="80" y="208" width="240" height="160" rx="6" fill="#FFFFFF" stroke="#1F2125" stroke-width="1"/>
+<text x="200" y="240" fill="#1F2125" font-size="12" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">WORK SKILLS</text>
+<text x="200" y="256" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">(team repo)</text>
+<text x="104" y="280" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">Meeting prep</text>
+<text x="104" y="296" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">PM workflows</text>
+<text x="104" y="312" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">CRM analytics</text>
+<text x="104" y="328" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">Content review</text>
+<text x="104" y="344" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">Email triage</text>
+<rect x="360" y="208" width="240" height="160" rx="6" fill="#FFFFFF"/>
+<rect x="360" y="208" width="240" height="160" rx="6" fill="#FFFFFF" stroke="#1F2125" stroke-width="1"/>
+<text x="480" y="240" fill="#1F2125" font-size="12" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">PERSONAL SKILLS</text>
+<text x="480" y="256" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">(private)</text>
+<text x="384" y="280" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">Health data</text>
+<text x="384" y="296" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">Task mgmt</text>
+<text x="384" y="312" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">Msg analysis</text>
+<text x="384" y="328" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">Learning</text>
+<text x="384" y="344" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">Vault ops</text>
+<rect x="640" y="208" width="240" height="160" rx="6" fill="#FFFFFF"/>
+<rect x="640" y="208" width="240" height="160" rx="6" fill="#ebf5f1" stroke="#10BA87" stroke-width="1"/>
+<text x="760" y="240" fill="#1F2125" font-size="12" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">KNOWLEDGE BASE</text>
+<text x="760" y="256" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">(Obsidian vault)</text>
+<text x="664" y="280" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">people/</text>
+<text x="664" y="296" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">accounts/</text>
+<text x="664" y="312" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">projects/</text>
+<text x="664" y="328" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">observations/</text>
+<text x="664" y="344" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">decisions/</text>
+<rect x="80" y="424" width="520" height="112" rx="6" fill="#FFFFFF"/>
+<rect x="80" y="424" width="520" height="112" rx="6" fill="#FFFFFF" stroke="#1F2125" stroke-width="1"/>
+<text x="340" y="460" fill="#1F2125" font-size="12" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">MCP SERVERS (global)</text>
+<text x="340" y="484" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">Gmail · Calendar · Slack · Drive</text>
+<text x="340" y="500" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">Jira · Notion · Playwright · CRM</text>
+<text x="340" y="516" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle" letter-spacing="0.04em">+ custom servers for local data</text>
+<rect x="80" y="592" width="800" height="160" rx="6" fill="#FFFFFF"/>
+<rect x="80" y="592" width="800" height="160" rx="6" fill="#FFFFFF" stroke="#1F2125" stroke-width="1"/>
+<text x="480" y="628" fill="#1F2125" font-size="12" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">HOOKS (Enforcement)</text>
+<text x="356" y="652" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">SessionStart: project dashboard, context reload</text>
+<text x="356" y="668" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">PreToolUse: focus gate, safety checks</text>
+<text x="356" y="684" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">PostToolUse: audit log, test sync, learning capture</text>
+<text x="356" y="700" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">Notification: desktop/mobile alerts</text>
+<text x="356" y="716" fill="#1F2125" font-size="8" font-weight="400" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="start" letter-spacing="0.04em">Permission: phone approval via push notification</text>
+</svg>
