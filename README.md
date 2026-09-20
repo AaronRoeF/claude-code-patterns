@@ -39,7 +39,7 @@ I'm leaving out big parts of my implementation because I'm not interested in dis
 
 The system that produced these patterns runs three layers. You don't need all three to start — but understanding the shape helps you see where the patterns fit.
 
-![Four tiers at a glance: a CLAUDE.md schema layer dispatching to work skills, personal skills and the knowledge base, all reaching live data through globally registered MCP servers, with hooks enforcing the whole flow underneath.](assets/diagrams/architecture-overview.svg)
+![Four tiers at a glance: a CLAUDE.md schema layer dispatching to work skills, personal skills and the knowledge base, all reaching live data through globally registered MCP servers, with hooks enforcing the whole flow underneath.](assets/diagrams/architecture-overview.png)
 
 <details>
 <summary>Text version</summary>
