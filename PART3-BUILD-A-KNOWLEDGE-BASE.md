@@ -39,6 +39,8 @@ What follows is the production implementation: skills, MCP servers, hook scripts
 
 The core architecture has three layers, each with a distinct role:
 
+![The three layers at a glance: live MCP sources at the bottom, the durable wiki in the middle, and the CLAUDE.md schema governing both on top.](assets/diagrams/three-layer-architecture.svg)
+
 **Layer 1 — Sources (MCP servers).** Live data feeds, not static file drops. Gmail MCP pulls real email. HubSpot MCP queries live deal data. Calendar MCP reads today's schedule. Granola MCP fetches meeting transcripts. The key insight: MCP servers give Claude real-time access to your operational data without you copying anything into files. Static file drops go stale the moment you save them; MCP feeds are always current.
 
 **Layer 2 — Wiki (Obsidian vault).** The persistent knowledge base Claude writes to and reads from. Structured markdown files with YAML frontmatter: one file per person, per account, per project, per decision. Claude synthesizes data from Layer 1 into durable knowledge artifacts here. This is where knowledge compounds — meeting prep reads a person file, meeting debrief updates it, and the next meeting prep is richer.
@@ -223,6 +225,8 @@ This query shows contacts you have not met with in 30+ days — no Claude involv
 ### Learning Loops: Capture → Review → Graduate
 
 This is the pattern that turns a knowledge base into a flywheel. Without it, your wiki is a filing cabinet — useful but static. With it, the system gets smarter from your daily work.
+
+![The loop at a glance: daily captures accumulate in dated files, review promotes anything seen on three or more separate days, and graduation writes it back into rules, skills and knowledge before the cycle restarts.](assets/diagrams/learning-loop.svg)
 
 **Layer 1: Capture.** Raw signals from daily work — observations, meeting takeaways, market signals, execution insights. Low friction, low ceremony. A single line or short paragraph. Stored in dated files:
 

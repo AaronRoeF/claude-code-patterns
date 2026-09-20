@@ -18,6 +18,8 @@ Two separate repos, each with their own `CLAUDE.md`:
 - **WorkOS** — work skills shared across the team (meeting workflows, document generation, CRM analytics, content review)
 - **PersonalOS** — personal skills and custom MCP servers (health tracking, productivity tools, private data analysis)
 
+![The two repos side by side, each with its own CLAUDE.md, separated by a barrier that keeps work context out of personal tools and lets the work repo ship to teammates on its own.](assets/diagrams/two-os-architecture.svg)
+
 **Why it matters:** Clean separation of concerns. Work context never bleeds into personal tools and vice versa. Each CLAUDE.md stays focused and under the ~200-line sweet spot. WorkOS ships to teammates without dragging in personal configuration.
 
 **What you need:** Two git repos with distinct purposes. Each gets its own CLAUDE.md with focused rules.
@@ -98,6 +100,8 @@ All MCP servers configured globally in `~/.claude.json`, not per-project. Availa
 
 Skills explicitly do NOT send emails, push Slack messages, or make calendar changes without confirmation. Claude drafts, you confirm.
 
+![Where the gate sits: the agent gathers and drafts freely, and a single confirmation stands between the draft and the only irreversible step.](assets/diagrams/confirmation-gates.svg)
+
 **Why it matters:** You can let Claude operate with broad access (push to git, read all email, access Slack) because the guardrails are in the *skills*, not the *permissions*. Trust the agent to gather information freely. Gate only the point of no return.
 
 **What you need:** Explicit rules in each skill file that produces external side effects.
@@ -151,6 +155,8 @@ Claude AI: Google Calendar (built-in), Email (built-in), Web search...
 The system detects who's using it (via `git config user.name`) and adapts:
 - If the owner → apply personal voice and default preferences
 - If a team member → use standard professional tone, with option to invoke the owner's voice for content written on their behalf
+
+![One identity check and the two branches it routes to: the owner's personal voice, or a standard professional tone with the owner's voice available on request.](assets/diagrams/user-identity-routing.svg)
 
 **Why it matters:** One skill set serves the entire team. No per-user configuration needed. A teammate can say "draft a LinkedIn post for the CEO" and the system applies the right voice without switching repos.
 

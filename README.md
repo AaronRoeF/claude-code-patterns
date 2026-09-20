@@ -39,6 +39,11 @@ I'm leaving out big parts of my implementation because I'm not interested in dis
 
 The system that produced these patterns runs three layers. You don't need all three to start — but understanding the shape helps you see where the patterns fit.
 
+![Four tiers at a glance: a CLAUDE.md schema layer dispatching to work skills, personal skills and the knowledge base, all reaching live data through globally registered MCP servers, with hooks enforcing the whole flow underneath.](assets/diagrams/architecture-overview.svg)
+
+<details>
+<summary>Text version</summary>
+
 ```
 ┌──────────────────────────────────────────────────────────┐
 │                    CLAUDE.md (Schema)                    │
@@ -81,6 +86,8 @@ The system that produced these patterns runs three layers. You don't need all th
 │  Permission:    phone approval via push notification     │
 └──────────────────────────────────────────────────────────┘
 ```
+
+</details>
 
 **The flywheel:** Skills pull live data from MCP servers → process and produce output → write enriched data to the knowledge base → next session starts with richer context. Meeting prep reads contact files that were updated by the last debrief. Every session compounds.
 

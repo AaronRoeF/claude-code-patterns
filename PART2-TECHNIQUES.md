@@ -1065,6 +1065,8 @@ Run once on each machine after the shared directory is populated. Skips if alrea
 
 Auto memory captures individual learnings, but it can't spot *patterns across sessions*. Build a two-phase learning loop:
 
+![The loop at a glance: daily captures accumulate in dated files, review promotes anything seen on three or more separate days, and graduation writes it back into rules, skills and knowledge before the cycle restarts.](assets/diagrams/learning-loop.svg)
+
 **Phase 1 — Capture:** Write raw observations to daily files (`observations/YYYY-MM-DD.md`) during or after each session. Categorize each entry: `mcp`, `skill`, `claude`, `code`, `workflow`, `product`, `meta`. Claude proposes TIL candidates based on what it observed in the session — corrections, surprises, MCP gotchas, approaches that worked. You approve/edit.
 
 **Phase 2 — Graduate:** Periodically review accumulated observations, group by theme, and score cross-day repetition. One day = anecdote (skip). Two days = pattern (watch). Three+ separate days = graduation candidate. Promote graduated patterns into permanent rules: CLAUDE.md, skill files, learnings.md, or MEMORY.md. Graduation is always human-approved.
@@ -1110,6 +1112,8 @@ The script should:
 ### Memory Consolidation Pass (Capture → Consolidate → Graduate)
 
 Capture and Graduate alone leave a cadence gap: capture happens daily, manual graduation review happens every few weeks, and useful patterns sit unpromoted in observation files for weeks while the next sessions keep tripping on rules nobody surfaced yet. Add a third process — a **scheduled consolidation pass** that reads the whole memory corpus at once, surfaces cross-source patterns, and proposes promotions. Anthropic shipped this pattern for Claude Managed Agents in May 2026 under the name "dreaming"; the same shape works locally for any stack with persistent memory.
+
+![Who does what in a consolidation pass: the scheduled pass reads the corpus and writes a dated report, a person ticks the proposals worth keeping, and a separate command applies exactly those.](assets/diagrams/memory-consolidation.svg)
 
 **Signs you need this:** (1) Your daily capture file has "graduation candidate" flags that haven't been promoted in 7+ days. (2) You can name patterns you've noticed multiple times but haven't written down as rules. (3) Different projects show the same blocker shape and you only see it when you happen to look at both PULSE files in one sitting.
 
@@ -1216,6 +1220,8 @@ For automated enforcement: add a pre-publish check that verifies every file in a
 
 Give every project a `PULSE.md` file that tracks status, completion %, last stop, next actions, and what "finished" looks like. The PULSE is the authoritative source for project state — not your memory, not a task list, not a Jira board.
 
+![The status field as a state machine: idea into active, active cycling through blocked, and completion running out through done into archived.](assets/diagrams/project-pulse-states.svg)
+
 The minimum viable PULSE:
 
 ```yaml
@@ -1238,6 +1244,8 @@ Plus three sections: **Last Stop** (where you left off — enough detail that a 
 ### Focus Lock with Context-Switch Detection
 
 Use a PreToolUse hook to detect when Claude is about to edit files in a different project directory than the declared focus project. When a switch is detected, the hook injects a warning that forces Claude to update the departing project's PULSE before proceeding.
+
+![Where the hook fires: an edit in a different project directory raises the context-switch warning and holds work until the departing project's tracker is updated.](assets/diagrams/focus-lock.svg)
 
 The pattern:
 1. At session start, declare a focus project (write to `~/.claude/current-focus.txt`)
