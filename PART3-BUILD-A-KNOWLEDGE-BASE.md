@@ -98,7 +98,7 @@ To connect Claude Code to your Obsidian vault, install the Obsidian MCP server:
   "mcpServers": {
     "obsidian": {
       "command": "npx",
-      "args": ["-y", "obsidian-mcp"],
+      "args": ["-y", "obsidian-mcp@<exact-version>"],
       "env": {
         "OBSIDIAN_VAULT_PATH": "/path/to/your/vault"
       }
@@ -106,6 +106,8 @@ To connect Claude Code to your Obsidian vault, install the Obsidian MCP server:
   }
 }
 ```
+
+Pin the exact version (or point `command` at a checkout you can read). `npx -y <package>` with no version downloads the newest release at every session start, unreviewed — see [Pin Your MCP Servers](PART2-TECHNIQUES.md#pin-your-mcp-servers-npx--y-runs-whatever-shipped-last-night).
 
 This gives Claude tools like `obsidian_search`, `obsidian_read`, `obsidian_create`, `obsidian_append`, `obsidian_backlinks`, `obsidian_tags`, and `obsidian_orphans`. Claude can search for content, read files, create new pages, and navigate the graph — all without you opening Obsidian.
 

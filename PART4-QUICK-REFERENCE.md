@@ -35,6 +35,8 @@
 
 ## The MCP Starter Kit for Business Users
 
+Pin every server to an exact version or a local checkout; never `npx -y <package>` unpinned ([why](PART2-TECHNIQUES.md#pin-your-mcp-servers-npx--y-runs-whatever-shipped-last-night)).
+
 **Tier 1 — Start here:**
 - **Gmail** — read/send email (`@gongrzhe/server-gmail-autoauth-mcp`)
 - **Google Calendar** — events, scheduling (built-in Anthropic connector, or via Google Drive MCP)
@@ -48,7 +50,7 @@
 - **Granola** — meeting transcripts
 
 **Tier 3 — Specialized:**
-- **iMessage** — messaging history analysis (`imessage-mcp`)
+- **iMessage** — messaging history analysis (no package recommended: the third-party server previously listed here shipped nine unreviewed releases in one week with read access to every message; run a server you can read, pinned)
 - **Health APIs** — biometric data (Fitbit, Garmin, etc.)
 - **GitHub** — issues, PRs, code search (use `gh` CLI directly or GitHub MCP)
 

@@ -69,6 +69,7 @@ Field-tested techniques organized by category. Each rated:
 | [Use Environment Variables for Tokens](#use-environment-variables-for-tokens) | MCP |
 | [The 3-Point MCP Debug Check](#the-3-point-mcp-debug-check) | MCP |
 | [Follow the MCP Spec for Tool Definitions](#follow-the-mcp-spec-for-tool-definitions) | MCP |
+| [Pin Your MCP Servers](#pin-your-mcp-servers-npx--y-runs-whatever-shipped-last-night) | MCP |
 | [SQLite for Reads, JXA Only for Writes](#sqlite-for-reads-jxa-only-for-writes) | MCP |
 | [Register MCP Servers via CLI, Not Manual JSON Edits](#register-mcp-servers-via-cli-not-manual-json-edits) | MCP |
 | [@-Mentions with Line Ranges](#-mentions-with-line-ranges) | VS Code |
@@ -89,6 +90,7 @@ Field-tested techniques organized by category. Each rated:
 | [Git Worktrees for Parallel Sessions](#git-worktrees-for-parallel-sessions) | Agent Orchestration — Fundamentals |
 | [Agent Teams (3-5 Teammates)](#agent-teams-3-5-teammates) | Agent Orchestration — Fundamentals |
 | [Subagents for Quick, Focused Work](#subagents-for-quick-focused-work) | Agent Orchestration — Fundamentals |
+| [The Check You Owe Your Delegate](#the-check-you-owe-your-delegate-it-works-inside-the-frame-you-handed-it) | Agent Orchestration |
 | [Background Agents (Ctrl+B)](#background-agents-ctrlb) | Agent Orchestration — Fundamentals |
 | [Give Each Agent a Narrow Scope](#give-each-agent-a-narrow-scope) | Agent Orchestration — Fundamentals |
 | [Run Quality Gates Concurrently](#run-quality-gates-concurrently) | Agent Orchestration — Fundamentals |
@@ -158,6 +160,8 @@ Field-tested techniques organized by category. Each rated:
 | [Container Mode for Safe Experimentation](#container-mode-for-safe-experimentation) | Latest Features |
 | [200+ Environment Variables](#200-environment-variables) | Latest Features |
 | [/permissions to Audit Rules](#permissions-to-audit-rules) | Latest Features |
+| [Run Scheduled Agents From Local Disk, Not a Synced Vault](#run-scheduled-agents-from-local-disk-not-a-synced-vault) | Troubleshooting |
+| [The First Real Run Decides](#the-first-real-run-decides-green-tests-prove-the-tests-not-the-job) | Troubleshooting |
 
 ---
 
@@ -635,6 +639,41 @@ Every tool must include `name`, `title` (human-readable), `description`, and `in
 **Level:** Intermediate
 **Source:** [MCP Specification — Tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools.md)
 
+### Pin Your MCP Servers (`npx -y` Runs Whatever Shipped Last Night)
+
+The agent you trusted with your inbox yesterday may be running different code this morning, downloaded while you slept, written by someone you have never met, with the same access to your mail. One version suffix in one config line makes sure the agent you tested is the agent that runs.
+
+An MCP server is a small program Claude Code starts at the beginning of every session to give the agent a tool: read your mail, search your notes, query a CRM. Most are published as npm packages (npm is the package registry for JavaScript; `npx` runs a package without installing it). The common way to configure one is a single line in `~/.claude.json`:
+
+```json
+"messages": { "command": "npx", "args": ["-y", "some-mcp-server"] }
+```
+
+That line means: *at every session start, download the newest published release of this package and run it.* No review, no changelog, no pause. If the author ships a bug at midnight, your 8 a.m. session runs it, with whatever access the server has. If the author's account is compromised, same thing.
+
+**Pin the version, or pin the checkout.** Back up `~/.claude.json` first, then use either form:
+
+```json
+"messages": { "command": "npx", "args": ["-y", "some-mcp-server@1.4.2"] }
+"notes":    { "command": "node", "args": ["/Users/you/tools/notes-mcp/dist/index.js"] }
+```
+
+The first fixes the package to one release; the second runs code you cloned and can read. A version pin still lets the package's own dependencies float, so for anything that reads private data, prefer the local checkout.
+
+**Check your config once.** This prints every server line that runs a package without a version:
+
+```bash
+grep -n '"-y"' ~/.claude.json | grep -v '@[0-9]'
+```
+
+Paste the output to your agent with: *"For each of these, find the current stable version and pin it, or tell me if a local checkout is the better option."*
+
+Field-tested: a message-reading server in the author's setup ran as `npx -y`. In one seven-day stretch the package published nine releases; two exited on a schema change, one demanded a newer Node, and each session start pulled whichever was newest, with read access to every message on the machine. The server was removed outright. The elaborate fix, a sandboxed job with its own canary and a 21-test suite, was specified and then shelved as overkill. What survived is the version suffix and the grep.
+
+**Why it matters:** an unpinned server is a supply-chain update you did not approve, executed inside your agent's trust boundary, every single morning.
+
+**Level:** Intermediate
+
 ### SQLite for Reads, JXA Only for Writes
 For macOS app MCP servers, default to reading the app's SQLite database directly (sub-ms, works when the app is closed, handles search well) and reserve JXA/AppleScript only for operations that require app interaction (creating items, marking complete). The URL scheme (`app:///verb?params`) is a reliable middle ground for creates/updates. This minimizes brittleness — JXA depends on the scripting bridge, which Apple doesn't actively maintain and can break across macOS versions.
 
@@ -815,6 +854,27 @@ Start with 3-5 teammates. Give each rich context about the project and their spe
 Use subagents (not agent teams) for quick tasks that complete and report back. Simpler, faster, fewer tokens than full agent teams.
 
 **Why it matters:** Agent teams carry inter-agent messaging overhead that doubles token cost for tasks that only need a single worker reporting back.
+
+**Level:** Intermediate
+
+### The Check You Owe Your Delegate (It Works Inside the Frame You Handed It)
+
+Delegating to AI agents saves you hours, until the one error none of them looked for reaches a customer, a board deck, or a published post with your name on it. One check per hand-off catches that error, and it is always the same kind.
+
+Delegation in Claude Code is cheap: a subagent (a separate agent you spawn with its own brief) builds the feature, a second one reviews it, a panel of AI personas red-teams the design. Every one of them works inside the frame you wrote into its prompt. A builder told "make the tests pass" makes the tests pass. A reviewer told "find what breaks this design" finds what breaks it. None of them is asked whether the goal is right, whether the tests are weak, or whether the report is optimistic, so those are the errors that reach you. That is not a model weakness; it is what a brief is.
+
+So the dispatcher owes one check per hand-off that the delegate did not do. Four shapes:
+
+1. **The premise question, before the attack.** Before you brief reviewers to break a design, ask whether the goal still holds. Three reviewers once broke a design thoroughly; the owner's reframe retired that design the same day, and nobody had been asked.
+2. **Your own mutant.** When a builder reports "45 of 45 passing," change one line of its code to something wrong and run its suite. If the suite stays green, the tests check less than the number suggests. Two one-line mutants exposed exactly that.
+3. **A hand-back is a claim until the gate runs.** "Suite green" from a builder describes the builder's copy. Nine of thirteen tests failed on the merged tree at the push gate in one case. Treat the gate as the first real result.
+4. **An evidence pass on anything you will publish.** A cheap check of every number and attribution against the source files caught three errors in a draft the author had read twice.
+
+A prompt that gets you started, pasteable at hand-back: *"Before you report done: state one assumption in your brief that, if false, makes this work pointless, and say whether you checked it; then list the two inputs your tests never exercised."* Its answers are a map of where to look, not the check itself; you still run the mutant and the gate.
+
+Field-tested across four hand-offs in two weeks in the author's setup. The reviewers and auditors involved are AI personas run as subagents, not people; when several of them agree, treat it as a lead to verify, not a verdict.
+
+**Why it matters:** a delegate's confidence is bounded by its brief; the errors outside the brief are the ones that reach you, and those are yours to check.
 
 **Level:** Intermediate
 
@@ -1187,6 +1247,8 @@ Signal: <one-line interpretation>
 ```
 
 **Auto-apply vs human-gated:** auto-apply only safe housekeeping (byte-identical duplicates, archived to a folder you can restore from — never deleted). Everything else proposes; the human ticks `[x] approve`; a separate apply command makes the edits.
+
+**Record decisions in one file, not as checkboxes in the report.** The checkboxes in the skeleton above are a reading aid, not the decision channel: in the author's setup eight consecutive weekly runs produced proposals and not one apply log, because a tick in a report is not something a script can act on. Give the loop one decisions file (`dreams/decisions.json`, keyed by report date and proposal id), written by one command that records the verdict and the reason, and an alarm when any proposal sits undecided past 14 days. Treat an unreadable decisions file as an error, never as "nothing decided."
 
 **Why it matters:** Capture-to-promotion cadence gap means useful patterns sit unpromoted in daily files for weeks, and cross-source patterns (the same blocker across multiple projects, a memory rule contradicting itself) are invisible to any single-session view.
 
@@ -1591,6 +1653,26 @@ The tell for all three is a bare exit code (127, 137) with no error text, on a s
 
 **Level:** Advanced
 **Pattern to copy:** Keep scheduled runtimes on local disk in a version-controlled directory, invoke real interpreters and binaries by absolute path, validate every plist with `plutil`, and prove one agent inertly (`RunAtLoad=false` → `bootstrap` → `kickstart` a single job) before arming the rest. Never test-fire a job whose side effects are outward-facing.
+
+### The First Real Run Decides (Green Tests Prove the Tests, Not the Job)
+
+Your agent built the nightly job, all forty tests passed, and the first night it ran by itself it died on its first line. Before you rely on any automated job, run it once the way it will really run, on one real input. That run is the only test that counts.
+
+When you ask Claude Code to build a scheduled job and "add tests," you get both, and the tests pass. Two things are true about those tests that are not true about the job. They were written by the same agent that wrote the code, from the same understanding, so they share its blind spots. And they run in your interactive session, as you, from your shell, with data the agent invented. The job will run from a launcher (the scheduler that starts it: launchd on a Mac, cron, a CI step), often under a different shell, with different permissions, on data that arrives from the outside world.
+
+**Before you trust green, do one real run and compare it to the fake one.** Three questions:
+
+1. *Same launcher?* Fire it from the scheduler, not from your prompt. Attended runs hide an entire class of failure, because your shell has consents and paths the launcher does not.
+2. *Same input?* Feed it one real item, not a fixture. Paste this to the agent: *"Replace the fake ids in these tests with one real example copied from the live source, and tell me what breaks."*
+3. *Same permissions?* If the job reads or writes anywhere you care about, confirm by looking at the destination, not at the job's own log line. A job can pass one permission check and fail a second one only a live run reaches.
+
+One safety line: a real run can send real mail or write real files. Point the outbound side at yourself, or at a dry-run flag, for the first pass; then do one real send.
+
+Field-tested, four times in one week in the author's setup. A job that passed two attended runs through the identical wrapper hung three times in a row under the scheduler, to the timeout, on one file inside a cloud-synced folder. A converted job had two read permissions to pass and the tests exercised one. A job whose tests imported its code directly died on its first scheduled fire, because the launcher runs it under a different shell. A forwarder with forty-plus unit tests passed on ids like `m1`; the first real message id had characters that needed encoding in a URL, and the "don't echo the owner's own mail" guard skipped every one of the owner's addresses instead of one. All four were invisible to green.
+
+**Why it matters:** a test suite the agent wrote is evidence that the agent understood its own code, not that the job survives contact with the launcher and the data.
+
+**Level:** Intermediate
 
 ## Troubleshooting
 

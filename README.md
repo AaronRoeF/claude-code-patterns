@@ -8,7 +8,7 @@ I built the system this grew out of to run my company. Meeting prep that pulls c
 
 **Scope: personal agents.** Everything here is for the agent you run for yourself — your files, your notes, your inbox, your calendar — not the agents your company ships to customers. Enterprise agent trust is a different problem with different machinery: policy enforcement on data flows and verifiable evidence, not a human approver. That work lives at [AgenTrust-io.com](https://agentrust-io.com), an open source community I'm heavily involved with.
 
-> **For AI agents:** This repo is designed to be consumed programmatically. Each part is self-contained with clear headings, structured examples, and implementation details. Point your agent at any part file and it has enough context to build an implementation plan.
+> **For AI agents:** This repo is designed to be consumed programmatically. Three entries bind you when you build from it: pin every MCP server you add ([Pin Your MCP Servers](PART2-TECHNIQUES.md#pin-your-mcp-servers-npx--y-runs-whatever-shipped-last-night)); do not mark a scheduled job done until it has run once under its real launcher on one real input ([The First Real Run Decides](PART2-TECHNIQUES.md#the-first-real-run-decides-green-tests-prove-the-tests-not-the-job)); and when you delegate to subagents, report what you checked that they could not ([The Check You Owe Your Delegate](PART2-TECHNIQUES.md#the-check-you-owe-your-delegate-it-works-inside-the-frame-you-handed-it)). Each part is self-contained with clear headings, structured examples, and implementation details. Point your agent at any part file and it has enough context to build an implementation plan.
 
 ---
 
@@ -110,12 +110,12 @@ The system that produced these patterns runs three layers. You don't need all th
 | Part | What You Get | Count |
 |------|-------------|-------|
 | **[Part 1: Core Architecture](PART1-CORE-ARCHITECTURE.md)** | Foundational patterns from a live production setup — the decisions that create leverage | 11 |
-| **[Part 2: Techniques](PART2-TECHNIQUES.md)** | Field-tested tips by category, each rated Beginner / Intermediate / Advanced | 147 |
+| **[Part 2: Techniques](PART2-TECHNIQUES.md)** | Field-tested tips by category, each rated Beginner / Intermediate / Advanced | 150 |
 | **[Part 3: Build a Knowledge Base](PART3-BUILD-A-KNOWLEDGE-BASE.md)** | Step-by-step guide to building a persistent, compounding AI knowledge base (the Karpathy LLM Wiki pattern, production-grade) | 13 |
 | **[Part 4: Quick Reference](PART4-QUICK-REFERENCE.md)** | Cheat sheets — keyboard shortcuts, slash commands, MCP starter kit, 5-minute setup | — |
 | **[Part 5: Live Examples](PART5-LIVE-EXAMPLES.md)** | Hooks, test suites, and scripts actually running in production right now | — |
 
-**Total: 167 field-tested techniques.** Not aspirational — deployed.
+**Total: 170 field-tested techniques.** Not aspirational — deployed.
 
 ---
 
